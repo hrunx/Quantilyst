@@ -1,29 +1,34 @@
-// src/app/page.tsx
+
+'use client'; // Needed for useState and useEffect
+
+import { useState, useEffect } from 'react';
+
 export default function HomePage() {
+  const [currentTime, setCurrentTime] = useState<string | null>(null);
+
+  useEffect(() => {
+    // This will only run on the client, after initial hydration
+    setCurrentTime(new Date().toLocaleTimeString());
+
+    // Optional: update time every second
+    const timerId = setInterval(() => {
+      setCurrentTime(new Date().toLocaleTimeString());
+    }, 1000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(timerId);
+  }, []); // Empty dependency array ensures this runs once on mount (and sets up interval)
+
   return (
-    <div>
-      <h1>Root Page Test</h1>
-      <p>If you see this, the Next.js App Router is correctly finding and rendering /src/app/page.tsx.</p>
-      <p>The time is: <span id="time-placeholder">Loading time...</span></p>
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            document.addEventListener('DOMContentLoaded', function() {
-              try {
-                const timeElement = document.getElementById('time-placeholder');
-                if (timeElement) {
-                  timeElement.innerText = new Date().toLocaleTimeString();
-                }
-              } catch (e) {
-                console.error('Error setting time:', e);
-                if (timeElement) {
-                  timeElement.innerText = 'Error loading time.';
-                }
-              }
-            });
-          `,
-        }}
-      />
+    <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
+      <h1>Welcome to Market Insights Pro!</h1>
+      <p>This is the homepage of your application.</p>
+      {currentTime !== null ? (
+        <p>Current time: {currentTime}</p>
+      ) : (
+        <p>Loading current time...</p>
+      )}
+      <p>If you see this, Next.js is working correctly.</p>
     </div>
   );
 }
