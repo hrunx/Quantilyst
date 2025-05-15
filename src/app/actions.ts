@@ -26,4 +26,8 @@ export async function getSeoSuggestionsAction(input: SeoContentSuggestionsInput)
     const result = await seoContentSuggestions(input);
     // console.log("seoContentSuggestions result:", JSON.stringify(result, null, 2));
     return { success: true, data: result };
-  } catch (error)
+  } catch (error) {
+    console.error("Error getting SEO suggestions:", error);
+    return { success: false, error: (error instanceof Error ? error.message : String(error)) || "Failed to get SEO suggestions." };
+  }
+}
