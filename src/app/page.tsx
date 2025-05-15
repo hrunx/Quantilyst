@@ -1,24 +1,29 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-
-export default function Home() {
+// src/app/page.tsx
+export default function HomePage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 dark:bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl">
-          Welcome to Market Insights Pro
-        </h1>
-        <p className="mt-6 text-lg leading-8 text-muted-foreground">
-          Get AI-powered trending keyword analysis and SEO content suggestions for your business.
-        </p>
-        <div className="mt-10 flex items-center justify-center gap-x-6">
-          <Button asChild>
-            <Link href="/dashboard">
-              Go to Dashboard
-            </Link>
-          </Button>
-        </div>
-      </div>
-    </main>
+    <div>
+      <h1>Root Page Test</h1>
+      <p>If you see this, the Next.js App Router is correctly finding and rendering /src/app/page.tsx.</p>
+      <p>The time is: <span id="time-placeholder">Loading time...</span></p>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            document.addEventListener('DOMContentLoaded', function() {
+              try {
+                const timeElement = document.getElementById('time-placeholder');
+                if (timeElement) {
+                  timeElement.innerText = new Date().toLocaleTimeString();
+                }
+              } catch (e) {
+                console.error('Error setting time:', e);
+                if (timeElement) {
+                  timeElement.innerText = 'Error loading time.';
+                }
+              }
+            });
+          `,
+        }}
+      />
+    </div>
   );
 }
