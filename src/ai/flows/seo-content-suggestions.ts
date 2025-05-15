@@ -32,7 +32,11 @@ export type SeoContentSuggestionsOutput = z.infer<typeof SeoContentSuggestionsOu
 export async function seoContentSuggestions(
   input: SeoContentSuggestionsInput
 ): Promise<SeoContentSuggestionsOutput> {
-  return seoContentSuggestionsFlow(input);
+  const {output} = await seoContentSuggestionsFlow(input);
+  if (!output) {
+    throw new Error("No output from seoContentSuggestionsFlow");
+  }
+  return output;
 }
 
 const prompt = ai.definePrompt({
@@ -44,4 +48,17 @@ const prompt = ai.definePrompt({
 Business Type: {{{businessType}}}
 Trending Keywords: {{{trendingKeywords}}}
 
-SEO Content Suggestions:`, // Removed the extra 
+SEO Content Suggestions:`,
+});
+
+const seoContentSuggestionsFlow = ai.defineFlow(
+  {
+    name: 'seoContentSuggestionsFlow',
+    inputSchema: SeoContentSuggestionsInputSchema,
+    outputSchema: SeoContentSuggestionsOutputSchema,
+  },
+  async (input) => {
+    const {output} = await prompt(input);
+    return output!;
+  }
+);
