@@ -25,7 +25,14 @@ export async function getSeoSuggestionsAction(input: SeoContentSuggestionsInput)
     // console.log("Calling seoContentSuggestions with input:", JSON.stringify(input, null, 2));
     const result = await seoContentSuggestions(input);
     // console.log("seoContentSuggestions result:", JSON.stringify(result, null, 2));
-    return { success: true, data: result };
+    if (result && result.suggestions && result.suggestions.length > 0) {
+      return { success: true, data: result };
+    } else if (result && result.suggestions && result.suggestions.length === 0) {
+      // If AI returns an empty list, treat it as success but maybe inform user.
+      return { success: true, data: {suggestions: []}, error: "No specific suggestions were generated for the given input, but the process completed." };
+    }
+    // If result itself is falsy or suggestions array is missing (should be caught by flow, but as a safeguard)
+    return { success: false, error: "Failed to get valid SEO suggestions. The AI did not return expected data."};
   } catch (error) {
     console.error("Error getting SEO suggestions:", error);
     return { success: false, error: (error instanceof Error ? error.message : String(error)) || "Failed to get SEO suggestions." };

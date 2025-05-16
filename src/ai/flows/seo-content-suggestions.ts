@@ -24,8 +24,8 @@ export type SeoContentSuggestionsInput = z.infer<typeof SeoContentSuggestionsInp
 
 const SeoContentSuggestionsOutputSchema = z.object({
   suggestions: z
-    .string()
-    .describe('AI-powered suggestions for SEO content based on trending keywords.'),
+    .array(z.string())
+    .describe('An array of AI-powered suggestions for SEO content based on trending keywords.'),
 });
 export type SeoContentSuggestionsOutput = z.infer<typeof SeoContentSuggestionsOutputSchema>;
 
@@ -36,9 +36,13 @@ export async function seoContentSuggestions(
   console.log("Calling seoContentSuggestionsFlow with input:", input);
   const flowResult = await seoContentSuggestionsFlow(input);
 
-  if (!flowResult || typeof flowResult.suggestions !== 'string') {
-    console.error("Invalid or empty suggestions returned from flow:", flowResult);
-    throw new Error("No valid suggestions output from seoContentSuggestionsFlow. Received: " + JSON.stringify(flowResult));
+  if (!flowResult || !Array.isArray(flowResult.suggestions) || flowResult.suggestions.length === 0) {
+    const errorMsg = "No valid suggestions array output from seoContentSuggestionsFlow.";
+    console.error(errorMsg, "Received:", flowResult);
+    // Return an empty array or throw, depending on desired error handling.
+    // For now, let's ensure it matches the schema for an empty valid case.
+    // The action layer will handle if this should be an error to the user.
+    return { suggestions: [] }; 
   }
   return flowResult;
 }
@@ -54,11 +58,15 @@ Business Type: {{{businessType}}}
 Trending Keywords: {{{trendingKeywords}}}
 
 Your entire response MUST be a valid JSON object. Do not include any text, explanations, or apologies outside of this JSON object.
-The JSON object must have a single key "suggestions". The value of "suggestions" must be a string containing your content ideas.
+The JSON object must have a single key "suggestions". The value of "suggestions" must be an array of strings, where each string is a distinct content idea or SEO suggestion.
 
 Example of the required JSON format:
 {
-  "suggestions": "Content idea 1. Content idea 2. More details about content idea 2."
+  "suggestions": [
+    "Develop a blog post series targeting '{{trendingKeywords}}' for '{{businessType}}'.",
+    "Create an infographic explaining how '{{businessType}}' benefits from 'keyword_example_1'.",
+    "Optimize existing product pages with terms related to 'keyword_example_2'."
+  ]
 }
 `,
 });
@@ -75,18 +83,16 @@ const seoContentSuggestionsFlow = ai.defineFlow(
     console.log('SEO Flow Raw Text Response from model:', genResponse.text);
     console.log('SEO Flow Parsed Output by Genkit:', genResponse.output);
 
-    if (!genResponse.output || typeof genResponse.output.suggestions !== 'string' || genResponse.output.suggestions.trim() === "") {
-      const errorMessage = 'AI model did not return valid suggestions in the expected format.';
+    if (!genResponse.output || !Array.isArray(genResponse.output.suggestions) ) {
+      const errorMessage = 'AI model did not return valid suggestions in the expected array format.';
       console.error(errorMessage, 'Raw text:', genResponse.text, 'Parsed output:', genResponse.output);
-      // Forcing a structured error that matches the schema but indicates failure.
-      // Or, you could throw an error that the calling function (wrapper) will handle.
-      // throw new Error(errorMessage); 
-      // Returning a valid schema structure with an error message, if the schema allows for it,
-      // or throwing is often better. Here, we'll let the wrapper handle the thrown error if parsing fails.
-      // If genResponse.output is null/undefined due to parsing failure, the `!` would throw.
-      // If it's not null but suggestions are missing, we also have a problem.
-       throw new Error(errorMessage + ` Raw: ${genResponse.text}. Parsed: ${JSON.stringify(genResponse.output)}`);
+      // If parsing fails or the structure is wrong, genResponse.output might be null or not match the schema.
+      // Genkit's zod parsing should handle this, but an explicit check is good.
+      // Returning an empty array if the suggestions are not in the correct format or empty.
+      return { suggestions: [] };
     }
-    return genResponse.output; // No `!`, the check above handles invalid/missing output
+    // If suggestions array is present but empty, that's a valid output by schema.
+    return genResponse.output; 
   }
 );
+

@@ -9,8 +9,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { LineChart as LucideLineChart, Search, BarChart3, Settings2, Bell, Briefcase, MapPin, Globe } from 'lucide-react';
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from 'recharts';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Lightbulb, LineChart as LucideLineChart, Search, BarChart3, Settings2, Bell, Briefcase, MapPin, Globe } from 'lucide-react';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTooltip, Legend as RechartsLegend } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent, type ChartConfig } from "@/components/ui/chart";
 
 import { mockTrendingKeywords, mockCountries, Keyword, TimeFrame, mockTopKeywordsVolumeData, TimeFrameKeywords } from '@/lib/mockData';
@@ -30,7 +31,7 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<TimeFrame>("week");
 
   const [arabicKeywords, setArabicKeywords] = useState<string[]>([]);
-  const [seoSuggestions, setSeoSuggestions] = useState<string>("");
+  const [seoSuggestions, setSeoSuggestions] = useState<string[]>([]); // Changed to string[]
   const [isTranslating, setIsTranslating] = useState(false);
   const [isSuggesting, setIsSuggesting] = useState(false);
 
@@ -43,7 +44,6 @@ export default function DashboardPage() {
     (Object.keys(newKeywords) as TimeFrame[]).forEach(timeFrame => {
       if (newKeywords[timeFrame].length > 0) {
         newKeywords[timeFrame][0].name = prefix + newKeywords[timeFrame][0].name.split(" - ").pop(); // Avoid multi-prefixing
-        // Simulate some change in volume and percentage
         newKeywords[timeFrame][0].volume = Math.floor(Math.random() * 5000) + 1000;
         newKeywords[timeFrame][0].change = Math.floor(Math.random() * 40) - 20;
       }
@@ -59,7 +59,6 @@ export default function DashboardPage() {
     setIsLoading(true);
     toast({ title: "Fetching Data", description: `Analyzing keywords for ${businessType}${country ? ` in ${country}` : ''}${city ? `, ${city}` : ''}...` });
     
-    // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
     
     const newDynamicKeywords = generateDynamicKeywords(mockTrendingKeywords, businessType, country, city);
@@ -70,7 +69,7 @@ export default function DashboardPage() {
   };
 
   const handleTranslateKeywords = async () => {
-    if (!businessType || currentKeywords[activeTab].length === 0) {
+    if (!businessType || !currentKeywords[activeTab] || currentKeywords[activeTab].length === 0) {
       toast({ title: "Translation Skipped", description: "Business type and keywords are required for translation.", variant: "destructive" });
       return;
     }
@@ -89,7 +88,7 @@ export default function DashboardPage() {
   };
 
   const handleSeoSuggestions = async () => {
-    if (!businessType || currentKeywords[activeTab].length === 0) {
+    if (!businessType || !currentKeywords[activeTab] || currentKeywords[activeTab].length === 0) {
       toast({ title: "Suggestions Skipped", description: "Business type and trending keywords are required.", variant: "destructive" });
       return;
     }
@@ -97,12 +96,16 @@ export default function DashboardPage() {
     toast({ title: "Generating SEO Suggestions", description: "Fetching content ideas..." });
     const trendingKeywordsString = currentKeywords[activeTab].map(kw => kw.name).join(", ");
     const result = await getSeoSuggestionsAction({ businessType, trendingKeywords: trendingKeywordsString });
-    if (result.success && result.data) {
+    
+    if (result.success && result.data && result.data.suggestions.length > 0) {
       setSeoSuggestions(result.data.suggestions);
       toast({ title: "SEO Suggestions Ready", description: "Content ideas generated." });
+    } else if (result.success && result.data && result.data.suggestions.length === 0) {
+      setSeoSuggestions([]);
+      toast({ title: "SEO Suggestions", description: "No specific suggestions were generated for this input.", variant: "default" });
     } else {
       toast({ title: "Suggestion Failed", description: result.error || "Could not get SEO suggestions.", variant: "destructive" });
-      setSeoSuggestions("");
+      setSeoSuggestions([]);
     }
     setIsSuggesting(false);
   };
@@ -113,16 +116,10 @@ export default function DashboardPage() {
       weeklyKeywords.forEach(keyword => {
         if (keyword.change > 15) {
           console.log(`ALERT: Keyword "${keyword.name}" week-over-week change is ${keyword.change}%!`);
-          // Example: Email alert system would be triggered here
-          // toast({
-          //   title: "High Keyword Alert!",
-          //   description: `Keyword "${keyword.name}" has a ${keyword.change}% week-over-week change.`,
-          //   variant: "destructive" // Use a less intrusive variant or a dedicated notification system for real alerts
-          // });
         }
       });
     }
-  }, [currentKeywords, toast]);
+  }, [currentKeywords]);
 
 
   const renderKeywordTable = (keywords: Keyword[]) => (
@@ -162,16 +159,14 @@ export default function DashboardPage() {
   } satisfies ChartConfig;
 
   const keywordChartData = useMemo(() => {
-    // Use activeTab keywords if they have suitable data, otherwise fallback
     const activeKeywords = currentKeywords[activeTab];
     if (activeKeywords && activeKeywords.every(kw => kw.volume !== undefined && kw.name)) {
-      return activeKeywords.slice(0, 5).map(kw => ({
-        keyword: kw.name.length > 20 ? kw.name.substring(0, 17) + "..." : kw.name, // Truncate long names for chart
+      return activeKeywords.slice(0, 10).map(kw => ({ // Show top 10
+        keyword: kw.name.length > 20 ? kw.name.substring(0, 17) + "..." : kw.name,
         volume: kw.volume as number,
       }));
     }
-    // Fallback to mockTopKeywordsVolumeData if current tab data isn't suitable
-    return mockTopKeywordsVolumeData.map(item => ({
+    return mockTopKeywordsVolumeData.slice(0,10).map(item => ({
       keyword: item.keyword.length > 20 ? item.keyword.substring(0, 17) + "..." : item.keyword,
       volume: item.volume
     }));
@@ -247,28 +242,9 @@ export default function DashboardPage() {
                 </Button>
               </CardFooter>
             </Card>
-
-             <Card className="shadow-lg rounded-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2"><LucideLineChart className="h-6 w-6 text-primary" /> SEO Content Suggestions</CardTitle>
-                <CardDescription>Get AI-powered content ideas based on current trends.</CardDescription>
-              </CardHeader>
-              <CardContent className="min-h-[100px]">
-                {isSuggesting && <p className="text-sm text-muted-foreground">Generating suggestions...</p>}
-                {seoSuggestions && !isSuggesting && (
-                  <p className="text-sm whitespace-pre-wrap">{seoSuggestions}</p>
-                )}
-                {!isSuggesting && !seoSuggestions && <p className="text-sm text-muted-foreground">SEO content suggestions will appear here.</p>}
-              </CardContent>
-              <CardFooter>
-                <Button onClick={handleSeoSuggestions} className="w-full" disabled={isSuggesting || !businessType || !currentKeywords[activeTab] || currentKeywords[activeTab].length === 0}>
-                 {isSuggesting ? "Generating..." : "Get SEO Suggestions"}
-                </Button>
-              </CardFooter>
-            </Card>
           </div>
 
-          {/* Right Column: Dashboard Display */}
+          {/* Right Column: Dashboards Display */}
           <div className="lg:col-span-2 space-y-6">
             <Card className="shadow-lg rounded-lg">
               <CardHeader>
@@ -296,21 +272,21 @@ export default function DashboardPage() {
                 <CardTitle className="flex items-center gap-2">Keyword Volume Visualizations</CardTitle>
                  <CardDescription>Bar chart illustrating top keyword volumes based on the active tab or overall analysis.</CardDescription>
               </CardHeader>
-              <CardContent className="h-[350px] w-full">
+              <CardContent className="h-[400px] w-full"> {/* Increased height for chart */}
                 {keywordChartData.length > 0 ? (
                   <ChartContainer config={chartConfig} className="w-full h-full">
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={keywordChartData} margin={{ top: 5, right: 10, left: -20, bottom: 40 /* Increased bottom margin for labels */ }}>
+                      <BarChart data={keywordChartData} margin={{ top: 5, right: 20, left: 10, bottom: 70 /* Increased bottom margin for labels */ }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} />
                         <XAxis 
                           dataKey="keyword" 
                           tickLine={false} 
                           axisLine={false} 
                           stroke="hsl(var(--muted-foreground))"
-                          angle={-45} // Angle labels to prevent overlap
-                          textAnchor="end" // Anchor angled labels correctly
-                          interval={0} // Show all labels
-                          height={60} // Allocate more height for angled labels
+                          angle={-45} 
+                          textAnchor="end" 
+                          interval={0} 
+                          height={80} // Adjusted height for angled labels
                           tick={{ fontSize: 10 }}
                         />
                         <YAxis 
@@ -321,11 +297,11 @@ export default function DashboardPage() {
                           width={80}
                         />
                         <ChartTooltip
-                          cursor={false}
+                          cursor={{fill: 'hsl(var(--accent))', radius: 4}}
                           content={<ChartTooltipContent indicator="dot" />}
                         />
+                        <ChartLegend content={<ChartLegendContent />} />
                         <Bar dataKey="volume" fill="var(--color-volume)" radius={4} />
-                         <ChartLegend content={<ChartLegendContent />} />
                       </BarChart>
                     </ResponsiveContainer>
                   </ChartContainer>
@@ -334,6 +310,40 @@ export default function DashboardPage() {
                 )}
               </CardContent>
             </Card>
+
+            <Card className="shadow-lg rounded-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2"><LucideLineChart className="h-6 w-6 text-primary" /> SEO Content Insights Dashboard</CardTitle>
+                <CardDescription>AI-powered content ideas based on current trends for your business.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4 min-h-[200px]">
+                {isSuggesting && <p className="text-sm text-muted-foreground text-center py-4">Generating suggestions...</p>}
+                {!isSuggesting && seoSuggestions.length > 0 && (
+                  <div className="space-y-3">
+                    {seoSuggestions.map((suggestion, index) => (
+                      <Alert key={index}>
+                        <Lightbulb className="h-4 w-4" />
+                        <AlertTitle>Suggestion {index + 1}</AlertTitle>
+                        <AlertDescription>
+                          {suggestion}
+                        </AlertDescription>
+                      </Alert>
+                    ))}
+                  </div>
+                )}
+                {!isSuggesting && seoSuggestions.length === 0 && (
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    Click "Get SEO Suggestions" to generate content ideas.
+                  </p>
+                )}
+              </CardContent>
+              <CardFooter>
+                <Button onClick={handleSeoSuggestions} className="w-full" disabled={isSuggesting || !businessType || !currentKeywords[activeTab] || currentKeywords[activeTab].length === 0}>
+                 {isSuggesting ? "Generating..." : "Get SEO Suggestions"}
+                </Button>
+              </CardFooter>
+            </Card>
+
           </div>
         </div>
       </main>
@@ -341,3 +351,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+
