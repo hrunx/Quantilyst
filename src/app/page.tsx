@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,8 +9,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { LineChart, Search, BarChart3, Settings2, Bell, Briefcase, MapPin, Globe } from 'lucide-react';
-import { mockTrendingKeywords, mockCountries, Keyword, TimeFrame } from '@/lib/mockData';
+import { LineChart as LucideLineChart, Search, BarChart3, Settings2, Bell, Briefcase, MapPin, Globe } from 'lucide-react';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from 'recharts';
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent, type ChartConfig } from "@/components/ui/chart";
+
+import { mockTrendingKeywords, mockCountries, Keyword, TimeFrame, mockTopKeywordsVolumeData, TimeFrameKeywords } from '@/lib/mockData';
 import { getArabicTranslationsAction, getSeoSuggestionsAction } from './actions';
 import type { TranslateKeywordsArabicOutput } from '@/ai/flows/translate-keywords-arabic';
 import type { SeoContentSuggestionsOutput } from '@/ai/flows/seo-content-suggestions';
@@ -33,14 +36,35 @@ export default function DashboardPage() {
 
   const { toast } = useToast();
 
+  const generateDynamicKeywords = (baseKeywords: TimeFrameKeywords, bt: string, locCountry: string, locCity: string): TimeFrameKeywords => {
+    const newKeywords = JSON.parse(JSON.stringify(baseKeywords)) as TimeFrameKeywords; // Deep copy
+    const prefix = `${bt} in ${locCity || locCountry} - `;
+
+    (Object.keys(newKeywords) as TimeFrame[]).forEach(timeFrame => {
+      if (newKeywords[timeFrame].length > 0) {
+        newKeywords[timeFrame][0].name = prefix + newKeywords[timeFrame][0].name.split(" - ").pop(); // Avoid multi-prefixing
+        // Simulate some change in volume and percentage
+        newKeywords[timeFrame][0].volume = Math.floor(Math.random() * 5000) + 1000;
+        newKeywords[timeFrame][0].change = Math.floor(Math.random() * 40) - 20;
+      }
+    });
+    return newKeywords;
+  };
+
   const handleAnalyze = async () => {
+    if (!businessType) {
+      toast({ title: "Analysis Skipped", description: "Business type is required.", variant: "destructive" });
+      return;
+    }
     setIsLoading(true);
-    toast({ title: "Fetching Data", description: "Analyzing keywords and trends..." });
+    toast({ title: "Fetching Data", description: `Analyzing keywords for ${businessType}${country ? ` in ${country}` : ''}${city ? `, ${city}` : ''}...` });
+    
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
-    // In a real app, you would fetch new data based on inputs
-    // For now, we just re-use mock data or slightly alter it
-    setCurrentKeywords(prev => ({ ...prev })); 
+    
+    const newDynamicKeywords = generateDynamicKeywords(mockTrendingKeywords, businessType, country, city);
+    setCurrentKeywords(newDynamicKeywords); 
+    
     setIsLoading(false);
     toast({ title: "Analysis Complete", description: "Latest keyword data loaded." });
   };
@@ -84,19 +108,20 @@ export default function DashboardPage() {
   };
   
   useEffect(() => {
-    // Example of an alert for high keyword change - to be implemented fully with real data
     const weeklyKeywords = currentKeywords.week;
-    weeklyKeywords.forEach(keyword => {
-      if (keyword.change > 15) {
-        // In a real app, this would integrate with an email service
-        console.log(`ALERT: Keyword "${keyword.name}" week-over-week change is ${keyword.change}%!`);
-        // toast({
-        //   title: "High Keyword Alert!",
-        //   description: `Keyword "${keyword.name}" has a ${keyword.change}% week-over-week change.`,
-        //   variant: "destructive"
-        // });
-      }
-    });
+    if (weeklyKeywords) {
+      weeklyKeywords.forEach(keyword => {
+        if (keyword.change > 15) {
+          console.log(`ALERT: Keyword "${keyword.name}" week-over-week change is ${keyword.change}%!`);
+          // Example: Email alert system would be triggered here
+          // toast({
+          //   title: "High Keyword Alert!",
+          //   description: `Keyword "${keyword.name}" has a ${keyword.change}% week-over-week change.`,
+          //   variant: "destructive" // Use a less intrusive variant or a dedicated notification system for real alerts
+          // });
+        }
+      });
+    }
   }, [currentKeywords, toast]);
 
 
@@ -110,22 +135,48 @@ export default function DashboardPage() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {keywords.length > 0 ? keywords.map(keyword => (
+        {keywords && keywords.length > 0 ? keywords.map(keyword => (
           <TableRow key={keyword.id}>
             <TableCell>{keyword.name}</TableCell>
             <TableCell className="text-right">{keyword.volume?.toLocaleString() || 'N/A'}</TableCell>
-            <TableCell className={`text-right ${keyword.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {keyword.change > 0 ? '+' : ''}{keyword.change}%
+            <TableCell className="text-right">
+              <span className={keyword.change >= 0 ? 'text-green-600' : 'text-red-600'}>
+                {keyword.change >= 0 ? '+' : ''}{keyword.change}%
+              </span>
             </TableCell>
           </TableRow>
         )) : (
           <TableRow>
-            <TableCell colSpan={3} className="text-center">No keywords to display for this period.</TableCell>
+            <TableCell colSpan={3} className="text-center">No keywords to display for this period or after analysis.</TableCell>
           </TableRow>
         )}
       </TableBody>
     </Table>
   );
+
+  const chartConfig = {
+    volume: {
+      label: "Volume",
+      color: "hsl(var(--chart-1))",
+    },
+  } satisfies ChartConfig;
+
+  const keywordChartData = useMemo(() => {
+    // Use activeTab keywords if they have suitable data, otherwise fallback
+    const activeKeywords = currentKeywords[activeTab];
+    if (activeKeywords && activeKeywords.every(kw => kw.volume !== undefined && kw.name)) {
+      return activeKeywords.slice(0, 5).map(kw => ({
+        keyword: kw.name.length > 20 ? kw.name.substring(0, 17) + "..." : kw.name, // Truncate long names for chart
+        volume: kw.volume as number,
+      }));
+    }
+    // Fallback to mockTopKeywordsVolumeData if current tab data isn't suitable
+    return mockTopKeywordsVolumeData.map(item => ({
+      keyword: item.keyword.length > 20 ? item.keyword.substring(0, 17) + "..." : item.keyword,
+      volume: item.volume
+    }));
+  }, [currentKeywords, activeTab]);
+
 
   return (
     <div className="flex flex-col min-h-screen bg-secondary/50">
@@ -191,7 +242,7 @@ export default function DashboardPage() {
                 {!isTranslating && arabicKeywords.length === 0 && <p className="text-sm text-muted-foreground">Translated keywords will appear here.</p>}
               </CardContent>
               <CardFooter>
-                <Button onClick={handleTranslateKeywords} className="w-full" disabled={isTranslating || !businessType || currentKeywords[activeTab]?.length === 0}>
+                <Button onClick={handleTranslateKeywords} className="w-full" disabled={isTranslating || !businessType || !currentKeywords[activeTab] || currentKeywords[activeTab].length === 0}>
                   {isTranslating ? "Translating..." : "Generate Arabic Keywords"}
                 </Button>
               </CardFooter>
@@ -199,10 +250,10 @@ export default function DashboardPage() {
 
              <Card className="shadow-lg rounded-lg">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2"><LineChart className="h-6 w-6 text-primary" /> SEO Content Suggestions</CardTitle>
+                <CardTitle className="flex items-center gap-2"><LucideLineChart className="h-6 w-6 text-primary" /> SEO Content Suggestions</CardTitle>
                 <CardDescription>Get AI-powered content ideas based on current trends.</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="min-h-[100px]">
                 {isSuggesting && <p className="text-sm text-muted-foreground">Generating suggestions...</p>}
                 {seoSuggestions && !isSuggesting && (
                   <p className="text-sm whitespace-pre-wrap">{seoSuggestions}</p>
@@ -210,7 +261,7 @@ export default function DashboardPage() {
                 {!isSuggesting && !seoSuggestions && <p className="text-sm text-muted-foreground">SEO content suggestions will appear here.</p>}
               </CardContent>
               <CardFooter>
-                <Button onClick={handleSeoSuggestions} className="w-full" disabled={isSuggesting || !businessType || currentKeywords[activeTab]?.length === 0}>
+                <Button onClick={handleSeoSuggestions} className="w-full" disabled={isSuggesting || !businessType || !currentKeywords[activeTab] || currentKeywords[activeTab].length === 0}>
                  {isSuggesting ? "Generating..." : "Get SEO Suggestions"}
                 </Button>
               </CardFooter>
@@ -240,15 +291,47 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
             
-            {/* Placeholder for charts - to be implemented */}
             <Card className="shadow-lg rounded-lg">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">Keyword Trend Visualizations</CardTitle>
-                 <CardDescription>Charts and graphs illustrating keyword performance.</CardDescription>
+                <CardTitle className="flex items-center gap-2">Keyword Volume Visualizations</CardTitle>
+                 <CardDescription>Bar chart illustrating top keyword volumes based on the active tab or overall analysis.</CardDescription>
               </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground text-center py-8">Detailed charts and graphs will be displayed here.</p>
-                {/* Example: <img src="https://placehold.co/600x300.png?text=Keyword+Trend+Chart" alt="Placeholder chart" className="w-full h-auto rounded-md" data-ai-hint="data finance" /> */}
+              <CardContent className="h-[350px] w-full">
+                {keywordChartData.length > 0 ? (
+                  <ChartContainer config={chartConfig} className="w-full h-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={keywordChartData} margin={{ top: 5, right: 10, left: -20, bottom: 40 /* Increased bottom margin for labels */ }}>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                        <XAxis 
+                          dataKey="keyword" 
+                          tickLine={false} 
+                          axisLine={false} 
+                          stroke="hsl(var(--muted-foreground))"
+                          angle={-45} // Angle labels to prevent overlap
+                          textAnchor="end" // Anchor angled labels correctly
+                          interval={0} // Show all labels
+                          height={60} // Allocate more height for angled labels
+                          tick={{ fontSize: 10 }}
+                        />
+                        <YAxis 
+                          stroke="hsl(var(--muted-foreground))"
+                          tickFormatter={(value) => value.toLocaleString()}
+                          tickLine={false}
+                          axisLine={false}
+                          width={80}
+                        />
+                        <ChartTooltip
+                          cursor={false}
+                          content={<ChartTooltipContent indicator="dot" />}
+                        />
+                        <Bar dataKey="volume" fill="var(--color-volume)" radius={4} />
+                         <ChartLegend content={<ChartLegendContent />} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </ChartContainer>
+                ) : (
+                   <p className="text-muted-foreground text-center py-8">No data available for chart. Analyze trends first.</p>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -258,5 +341,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-    
