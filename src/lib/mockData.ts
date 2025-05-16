@@ -1,3 +1,4 @@
+
 export interface Keyword {
   id: string;
   name: string;
@@ -68,6 +69,3 @@ export const mockTopKeywordsVolumeData = [
   { keyword: "Social media ads", volume: 7500 },
   { keyword: "Email automation", volume: 6200 },
 ];
-
-export type BusinessLocationData = {
-  

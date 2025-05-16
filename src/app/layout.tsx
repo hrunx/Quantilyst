@@ -1,17 +1,13 @@
+
 import type {Metadata} from 'next';
 import './globals.css';
-// import { Toaster } from "@/components/ui/toaster"; // Temporarily commented out
-// import {Geist, Geist_Mono} from 'next/font/google'; // Temporarily commented out
+import { Toaster } from "@/components/ui/toaster";
+import { Inter } from 'next/font/google'; // Using Inter as a fallback, Geist is not standard in Next.
 
-// const geistSans = Geist({ // Temporarily commented out
-//   variable: '--font-geist-sans',
-//   subsets: ['latin'],
-// });
-
-// const geistMono = Geist_Mono({ // Temporarily commented out
-//   variable: '--font-geist-mono',
-//   subsets: ['latin'],
-// });
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-sans',
+});
 
 export const metadata: Metadata = {
   title: 'Market Insights Pro',
@@ -24,12 +20,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      {/* <body className={`${geistSans?.variable} ${geistMono?.variable} antialiased`}> */}
-      <body>
+    <html lang="en" className={inter.variable}>
+      <body className={`font-sans antialiased`}>
         {children}
-        {/* <Toaster /> */} {/* Temporarily commented out */}
+        <Toaster />
       </body>
     </html>
   );
 }
+
+    
