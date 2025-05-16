@@ -10,14 +10,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Lightbulb, LineChart as LucideLineChart, Search, BarChart3, Settings2, Bell, Briefcase, MapPin, Globe } from 'lucide-react';
+import { Lightbulb, LineChart as LucideLineChart, Search, BarChart3, Settings2, Bell, Briefcase, MapPin, Globe, Sparkles, HelpCircle, FileText, ListChecks } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTooltip, Legend as RechartsLegend } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent, type ChartConfig } from "@/components/ui/chart";
+import { Badge } from "@/components/ui/badge";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
-import { mockTrendingKeywords, mockCountries, Keyword, TimeFrame, mockTopKeywordsVolumeData, TimeFrameKeywords } from '@/lib/mockData';
-import { getArabicTranslationsAction, getSeoSuggestionsAction } from './actions';
+
+import { mockTrendingKeywords, mockCountries, mockTopKeywordsVolumeData } from '@/lib/mockData';
+import type { Keyword as AppKeyword, TimeFrame, TimeFrameKeywords } from '@/lib/mockData'; // Renamed to avoid conflict
+import { getArabicTranslationsAction, getSeoSuggestionsAction, getAdvancedSeoAnalysisAction } from './actions';
 import type { TranslateKeywordsArabicOutput } from '@/ai/flows/translate-keywords-arabic';
 import type { SeoContentSuggestionsOutput } from '@/ai/flows/seo-content-suggestions';
+import type { AdvancedSeoKeywordAnalysisOutput } from '@/ai/flows/advanced-seo-keyword-analysis';
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/hooks/use-toast";
 
@@ -31,9 +36,13 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<TimeFrame>("week");
 
   const [arabicKeywords, setArabicKeywords] = useState<string[]>([]);
-  const [seoSuggestions, setSeoSuggestions] = useState<string[]>([]); // Changed to string[]
+  const [seoSuggestions, setSeoSuggestions] = useState<string[]>([]);
   const [isTranslating, setIsTranslating] = useState(false);
   const [isSuggesting, setIsSuggesting] = useState(false);
+
+  const [advancedAnalysisKeyword, setAdvancedAnalysisKeyword] = useState("");
+  const [advancedAnalysisResults, setAdvancedAnalysisResults] = useState<AdvancedSeoKeywordAnalysisOutput | null>(null);
+  const [isAnalyzingAdvanced, setIsAnalyzingAdvanced] = useState(false);
 
   const { toast } = useToast();
 
@@ -43,9 +52,17 @@ export default function DashboardPage() {
 
     (Object.keys(newKeywords) as TimeFrame[]).forEach(timeFrame => {
       if (newKeywords[timeFrame].length > 0) {
-        newKeywords[timeFrame][0].name = prefix + newKeywords[timeFrame][0].name.split(" - ").pop(); // Avoid multi-prefixing
-        newKeywords[timeFrame][0].volume = Math.floor(Math.random() * 5000) + 1000;
-        newKeywords[timeFrame][0].change = Math.floor(Math.random() * 40) - 20;
+        newKeywords[timeFrame].forEach(kw => {
+          kw.name = kw.name.includes(" - ") ? prefix + kw.name.split(" - ").pop() : prefix + kw.name; // Avoid multi-prefixing
+          kw.volume = Math.floor(Math.random() * 5000) + 1000;
+          kw.change = Math.floor(Math.random() * 40) - 20;
+          kw.difficulty = Math.floor(Math.random() * 100);
+          // Keep existing serpFeatures or add some randomly if none
+          if (!kw.serpFeatures || kw.serpFeatures.length === 0) {
+            const possibleFeatures = ["Featured Snippet", "People Also Ask", "Image Pack", "Video Carousel"];
+            if (Math.random() > 0.7) kw.serpFeatures = [possibleFeatures[Math.floor(Math.random() * possibleFeatures.length)]];
+          }
+        });
       }
     });
     return newKeywords;
@@ -109,26 +126,48 @@ export default function DashboardPage() {
     }
     setIsSuggesting(false);
   };
+
+  const handleAdvancedSeoAnalysis = async () => {
+    if (!businessType || !advancedAnalysisKeyword) {
+      toast({ title: "Analysis Skipped", description: "Business type and a keyword are required for advanced analysis.", variant: "destructive" });
+      return;
+    }
+    setIsAnalyzingAdvanced(true);
+    setAdvancedAnalysisResults(null);
+    toast({ title: "Advanced SEO Analysis", description: `Analyzing "${advancedAnalysisKeyword}"...` });
+    const result = await getAdvancedSeoAnalysisAction({ businessType, keyword: advancedAnalysisKeyword });
+
+    if (result.success && result.data) {
+      setAdvancedAnalysisResults(result.data);
+      toast({ title: "Advanced Analysis Complete", description: `Insights for "${advancedAnalysisKeyword}" are ready.` });
+    } else {
+      setAdvancedAnalysisResults(null);
+      toast({ title: "Advanced Analysis Failed", description: result.error || "Could not perform advanced analysis.", variant: "destructive" });
+    }
+    setIsAnalyzingAdvanced(false);
+  };
   
   useEffect(() => {
     const weeklyKeywords = currentKeywords.week;
     if (weeklyKeywords) {
       weeklyKeywords.forEach(keyword => {
         if (keyword.change > 15) {
-          console.log(`ALERT: Keyword "${keyword.name}" week-over-week change is ${keyword.change}%!`);
+          // console.log(`ALERT: Keyword "${keyword.name}" week-over-week change is ${keyword.change}%!`);
         }
       });
     }
   }, [currentKeywords]);
 
 
-  const renderKeywordTable = (keywords: Keyword[]) => (
+  const renderKeywordTable = (keywords: AppKeyword[]) => (
     <Table>
       <TableHeader>
         <TableRow>
           <TableHead>Keyword</TableHead>
           <TableHead className="text-right">Volume/Trend</TableHead>
           <TableHead className="text-right">Change (%)</TableHead>
+          <TableHead className="text-right">Difficulty</TableHead>
+          <TableHead>SERP Features</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -141,10 +180,16 @@ export default function DashboardPage() {
                 {keyword.change >= 0 ? '+' : ''}{keyword.change}%
               </span>
             </TableCell>
+            <TableCell className="text-right">{keyword.difficulty ?? 'N/A'}</TableCell>
+            <TableCell>
+              {keyword.serpFeatures && keyword.serpFeatures.length > 0 
+                ? keyword.serpFeatures.map(feature => <Badge key={feature} variant="secondary" className="mr-1 mb-1">{feature}</Badge>)
+                : 'None'}
+            </TableCell>
           </TableRow>
         )) : (
           <TableRow>
-            <TableCell colSpan={3} className="text-center">No keywords to display for this period or after analysis.</TableCell>
+            <TableCell colSpan={5} className="text-center">No keywords to display for this period or after analysis.</TableCell>
           </TableRow>
         )}
       </TableBody>
@@ -161,7 +206,7 @@ export default function DashboardPage() {
   const keywordChartData = useMemo(() => {
     const activeKeywords = currentKeywords[activeTab];
     if (activeKeywords && activeKeywords.every(kw => kw.volume !== undefined && kw.name)) {
-      return activeKeywords.slice(0, 10).map(kw => ({ // Show top 10
+      return activeKeywords.slice(0, 10).map(kw => ({ 
         keyword: kw.name.length > 20 ? kw.name.substring(0, 17) + "..." : kw.name,
         volume: kw.volume as number,
       }));
@@ -224,6 +269,59 @@ export default function DashboardPage() {
 
             <Card className="shadow-lg rounded-lg">
               <CardHeader>
+                <CardTitle className="flex items-center gap-2"><Sparkles className="h-6 w-6 text-primary" /> Advanced SEO Analysis</CardTitle>
+                <CardDescription>Get deeper AI insights for a specific keyword.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label htmlFor="advancedKeyword" className="flex items-center gap-1"><Search className="h-4 w-4"/>Keyword to Analyze</Label>
+                  <Input id="advancedKeyword" placeholder="Enter a keyword" value={advancedAnalysisKeyword} onChange={e => setAdvancedAnalysisKeyword(e.target.value)} className="mt-1"/>
+                </div>
+                {isAnalyzingAdvanced && <p className="text-sm text-muted-foreground text-center">Analyzing keyword...</p>}
+                {advancedAnalysisResults && !isAnalyzingAdvanced && (
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="difficulty">
+                      <AccordionTrigger>Difficulty Analysis</AccordionTrigger>
+                      <AccordionContent>{advancedAnalysisResults.difficultyAnalysis}</AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="long-tail">
+                      <AccordionTrigger>Long-tail Suggestions</AccordionTrigger>
+                      <AccordionContent>
+                        <ul className="list-disc list-inside space-y-1 text-sm">
+                          {advancedAnalysisResults.longTailSuggestions.map((kw, i) => <li key={`lt-${i}`}>{kw}</li>)}
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="questions">
+                      <AccordionTrigger>Related Questions</AccordionTrigger>
+                      <AccordionContent>
+                        <ul className="list-disc list-inside space-y-1 text-sm">
+                          {advancedAnalysisResults.relatedQuestions.map((q, i) => <li key={`q-${i}`}>{q}</li>)}
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="outline">
+                      <AccordionTrigger>Basic Content Outline</AccordionTrigger>
+                      <AccordionContent>
+                        <h4 className="font-semibold mb-1">{advancedAnalysisResults.basicContentOutline.title}</h4>
+                        <ul className="list-disc list-inside space-y-1 text-sm">
+                          {advancedAnalysisResults.basicContentOutline.sections.map((s, i) => <li key={`s-${i}`}>{s}</li>)}
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                )}
+                 {!isAnalyzingAdvanced && !advancedAnalysisResults && <p className="text-sm text-muted-foreground">Enter a keyword and click analyze for advanced insights.</p>}
+              </CardContent>
+              <CardFooter>
+                <Button onClick={handleAdvancedSeoAnalysis} className="w-full" disabled={isAnalyzingAdvanced || !businessType || !advancedAnalysisKeyword}>
+                  {isAnalyzingAdvanced ? "Analyzing..." : "Get Advanced Analysis"}
+                </Button>
+              </CardFooter>
+            </Card>
+
+            <Card className="shadow-lg rounded-lg">
+              <CardHeader>
                 <CardTitle className="flex items-center gap-2"><Globe className="h-6 w-6 text-primary" /> Arabic Keywords (KSA)</CardTitle>
                 <CardDescription>Translate trending keywords to Arabic for the KSA region.</CardDescription>
               </CardHeader>
@@ -249,7 +347,7 @@ export default function DashboardPage() {
             <Card className="shadow-lg rounded-lg">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2"><BarChart3 className="h-6 w-6 text-primary"/>Trending Keywords Dashboard</CardTitle>
-                <CardDescription>Live keyword trends for your business category and selected region.</CardDescription>
+                <CardDescription>Live keyword trends for your business category and selected region. Includes difficulty and SERP features.</CardDescription>
               </CardHeader>
               <CardContent>
                 <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as TimeFrame)} className="w-full">
@@ -272,11 +370,11 @@ export default function DashboardPage() {
                 <CardTitle className="flex items-center gap-2">Keyword Volume Visualizations</CardTitle>
                  <CardDescription>Bar chart illustrating top keyword volumes based on the active tab or overall analysis.</CardDescription>
               </CardHeader>
-              <CardContent className="h-[400px] w-full"> {/* Increased height for chart */}
+              <CardContent className="h-[400px] w-full"> 
                 {keywordChartData.length > 0 ? (
                   <ChartContainer config={chartConfig} className="w-full h-full">
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={keywordChartData} margin={{ top: 5, right: 20, left: 10, bottom: 70 /* Increased bottom margin for labels */ }}>
+                      <BarChart data={keywordChartData} margin={{ top: 5, right: 20, left: 10, bottom: 70 }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} />
                         <XAxis 
                           dataKey="keyword" 
@@ -286,7 +384,7 @@ export default function DashboardPage() {
                           angle={-45} 
                           textAnchor="end" 
                           interval={0} 
-                          height={80} // Adjusted height for angled labels
+                          height={80} 
                           tick={{ fontSize: 10 }}
                         />
                         <YAxis 
@@ -313,7 +411,7 @@ export default function DashboardPage() {
 
             <Card className="shadow-lg rounded-lg">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2"><LucideLineChart className="h-6 w-6 text-primary" /> SEO Content Insights Dashboard</CardTitle>
+                <CardTitle className="flex items-center gap-2"><ListChecks className="h-6 w-6 text-primary" /> SEO Content Ideas Dashboard</CardTitle>
                 <CardDescription>AI-powered content ideas based on current trends for your business.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4 min-h-[200px]">
@@ -351,4 +449,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
