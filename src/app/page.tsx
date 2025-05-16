@@ -8,14 +8,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Globe, Briefcase, MapPin, Search, BarChart3 } from 'lucide-react';
+import { Globe, Briefcase, MapPin, Search, BarChart3, Loader2 } from 'lucide-react'; // Added Loader2
 import { useToast } from "@/hooks/use-toast";
-import { mockCountries } from '@/lib/mockData'; // Assuming mockCountries is still useful
+import { mockCountries } from '@/lib/mockData';
 
 export default function SearchPage() {
   const [businessType, setBusinessType] = useState("");
-  const [country, setCountry] = useState("US"); // Default to US or make it empty
+  const [country, setCountry] = useState("US");
   const [city, setCity] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // Added isLoading state
   const router = useRouter();
   const { toast } = useToast();
 
@@ -37,6 +38,8 @@ export default function SearchPage() {
       return;
     }
 
+    setIsLoading(true); // Set loading to true
+
     const query = new URLSearchParams({
       businessType: businessType.trim(),
       country: country,
@@ -44,7 +47,11 @@ export default function SearchPage() {
     if (city.trim()) {
       query.append('city', city.trim());
     }
+    // Simulate a short delay if needed, or directly push
+    // For actual async work before push, you'd await it here.
+    // For now, the loading state is mostly for the button's visual feedback.
     router.push(`/dashboard?${query.toString()}`);
+    // No need to setIsLoading(false) here as the page will navigate away.
   };
 
   return (
@@ -117,10 +124,14 @@ export default function SearchPage() {
             <Button
               onClick={handleSearch}
               className="w-full text-xl py-7 rounded-lg bg-sky-500 hover:bg-sky-600 transition-colors duration-300 ease-in-out transform hover:scale-105"
-              disabled={!businessType.trim() || !country}
+              disabled={isLoading || !businessType.trim() || !country}
             >
-              <Search className="mr-2 h-6 w-6" />
-              Analyze Insights & Get Report
+              {isLoading ? (
+                <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+              ) : (
+                <Search className="mr-2 h-6 w-6" />
+              )}
+              {isLoading ? "Analyzing..." : "Analyze Insights & Get Report"}
             </Button>
           </CardFooter>
         </Card>
