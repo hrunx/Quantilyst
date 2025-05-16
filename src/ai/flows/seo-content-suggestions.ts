@@ -1,5 +1,4 @@
 
-// 'use server'
 'use server';
 
 /**
@@ -30,14 +29,18 @@ const SeoContentSuggestionsOutputSchema = z.object({
 });
 export type SeoContentSuggestionsOutput = z.infer<typeof SeoContentSuggestionsOutputSchema>;
 
+// Wrapper function that calls the Genkit flow
 export async function seoContentSuggestions(
   input: SeoContentSuggestionsInput
 ): Promise<SeoContentSuggestionsOutput> {
-  const {output} = await seoContentSuggestionsFlow(input);
-  if (!output) {
-    throw new Error("No output from seoContentSuggestionsFlow");
+  console.log("Calling seoContentSuggestionsFlow with input:", input);
+  const flowResult = await seoContentSuggestionsFlow(input);
+
+  if (!flowResult || typeof flowResult.suggestions !== 'string') {
+    console.error("Invalid or empty suggestions returned from flow:", flowResult);
+    throw new Error("No valid suggestions output from seoContentSuggestionsFlow. Received: " + JSON.stringify(flowResult));
   }
-  return output;
+  return flowResult;
 }
 
 const prompt = ai.definePrompt({
@@ -50,10 +53,12 @@ Your task is to provide SEO content suggestions to improve website visibility an
 Business Type: {{{businessType}}}
 Trending Keywords: {{{trendingKeywords}}}
 
-Please format your response as a JSON object with a single key "suggestions". The value of "suggestions" should be a string containing your content ideas.
-Example JSON output:
+Your entire response MUST be a valid JSON object. Do not include any text, explanations, or apologies outside of this JSON object.
+The JSON object must have a single key "suggestions". The value of "suggestions" must be a string containing your content ideas.
+
+Example of the required JSON format:
 {
-  "suggestions": "Here are some SEO content suggestions: 1. Create blog posts about relevant topics. 2. Optimize product descriptions with trending keywords. 3. Develop video content showcasing industry insights."
+  "suggestions": "Content idea 1. Content idea 2. More details about content idea 2."
 }
 `,
 });
@@ -65,7 +70,23 @@ const seoContentSuggestionsFlow = ai.defineFlow(
     outputSchema: SeoContentSuggestionsOutputSchema,
   },
   async (input) => {
-    const {output} = await prompt(input);
-    return output!;
+    const genResponse = await prompt(input);
+
+    console.log('SEO Flow Raw Text Response from model:', genResponse.text);
+    console.log('SEO Flow Parsed Output by Genkit:', genResponse.output);
+
+    if (!genResponse.output || typeof genResponse.output.suggestions !== 'string' || genResponse.output.suggestions.trim() === "") {
+      const errorMessage = 'AI model did not return valid suggestions in the expected format.';
+      console.error(errorMessage, 'Raw text:', genResponse.text, 'Parsed output:', genResponse.output);
+      // Forcing a structured error that matches the schema but indicates failure.
+      // Or, you could throw an error that the calling function (wrapper) will handle.
+      // throw new Error(errorMessage); 
+      // Returning a valid schema structure with an error message, if the schema allows for it,
+      // or throwing is often better. Here, we'll let the wrapper handle the thrown error if parsing fails.
+      // If genResponse.output is null/undefined due to parsing failure, the `!` would throw.
+      // If it's not null but suggestions are missing, we also have a problem.
+       throw new Error(errorMessage + ` Raw: ${genResponse.text}. Parsed: ${JSON.stringify(genResponse.output)}`);
+    }
+    return genResponse.output; // No `!`, the check above handles invalid/missing output
   }
 );
