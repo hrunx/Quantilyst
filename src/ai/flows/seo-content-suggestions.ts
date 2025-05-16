@@ -1,3 +1,4 @@
+
 // 'use server'
 'use server';
 
@@ -18,7 +19,7 @@ const SeoContentSuggestionsInputSchema = z.object({
     .describe('The type of business for which to generate SEO content suggestions.'),
   trendingKeywords: z
     .string()
-    .describe('The current trending keywords related to the specified business type.'),
+    .describe('The current trending keywords related to the specified business type, as a comma-separated string.'),
 });
 export type SeoContentSuggestionsInput = z.infer<typeof SeoContentSuggestionsInputSchema>;
 
@@ -43,12 +44,18 @@ const prompt = ai.definePrompt({
   name: 'seoContentSuggestionsPrompt',
   input: {schema: SeoContentSuggestionsInputSchema},
   output: {schema: SeoContentSuggestionsOutputSchema},
-  prompt: `You are an AI expert in SEO content generation. Based on the business type and trending keywords provided, generate SEO content suggestions to improve website visibility and attract more customers.
+  prompt: `You are an AI expert in SEO content generation.
+Your task is to provide SEO content suggestions to improve website visibility and attract more customers, based on the provided business type and trending keywords.
 
 Business Type: {{{businessType}}}
 Trending Keywords: {{{trendingKeywords}}}
 
-SEO Content Suggestions:`,
+Please format your response as a JSON object with a single key "suggestions". The value of "suggestions" should be a string containing your content ideas.
+Example JSON output:
+{
+  "suggestions": "Here are some SEO content suggestions: 1. Create blog posts about relevant topics. 2. Optimize product descriptions with trending keywords. 3. Develop video content showcasing industry insights."
+}
+`,
 });
 
 const seoContentSuggestionsFlow = ai.defineFlow(
