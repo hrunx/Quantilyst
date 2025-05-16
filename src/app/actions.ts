@@ -25,8 +25,10 @@ export async function getSeoSuggestionsAction(input: SeoContentSuggestionsInput)
     if (result && result.suggestions && result.suggestions.length > 0) {
       return { success: true, data: result };
     } else if (result && result.suggestions && result.suggestions.length === 0) {
+      // Changed this to be a success case with an informative message if AI finds nothing specific.
       return { success: true, data: {suggestions: []}, error: "No specific suggestions were generated for the given input, but the process completed." };
     }
+    // This case might indicate an unexpected empty or malformed response from the flow that wasn't an error but also not a valid success.
     return { success: false, error: "Failed to get valid SEO suggestions. The AI did not return expected data."};
   } catch (error) {
     console.error("Error getting SEO suggestions:", error);
