@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Market Insights Pro',
+  title: 'HWAH Market Insights ',
   description: 'Trending keyword analysis and SEO suggestions for your business.',
 };
 

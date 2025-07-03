@@ -59,7 +59,7 @@ export default function SearchPage() {
       <div className="max-w-2xl w-full space-y-8">
         <div className="text-center">
           <BarChart3 className="mx-auto h-16 w-16 text-sky-400" />
-          <h1 className="mt-6 text-5xl font-extrabold tracking-tight">Market Insights Pro</h1>
+          <h1 className="mt-6 text-5xl font-extrabold tracking-tight">HWAH Market Insights</h1>
           <p className="mt-4 text-xl text-slate-300">
             Unlock deep SEO analytics and content strategies tailored for your business.
           </p>
