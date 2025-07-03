@@ -79,7 +79,8 @@ function DashboardContent() {
     setAdvancedAnalysisResults(null);
     setDeepDiveResults(null);
     
-    const result = await getTrendingKeywordsAction({ businessType, country, city: city || undefined });
+    const countryName = mockCountries.find(c => c.value === country)?.label || country;
+    const result = await getTrendingKeywordsAction({ businessType, country: countryName, city: city || undefined });
     
     if (result.success && result.data) {
         setCurrentKeywords(result.data);
@@ -259,7 +260,8 @@ function DashboardContent() {
     setDeepDiveResults(null);
     toast({ title: "Generating Market Deep-Dive Report", description: "This may take a moment. The AI is compiling a comprehensive market analysis..." });
     
-    const result = await getMarketDeepDiveAction({ businessType, country, city: city || undefined });
+    const countryName = mockCountries.find(c => c.value === country)?.label || country;
+    const result = await getMarketDeepDiveAction({ businessType, country: countryName, city: city || undefined });
 
     if (result.success && result.data) {
       setDeepDiveResults(result.data);

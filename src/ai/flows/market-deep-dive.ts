@@ -18,7 +18,7 @@ const MarketDeepDiveInputSchema = z.object({
     .describe('The type of business or industry for which the analysis is relevant.'),
   country: z
     .string()
-    .describe('The target country for the analysis (e.g., US, SA).'),
+    .describe('The full name of the target country for the analysis (e.g., "United States", "Saudi Arabia").'),
   city: z.string().optional().describe('The optional target city for more specific analysis.'),
 });
 export type MarketDeepDiveInput = z.infer<typeof MarketDeepDiveInputSchema>;

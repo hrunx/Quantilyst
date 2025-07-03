@@ -34,7 +34,7 @@ export type GenerateTrendingKeywordsOutput = z.infer<typeof GenerateTrendingKeyw
 
 const GenerateTrendingKeywordsInputSchema = z.object({
   businessType: z.string().describe('The type of business or industry.'),
-  country: z.string().describe('The target country code (e.g., US, SA).'),
+  country: z.string().describe('The full name of the target country for the analysis (e.g., "United States", "Saudi Arabia").'),
   city: z.string().optional().describe('The optional target city.'),
 });
 export type GenerateTrendingKeywordsInput = z.infer<typeof GenerateTrendingKeywordsInputSchema>;
@@ -101,4 +101,5 @@ const generateTrendingKeywordsFlow = ai.defineFlow(
     return genResponse.output;
   }
 );
+
 
