@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Lightbulb, LineChart as LucideLineChartIcon, Search, BarChart3, Settings2, Bell, Briefcase, MapPin, Globe, Sparkles, HelpCircle, FileText, ListChecks, TrendingUp, Loader2 } from 'lucide-react';
+import { Lightbulb, LineChart as LucideLineChartIcon, Search, BarChart3, Settings2, Bell, Briefcase, MapPin, Globe, Sparkles, HelpCircle, FileText, ListChecks, TrendingUp, Loader2, Target, Users, Bot, VenetianMask } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTooltip, Legend as RechartsLegend } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent, type ChartConfig } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
@@ -40,8 +40,8 @@ function DashboardContent() {
   const [currentKeywords, setCurrentKeywords] = useState<TimeFrameKeywords>(mockTrendingKeywords);
   const [activeTab, setActiveTab] = useState<TimeFrame>("week");
   
-  const [isOverallLoading, setIsOverallLoading] = useState(false); // For combined initial load
-  const [isLoadingKeywords, setIsLoadingKeywords] = useState(false); // Specific for keyword fetching
+  const [isOverallLoading, setIsOverallLoading] = useState(false);
+  const [isLoadingKeywords, setIsLoadingKeywords] = useState(false);
 
   const [arabicKeywords, setArabicKeywords] = useState<string[]>([]);
   const [seoSuggestions, setSeoSuggestions] = useState<string[]>([]);
@@ -95,14 +95,14 @@ function DashboardContent() {
     const newDynamicKeywords = generateDynamicKeywords(mockTrendingKeywords, businessType, country, city);
     setCurrentKeywords(newDynamicKeywords);
     setIsLoadingKeywords(false);
-    return newDynamicKeywords; // Return the keywords for sequential operations
+    return newDynamicKeywords;
   }, [businessType, country, city, toast]);
 
 
   const handleTranslateKeywords = useCallback(async (keywordsForTranslation?: AppKeyword[]) => {
     const keywordsToUse = keywordsForTranslation || currentKeywords[activeTab];
     if (!businessType || !keywordsToUse || keywordsToUse.length === 0) {
-      if (!keywordsForTranslation) { // Only toast if not part of an auto-sequence
+      if (!keywordsForTranslation) {
         toast({ title: "Translation Skipped", description: "Business type and current keywords are required.", variant: "destructive" });
       }
       return;
@@ -151,19 +151,17 @@ function DashboardContent() {
   }, [businessType, currentKeywords, activeTab, toast]);
   
   const loadInitialDashboardData = useCallback(async () => {
-    if (!businessTypeFromQuery) return; // Don't run if not navigated from search
+    if (!businessTypeFromQuery) return;
 
     setIsOverallLoading(true);
     toast({ title: "Loading Dashboard", description: `Fetching insights for ${businessTypeFromQuery}...` });
 
     const fetchedKeywordsResult = await fetchKeywords();
     if (fetchedKeywordsResult && fetchedKeywordsResult[activeTab] && fetchedKeywordsResult[activeTab].length > 0) {
-      // Keywords are fetched, now trigger dependent actions
       await Promise.all([
         handleTranslateKeywords(fetchedKeywordsResult[activeTab]),
         handleSeoSuggestions(fetchedKeywordsResult[activeTab])
       ]);
-      // Pre-fill advanced analysis keyword
       const firstKeywordName = fetchedKeywordsResult[activeTab][0]?.name;
       if (firstKeywordName) {
         setAdvancedAnalysisKeyword(firstKeywordName);
@@ -177,18 +175,17 @@ function DashboardContent() {
       toast({ title: "Dashboard Loaded!", description: "Insights are ready for your review.", variant: "default" });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [businessTypeFromQuery, fetchKeywords, handleTranslateKeywords, handleSeoSuggestions, activeTab, toast]); // Dependencies for initial load
+  }, [businessTypeFromQuery, fetchKeywords, handleTranslateKeywords, handleSeoSuggestions, activeTab, toast]);
 
-  // Effect for initial data load when navigated from search page
   useEffect(() => {
-    if (businessTypeFromQuery && countryFromQuery) { // Ensure basic params are there
+    if (businessTypeFromQuery && countryFromQuery) {
       setBusinessType(businessTypeFromQuery);
       setCountry(countryFromQuery);
       if(cityFromQuery) setCity(cityFromQuery);
       loadInitialDashboardData();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [businessTypeFromQuery, countryFromQuery, cityFromQuery]); // Only re-run if query params actually change
+  }, [businessTypeFromQuery, countryFromQuery, cityFromQuery]);
 
   const handleManualReanalyze = async () => {
     if (!businessType) {
@@ -198,14 +195,14 @@ function DashboardContent() {
     setIsOverallLoading(true);
     toast({ title: "Re-analyzing Market Data", description: `Updating all insights for ${businessType}${country ? ` in ${country}` : ''}${city ? `, ${city}` : ''}...` });
 
-    const fetchedKeywordsResult = await fetchKeywords(); // This also clears previous AI results
+    const fetchedKeywordsResult = await fetchKeywords();
     if (fetchedKeywordsResult && fetchedKeywordsResult[activeTab] && fetchedKeywordsResult[activeTab].length > 0) {
       await Promise.all([
         handleTranslateKeywords(fetchedKeywordsResult[activeTab]),
         handleSeoSuggestions(fetchedKeywordsResult[activeTab])
       ]);
       const firstKeywordName = fetchedKeywordsResult[activeTab][0]?.name;
-      if (firstKeywordName && advancedAnalysisKeyword !== firstKeywordName) { // Only update if different to avoid losing user's specific input unless context changed significantly
+      if (firstKeywordName && advancedAnalysisKeyword !== firstKeywordName) {
         setAdvancedAnalysisKeyword(firstKeywordName);
       }
     } else {
@@ -295,7 +292,6 @@ function DashboardContent() {
         volume: kw.volume as number,
       }));
     }
-    // Fallback to mock if no dynamic data or still loading, ensures chart always has some structure
     return mockTopKeywordsVolumeData.slice(0,10).map(item => ({ 
       name: item.keyword.length > 30 ? item.keyword.substring(0, 27) + "..." : item.keyword,
       volume: item.volume
@@ -353,8 +349,8 @@ function DashboardContent() {
 
             <Card className="shadow-xl rounded-xl overflow-hidden">
               <CardHeader className="bg-primary/5 dark:bg-primary/10">
-                <CardTitle className="flex items-center gap-2 text-xl"><Sparkles className="h-6 w-6 text-primary" /> AI-Powered Advanced SEO Analysis</CardTitle>
-                <CardDescription>Unlock deeper strategic insights for any specific keyword relevant to your current business context.</CardDescription>
+                <CardTitle className="flex items-center gap-2 text-xl"><Sparkles className="h-6 w-6 text-primary" /> CMO-Level Strategic Brief</CardTitle>
+                <CardDescription>Deep strategic insights for any keyword relevant to your business context.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4 pt-6">
                 <div>
@@ -363,37 +359,53 @@ function DashboardContent() {
                 </div>
                 {isAnalyzingAdvanced && <div className="flex justify-center py-2"><Loader2 className="h-6 w-6 animate-spin text-primary" /> <p className="ml-2 text-sm text-muted-foreground">AI is processing...</p></div>}
                 {advancedAnalysisResults && !isAnalyzingAdvanced && (
-                  <Accordion type="single" collapsible className="w-full" defaultValue="difficulty">
-                    <AccordionItem value="difficulty"><AccordionTrigger className="text-base">Overall Difficulty & Potential</AccordionTrigger><AccordionContent className="text-sm">{advancedAnalysisResults.difficultyAnalysis}</AccordionContent></AccordionItem>
-                    <AccordionItem value="long-tail"><AccordionTrigger className="text-base">Long-Tail Keyword Opportunities</AccordionTrigger><AccordionContent><ul className="list-disc list-inside space-y-1 text-sm pl-2">{advancedAnalysisResults.longTailSuggestions.map((kw, i) => <li key={`lt-${i}`}>{kw}</li>)}</ul></AccordionContent></AccordionItem>
-                    <AccordionItem value="questions"><AccordionTrigger className="text-base">Common User Questions</AccordionTrigger><AccordionContent><ul className="list-disc list-inside space-y-1 text-sm pl-2">{advancedAnalysisResults.relatedQuestions.map((q, i) => <li key={`q-${i}`}>{q}</li>)}</ul></AccordionContent></AccordionItem>
-                    <AccordionItem value="outline"><AccordionTrigger className="text-base">AI-Suggested Content Outline</AccordionTrigger><AccordionContent><h4 className="font-semibold mb-2 text-md">{advancedAnalysisResults.basicContentOutline.title}</h4><ul className="list-disc list-inside space-y-1 text-sm pl-2">{advancedAnalysisResults.basicContentOutline.sections.map((s, i) => <li key={`s-${i}`}>{s}</li>)}</ul></AccordionContent></AccordionItem>
+                  <Accordion type="single" collapsible className="w-full" defaultValue="intent">
+                    <AccordionItem value="intent">
+                      <AccordionTrigger className="text-base"><Target className="mr-2 h-4 w-4" /> Search Intent &amp; Audience</AccordionTrigger>
+                      <AccordionContent className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="default">{advancedAnalysisResults.searchIntent}</Badge>
+                          <p className="text-sm text-muted-foreground">Primary User Intent</p>
+                        </div>
+                        <p className="text-sm"><strong className="font-semibold text-foreground">Target Audience:</strong> {advancedAnalysisResults.targetAudience}</p>
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="competition">
+                      <AccordionTrigger className="text-base"><VenetianMask className="mr-2 h-4 w-4" /> Competitive Landscape</AccordionTrigger>
+                      <AccordionContent className="text-sm">{advancedAnalysisResults.competitiveLandscape}</AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="angle">
+                      <AccordionTrigger className="text-base"><Lightbulb className="mr-2 h-4 w-4" /> Content Angle &amp; Hook</AccordionTrigger>
+                      <AccordionContent className="text-sm">{advancedAnalysisResults.contentAngle}</AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="outline">
+                      <AccordionTrigger className="text-base"><ListChecks className="mr-2 h-4 w-4" /> Detailed Content Outline</AccordionTrigger>
+                      <AccordionContent>
+                        <h4 className="font-semibold mb-2 text-md">{advancedAnalysisResults.detailedContentOutline.title}</h4>
+                        <ul className="space-y-3">
+                          {advancedAnalysisResults.detailedContentOutline.sections.map((section, i) => (
+                            <li key={`s-${i}`} className="ml-2">
+                              <p className="font-semibold">{section.heading}</p>
+                              <ul className="list-disc list-inside space-y-1 text-sm pl-2 mt-1 text-muted-foreground">
+                                {section.points.map((point, pIdx) => <li key={`p-${pIdx}`}>{point}</li>)}
+                              </ul>
+                            </li>
+                          ))}
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+                     <AccordionItem value="difficulty">
+                       <AccordionTrigger className="text-base"><BarChart3 className="mr-2 h-4 w-4" /> Difficulty Analysis</AccordionTrigger>
+                       <AccordionContent className="text-sm">{advancedAnalysisResults.difficultyAnalysis}</AccordionContent>
+                    </AccordionItem>
                   </Accordion>
                 )}
                  {!isAnalyzingAdvanced && !advancedAnalysisResults && <p className="text-sm text-muted-foreground text-center py-2">Enter a keyword and click analyze to reveal advanced AI insights.</p>}
               </CardContent>
               <CardFooter className="bg-muted/50 dark:bg-muted/20 p-4">
                 <Button onClick={handleAdvancedSeoAnalysis} className="w-full text-lg py-6 rounded-md" disabled={isOverallLoading || isAnalyzingAdvanced || !businessType || !advancedAnalysisKeyword}>
-                  {isAnalyzingAdvanced ? <Loader2 className="mr-2 h-5 w-5 animate-spin"/> : <FileText className="mr-2 h-5 w-5" />}
-                  {isAnalyzingAdvanced ? "Analyzing Keyword..." : "Get Advanced Analysis"}
-                </Button>
-              </CardFooter>
-            </Card>
-
-            <Card className="shadow-xl rounded-xl overflow-hidden">
-              <CardHeader className="bg-primary/5 dark:bg-primary/10">
-                <CardTitle className="flex items-center gap-2 text-xl"><Globe className="h-6 w-6 text-primary" /> Arabic Keywords (KSA Focus)</CardTitle>
-                <CardDescription>Translate your trending keywords into Arabic, tailored for the KSA market based on current context.</CardDescription>
-              </CardHeader>
-              <CardContent className="pt-6 min-h-[100px]">
-                {isTranslating && <div className="flex justify-center py-2"><Loader2 className="h-6 w-6 animate-spin text-primary" /> <p className="ml-2 text-sm text-muted-foreground">AI is translating...</p></div>}
-                {arabicKeywords.length > 0 && !isTranslating && (<ul className="list-disc list-inside space-y-1 text-sm pl-2">{arabicKeywords.map((kw, i) => <li key={i}>{kw}</li>)}</ul>)}
-                {!isTranslating && arabicKeywords.length === 0 && <p className="text-sm text-muted-foreground text-center py-2">Translated keywords will appear here.</p>}
-              </CardContent>
-              <CardFooter className="bg-muted/50 dark:bg-muted/20 p-4">
-                <Button onClick={() => handleTranslateKeywords()} className="w-full text-lg py-6 rounded-md" disabled={isOverallLoading || isTranslating || !businessType || !currentKeywords[activeTab] || currentKeywords[activeTab].length === 0}>
-                  {isTranslating ? <Loader2 className="mr-2 h-5 w-5 animate-spin"/> : <Globe className="mr-2 h-5 w-5"/>}
-                  {isTranslating ? "Translating..." : "Generate Arabic Keywords"}
+                  {isAnalyzingAdvanced ? <Loader2 className="mr-2 h-5 w-5 animate-spin"/> : <Bot className="mr-2 h-5 w-5" />}
+                  {isAnalyzingAdvanced ? "Generating Brief..." : "Generate Strategic Brief"}
                 </Button>
               </CardFooter>
             </Card>
@@ -450,36 +462,57 @@ function DashboardContent() {
                 )}
               </CardContent>
             </Card>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card className="shadow-xl rounded-xl overflow-hidden">
+                <CardHeader className="bg-primary/5 dark:bg-primary/10">
+                    <CardTitle className="flex items-center gap-2 text-xl"><Globe className="h-6 w-6 text-primary" /> Arabic Keywords (KSA Focus)</CardTitle>
+                    <CardDescription>Translated keywords for the KSA market based on current context.</CardDescription>
+                </CardHeader>
+                <CardContent className="pt-6 min-h-[150px]">
+                    {isTranslating && <div className="flex justify-center py-2"><Loader2 className="h-6 w-6 animate-spin text-primary" /> <p className="ml-2 text-sm text-muted-foreground">AI is translating...</p></div>}
+                    {arabicKeywords.length > 0 && !isTranslating && (<ul className="list-disc list-inside space-y-1 text-sm pl-2">{arabicKeywords.map((kw, i) => <li key={i}>{kw}</li>)}</ul>)}
+                    {!isTranslating && arabicKeywords.length === 0 && <p className="text-sm text-muted-foreground text-center py-2">Translated keywords will appear here.</p>}
+                </CardContent>
+                <CardFooter className="bg-muted/50 dark:bg-muted/20 p-4">
+                    <Button onClick={() => handleTranslateKeywords()} className="w-full text-lg py-6 rounded-md" disabled={isOverallLoading || isTranslating || !businessType || !currentKeywords[activeTab] || currentKeywords[activeTab].length === 0}>
+                    {isTranslating ? <Loader2 className="mr-2 h-5 w-5 animate-spin"/> : <Globe className="mr-2 h-5 w-5"/>}
+                    {isTranslating ? "Translating..." : "Generate Arabic Keywords"}
+                    </Button>
+                </CardFooter>
+                </Card>
 
-            <Card className="shadow-xl rounded-xl overflow-hidden">
-              <CardHeader className="bg-primary/5 dark:bg-primary/10">
-                <CardTitle className="flex items-center gap-2 text-xl"><ListChecks className="h-6 w-6 text-primary" /> AI-Driven SEO Content Strategy Hub</CardTitle>
-                <CardDescription>Generate actionable content ideas and strategies based on the current keyword trends for your business.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4 min-h-[250px] pt-6">
-                 {isSuggesting && <div className="flex justify-center py-10"><Loader2 className="h-8 w-8 animate-spin text-primary" /> <p className="ml-3 text-sm text-muted-foreground">AI is brainstorming ideas...</p></div>}
-                {!isSuggesting && seoSuggestions.length > 0 && (
-                  <div className="space-y-3">
-                    {seoSuggestions.map((suggestion, index) => (
-                      <Alert key={index} className="bg-background dark:bg-muted/30 border-l-4 border-primary rounded-md">
-                        <Lightbulb className="h-5 w-5 text-primary" />
-                        <AlertTitle className="font-semibold text-md text-primary">Content Idea {index + 1}</AlertTitle>
-                        <AlertDescription className="text-sm">{suggestion}</AlertDescription>
-                      </Alert>
-                    ))}
-                  </div>
-                )}
-                {!isSuggesting && seoSuggestions.length === 0 && (
-                  <p className="text-sm text-muted-foreground text-center py-10">Content ideas will appear here based on the analysis.</p>
-                )}
-              </CardContent>
-              <CardFooter className="bg-muted/50 dark:bg-muted/20 p-4">
-                <Button onClick={() => handleSeoSuggestions()} className="w-full text-lg py-6 rounded-md" disabled={isOverallLoading || isSuggesting || !businessType || !currentKeywords[activeTab] || currentKeywords[activeTab].length === 0}>
-                 {isSuggesting ? <Loader2 className="mr-2 h-5 w-5 animate-spin"/> : <Lightbulb className="mr-2 h-5 w-5"/>}
-                 {isSuggesting ? "Generating Ideas..." : "Generate Content Strategies"}
-                </Button>
-              </CardFooter>
-            </Card>
+                <Card className="shadow-xl rounded-xl overflow-hidden">
+                <CardHeader className="bg-primary/5 dark:bg-primary/10">
+                    <CardTitle className="flex items-center gap-2 text-xl"><ListChecks className="h-6 w-6 text-primary" /> AI Content Strategy</CardTitle>
+                    <CardDescription>Actionable content ideas based on the current keyword trends.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4 min-h-[150px] pt-6 overflow-y-auto max-h-[300px]">
+                    {isSuggesting && <div className="flex justify-center py-10"><Loader2 className="h-8 w-8 animate-spin text-primary" /> <p className="ml-3 text-sm text-muted-foreground">AI is brainstorming ideas...</p></div>}
+                    {!isSuggesting && seoSuggestions.length > 0 && (
+                    <div className="space-y-3">
+                        {seoSuggestions.map((suggestion, index) => (
+                        <Alert key={index} className="bg-background dark:bg-muted/30 border-l-4 border-primary rounded-md">
+                            <Lightbulb className="h-5 w-5 text-primary" />
+                            <AlertTitle className="font-semibold text-md text-primary">Content Idea {index + 1}</AlertTitle>
+                            <AlertDescription className="text-sm">{suggestion}</AlertDescription>
+                        </Alert>
+                        ))}
+                    </div>
+                    )}
+                    {!isSuggesting && seoSuggestions.length === 0 && (
+                    <p className="text-sm text-muted-foreground text-center py-10">Content ideas will appear here.</p>
+                    )}
+                </CardContent>
+                <CardFooter className="bg-muted/50 dark:bg-muted/20 p-4 mt-auto">
+                    <Button onClick={() => handleSeoSuggestions()} className="w-full text-lg py-6 rounded-md" disabled={isOverallLoading || isSuggesting || !businessType || !currentKeywords[activeTab] || currentKeywords[activeTab].length === 0}>
+                    {isSuggesting ? <Loader2 className="mr-2 h-5 w-5 animate-spin"/> : <Lightbulb className="mr-2 h-5 w-5"/>}
+                    {isSuggesting ? "Generating Ideas..." : "Generate Content Strategies"}
+                    </Button>
+                </CardFooter>
+                </Card>
+            </div>
+
           </div>
         </div>
       </main>

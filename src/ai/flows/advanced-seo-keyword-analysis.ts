@@ -2,7 +2,7 @@
 'use server';
 
 /**
- * @fileOverview Provides advanced AI-powered SEO analysis for a given keyword.
+ * @fileOverview Provides comprehensive, CMO-level SEO and content strategy analysis for a given keyword.
  *
  * - advancedSeoKeywordAnalysis - A function that provides advanced SEO insights.
  * - AdvancedSeoKeywordAnalysisInput - The input type.
@@ -23,16 +23,17 @@ const AdvancedSeoKeywordAnalysisInputSchema = z.object({
 export type AdvancedSeoKeywordAnalysisInput = z.infer<typeof AdvancedSeoKeywordAnalysisInputSchema>;
 
 const AdvancedSeoKeywordAnalysisOutputSchema = z.object({
-  longTailSuggestions: z
-    .array(z.string())
-    .describe('An array of long-tail keyword variations and suggestions related to the input keyword.'),
-  relatedQuestions: z
-    .array(z.string())
-    .describe('An array of common questions people ask related to the input keyword.'),
-  basicContentOutline: z.object({
+  searchIntent: z.string().describe("The primary search intent (e.g., 'Informational', 'Commercial', 'Transactional', 'Navigational')."),
+  targetAudience: z.string().describe("A brief description of the target audience persona for this keyword."),
+  competitiveLandscape: z.string().describe("A summary of the competitive landscape, identifying content gaps or opportunities."),
+  contentAngle: z.string().describe("A unique content angle or hook to make the content stand out."),
+  detailedContentOutline: z.object({
     title: z.string().describe('A suggested compelling title for a piece of content about the keyword.'),
-    sections: z.array(z.string()).describe('An array of suggested main sections or H2s for the content.'),
-  }).describe('A basic content outline including a title and main sections.'),
+    sections: z.array(z.object({
+      heading: z.string().describe("Main section heading (H2)."),
+      points: z.array(z.string()).describe("Key talking points or sub-topics for this section (H3s or bullet points).")
+    })).describe('An array of suggested main sections for the content.'),
+  }).describe('A detailed content outline including a title and section details.'),
   difficultyAnalysis: z
     .string()
     .describe('A brief qualitative analysis of the keyword\'s SEO difficulty and ranking potential.'),
@@ -49,28 +50,34 @@ const prompt = ai.definePrompt({
   name: 'advancedSeoKeywordAnalysisPrompt',
   input: {schema: AdvancedSeoKeywordAnalysisInputSchema},
   output: {schema: AdvancedSeoKeywordAnalysisOutputSchema},
-  prompt: `You are an expert SEO strategist and content planner.
-Your task is to perform an advanced analysis for the given keyword, considering the business type.
+  prompt: `You are a world-class Chief Marketing Officer (CMO) and SEO Strategist, tasked with providing a deep, actionable analysis for a given keyword, tailored to a specific business. Your audience is a marketing team that needs clear, strategic direction.
 
 Business Type: {{{businessType}}}
 Keyword for Analysis: {{{keyword}}}
 
-Provide the following insights:
-1.  **Long-Tail Suggestions**: Generate 3-5 relevant long-tail keyword variations.
-2.  **Related Questions**: Identify 3-5 common questions people search for related to this keyword.
-3.  **Basic Content Outline**: Suggest a compelling title and 3-4 main section headings (like H2s) for a blog post or article targeting this keyword.
-4.  **Difficulty Analysis**: Briefly explain the likely SEO difficulty for ranking for this keyword (e.g., "Highly competitive, requires significant authority and backlinks." or "Moderately competitive, focus on niche content.").
+Provide a comprehensive strategic brief covering the following areas. Your entire response MUST be a valid JSON object.
 
-Your entire response MUST be a valid JSON object. Do not include any text, explanations, or apologies outside of this JSON object.
-The JSON object must match the following structure:
+1.  **Search Intent**: Classify the primary user intent. Is it Informational, Commercial Investigation, Transactional, or Navigational?
+2.  **Target Audience**: Describe the likely persona of the person searching this. What are their goals and pain points?
+3.  **Competitive Landscape**: Analyze the top search results. Are they dominated by blogs, e-commerce sites, videos, or forums? Identify a key opportunity or content gap.
+4.  **Content Angle**: Suggest a unique hook or angle for our content that will make it stand out from the competition.
+5.  **Detailed Content Outline**: Propose a structured outline for a piece of content (like a blog post). Include a compelling title and at least 3-4 main sections (H2s), each with 2-3 key talking points or sub-headings (H3s/bullets).
+6.  **Difficulty Analysis**: Give a concise, qualitative summary of the SEO difficulty. Explain *why* it's difficult or easy (e.g., "High authority domains dominate," "Low competition in this niche," etc.).
+
+Your entire response MUST be a valid JSON object that strictly follows this structure:
 {
-  "longTailSuggestions": ["example long-tail 1", "example long-tail 2"],
-  "relatedQuestions": ["example question 1?", "example question 2?"],
-  "basicContentOutline": {
-    "title": "Example Compelling Title for '{{{keyword}}}'",
-    "sections": ["Introduction to {{{keyword}}}", "Key Aspect of {{{keyword}}}", "Benefits of {{{keyword}}}", "Conclusion about {{{keyword}}}"]
+  "searchIntent": "Informational",
+  "targetAudience": "A description of the target audience.",
+  "competitiveLandscape": "A summary of the SERP competition and opportunities.",
+  "contentAngle": "A unique hook or angle for the content.",
+  "detailedContentOutline": {
+    "title": "A Compelling and SEO-Optimized Title for '{{{keyword}}}'",
+    "sections": [
+      { "heading": "Section 1 Title (H2)", "points": ["Point 1.1", "Point 1.2"] },
+      { "heading": "Section 2 Title (H2)", "points": ["Point 2.1", "Point 2.2", "Point 2.3"] }
+    ]
   },
-  "difficultyAnalysis": "A brief textual analysis of the keyword's SEO difficulty."
+  "difficultyAnalysis": "A qualitative analysis of the keyword's SEO difficulty."
 }
 `,
 });
