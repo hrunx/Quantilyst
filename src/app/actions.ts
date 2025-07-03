@@ -5,6 +5,17 @@
 import { translateKeywordsArabic, TranslateKeywordsArabicInput, TranslateKeywordsArabicOutput } from '@/ai/flows/translate-keywords-arabic';
 import { seoContentSuggestions, SeoContentSuggestionsInput, SeoContentSuggestionsOutput } from '@/ai/flows/seo-content-suggestions';
 import { advancedSeoKeywordAnalysis, AdvancedSeoKeywordAnalysisInput, AdvancedSeoKeywordAnalysisOutput } from '@/ai/flows/advanced-seo-keyword-analysis';
+import { generateTrendingKeywords, GenerateTrendingKeywordsInput, GenerateTrendingKeywordsOutput } from '@/ai/flows/generate-trending-keywords';
+
+export async function getTrendingKeywordsAction(input: GenerateTrendingKeywordsInput): Promise<{ success: boolean; data?: GenerateTrendingKeywordsOutput; error?: string }> {
+  try {
+    const result = await generateTrendingKeywords(input);
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("Error generating trending keywords:", error);
+    return { success: false, error: (error instanceof Error ? error.message : String(error)) || "Failed to generate trending keywords." };
+  }
+}
 
 export async function getArabicTranslationsAction(input: TranslateKeywordsArabicInput): Promise<{ success: boolean; data?: TranslateKeywordsArabicOutput; error?: string }> {
   try {

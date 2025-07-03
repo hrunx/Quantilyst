@@ -17,13 +17,20 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLe
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
-import { mockTrendingKeywords, mockCountries, mockTopKeywordsVolumeData } from '@/lib/mockData';
+import { mockTrendingKeywords, mockCountries } from '@/lib/mockData';
 import type { Keyword as AppKeyword, TimeFrame, TimeFrameKeywords } from '@/lib/mockData';
-import { getArabicTranslationsAction, getSeoSuggestionsAction, getAdvancedSeoAnalysisAction } from '../actions';
+import { getArabicTranslationsAction, getSeoSuggestionsAction, getAdvancedSeoAnalysisAction, getTrendingKeywordsAction } from '../actions';
 import type { TranslateKeywordsArabicOutput } from '@/ai/flows/translate-keywords-arabic';
 import type { SeoContentSuggestionsOutput } from '@/ai/flows/seo-content-suggestions';
 import type { AdvancedSeoKeywordAnalysisOutput } from '@/ai/flows/advanced-seo-keyword-analysis';
 import { useToast } from "@/hooks/use-toast";
+
+const emptyKeywords: TimeFrameKeywords = {
+  hour: [],
+  day: [],
+  week: [],
+  month: [],
+};
 
 function DashboardContent() {
   const searchParams = useSearchParams();
@@ -33,11 +40,11 @@ function DashboardContent() {
   const countryFromQuery = searchParams.get('country');
   const cityFromQuery = searchParams.get('city');
 
-  const [businessType, setBusinessType] = useState(businessTypeFromQuery || "E-commerce");
+  const [businessType, setBusinessType] = useState(businessTypeFromQuery || "");
   const [country, setCountry] = useState(countryFromQuery || "US");
   const [city, setCity] = useState(cityFromQuery || "");
 
-  const [currentKeywords, setCurrentKeywords] = useState<TimeFrameKeywords>(mockTrendingKeywords);
+  const [currentKeywords, setCurrentKeywords] = useState<TimeFrameKeywords>(emptyKeywords);
   const [activeTab, setActiveTab] = useState<TimeFrame>("week");
   
   const [isOverallLoading, setIsOverallLoading] = useState(false);
@@ -52,50 +59,29 @@ function DashboardContent() {
   const [advancedAnalysisResults, setAdvancedAnalysisResults] = useState<AdvancedSeoKeywordAnalysisOutput | null>(null);
   const [isAnalyzingAdvanced, setIsAnalyzingAdvanced] = useState(false);
   
-  const generateDynamicKeywords = (baseKeywords: TimeFrameKeywords, bt: string, locCountry: string, locCity: string): TimeFrameKeywords => {
-    const newKeywords = JSON.parse(JSON.stringify(baseKeywords)) as TimeFrameKeywords;
-    const locationStr = locCity ? `${locCity}, ${locCountry}` : locCountry;
-    const baseVolumeMultiplier = locCity ? 0.8 : 1;
-    const difficultyBias = locCountry === 'US' ? 5 : 0;
-
-    (Object.keys(newKeywords) as TimeFrame[]).forEach(timeFrame => {
-      newKeywords[timeFrame].forEach((kw, index) => {
-        const coreTopic = kw.name.split(" - ").pop() || kw.name;
-        if (index % 3 === 0) kw.name = `${bt} trends for '${coreTopic}' in ${locationStr}`;
-        else if (index % 3 === 1) kw.name = `Best ${coreTopic} strategies for ${bt} (${locationStr})`;
-        else kw.name = `How ${bt} in ${locationStr} can leverage ${coreTopic}`;
-        
-        kw.volume = Math.floor((Math.random() * 4000 + 1000) * baseVolumeMultiplier * (1 + (index * 0.05)));
-        kw.change = Math.floor(Math.random() * 60) - 30;
-        kw.difficulty = Math.min(100, Math.floor(Math.random() * 70) + 20 + difficultyBias + (bt.length % 10));
-        const possibleFeatures = ["Featured Snippet", "People Also Ask", "Image Pack", "Video Carousel", "Local Pack", "Top Stories", "Reviews"];
-        const numFeatures = Math.floor(Math.random() * 3);
-        kw.serpFeatures = [];
-        for (let i = 0; i < numFeatures; i++) {
-          const feature = possibleFeatures[Math.floor(Math.random() * possibleFeatures.length)];
-          if (!kw.serpFeatures.includes(feature)) kw.serpFeatures.push(feature);
-        }
-      });
-    });
-    return newKeywords;
-  };
-
   const fetchKeywords = useCallback(async () => {
     if (!businessType) {
       toast({ title: "Input Required", description: "Business type is needed to fetch keywords.", variant: "destructive" });
-      return false;
+      return null;
     }
     setIsLoadingKeywords(true);
+    // Reset dependent data
     setArabicKeywords([]);
     setSeoSuggestions([]);
     setAdvancedAnalysisResults(null); 
     
-    await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
+    const result = await getTrendingKeywordsAction({ businessType, country, city: city || undefined });
     
-    const newDynamicKeywords = generateDynamicKeywords(mockTrendingKeywords, businessType, country, city);
-    setCurrentKeywords(newDynamicKeywords);
-    setIsLoadingKeywords(false);
-    return newDynamicKeywords;
+    if (result.success && result.data) {
+        setCurrentKeywords(result.data);
+        setIsLoadingKeywords(false);
+        return result.data;
+    } else {
+        toast({ title: "Keyword Fetch Failed", description: result.error || "Could not fetch AI-generated keywords. Using mock data as fallback.", variant: "destructive" });
+        setCurrentKeywords(mockTrendingKeywords); // Fallback to mock data on error
+        setIsLoadingKeywords(false);
+        return mockTrendingKeywords;
+    }
   }, [businessType, country, city, toast]);
 
 
@@ -292,10 +278,7 @@ function DashboardContent() {
         volume: kw.volume as number,
       }));
     }
-    return mockTopKeywordsVolumeData.slice(0,10).map(item => ({ 
-      name: item.keyword.length > 30 ? item.keyword.substring(0, 27) + "..." : item.keyword,
-      volume: item.volume
-    }));
+    return [];
   }, [currentKeywords, activeTab]);
 
   return (
@@ -439,12 +422,12 @@ function DashboardContent() {
                  <CardDescription>Visual breakdown of search volumes for the top keywords from your active analysis tab.</CardDescription>
               </CardHeader>
               <CardContent className="h-[450px] w-full pt-6"> 
-                {(isLoadingKeywords || isOverallLoading) && !keywordChartData.some(d => d.volume > 0) ? (
+                {(isLoadingKeywords || isOverallLoading) && keywordChartData.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
                     <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
                     <p>Loading chart data...</p>
                   </div>
-                ) : keywordChartData.length > 0 && keywordChartData.some(d => d.volume > 0) ? (
+                ) : keywordChartData.length > 0 ? (
                   <ChartContainer config={chartConfig} className="w-full h-full">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={keywordChartData} margin={{ top: 5, right: 20, left: 20, bottom: 100 }}>
