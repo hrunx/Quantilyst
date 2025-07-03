@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Lightbulb, LineChart as LucideLineChartIcon, Search, BarChart3, Settings2, Bell, Briefcase, MapPin, Globe, Sparkles, HelpCircle, ListChecks, TrendingUp, Loader2, Target, Users, Bot, VenetianMask, MessageSquareQuote, CheckCircle, ExternalLink } from 'lucide-react';
+import { Lightbulb, LineChart as LucideLineChartIcon, Search, BarChart3, Settings2, Bell, Briefcase, MapPin, Globe, Sparkles, HelpCircle, ListChecks, TrendingUp, Loader2, Target, Users, Bot, VenetianMask, MessageSquareQuote, CheckCircle, ExternalLink, Shield, ShieldOff, AlertTriangle, PieChart, Building2, BrainCircuit } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTooltip, Legend as RechartsLegend } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent, type ChartConfig } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
@@ -20,10 +20,11 @@ import { Progress } from "@/components/ui/progress";
 
 import { mockTrendingKeywords, mockCountries } from '@/lib/mockData';
 import type { Keyword as AppKeyword, TimeFrame, TimeFrameKeywords } from '@/lib/mockData';
-import { getArabicTranslationsAction, getSeoSuggestionsAction, getAdvancedSeoAnalysisAction, getTrendingKeywordsAction, getChartTakeawayAction } from '../actions';
+import { getArabicTranslationsAction, getSeoSuggestionsAction, getAdvancedSeoAnalysisAction, getTrendingKeywordsAction, getChartTakeawayAction, getMarketDeepDiveAction } from '../actions';
 import type { TranslateKeywordsArabicOutput } from '@/ai/flows/translate-keywords-arabic';
 import type { SeoContentSuggestionsOutput } from '@/ai/flows/seo-content-suggestions';
 import type { AdvancedSeoKeywordAnalysisOutput } from '@/ai/flows/advanced-seo-keyword-analysis';
+import type { MarketDeepDiveOutput } from '@/ai/flows/market-deep-dive';
 import { useToast } from "@/hooks/use-toast";
 
 const emptyKeywords: TimeFrameKeywords = {
@@ -63,6 +64,9 @@ function DashboardContent() {
   const [chartTakeaway, setChartTakeaway] = useState("");
   const [isGeneratingTakeaway, setIsGeneratingTakeaway] = useState(false);
   
+  const [deepDiveResults, setDeepDiveResults] = useState<MarketDeepDiveOutput | null>(null);
+  const [isGeneratingDeepDive, setIsGeneratingDeepDive] = useState(false);
+
   const fetchKeywords = useCallback(async () => {
     if (!businessType) {
       toast({ title: "Input Required", description: "Business type is needed to fetch keywords.", variant: "destructive" });
@@ -70,10 +74,10 @@ function DashboardContent() {
     }
     setIsLoadingKeywords(true);
     setChartTakeaway("");
-    // Reset dependent data
     setArabicKeywords([]);
     setSeoSuggestions([]);
-    setAdvancedAnalysisResults(null); 
+    setAdvancedAnalysisResults(null);
+    setDeepDiveResults(null);
     
     const result = await getTrendingKeywordsAction({ businessType, country, city: city || undefined });
     
@@ -246,6 +250,27 @@ function DashboardContent() {
     setIsAnalyzingAdvanced(false);
   };
   
+  const handleDeepDiveAnalysis = async () => {
+    if (!businessType || !country) {
+      toast({ title: "Deep-Dive Skipped", description: "Business type and country are required for this report.", variant: "destructive" });
+      return;
+    }
+    setIsGeneratingDeepDive(true);
+    setDeepDiveResults(null);
+    toast({ title: "Generating Market Deep-Dive Report", description: "This may take a moment. The AI is compiling a comprehensive market analysis..." });
+    
+    const result = await getMarketDeepDiveAction({ businessType, country, city: city || undefined });
+
+    if (result.success && result.data) {
+      setDeepDiveResults(result.data);
+      toast({ title: "Deep-Dive Report Ready!", description: "The complete market analysis has been generated." });
+    } else {
+      setDeepDiveResults(null);
+      toast({ title: "Deep-Dive Failed", description: result.error || "Could not generate the market report.", variant: "destructive" });
+    }
+    setIsGeneratingDeepDive(false);
+  };
+
   const renderKeywordTable = (keywords: AppKeyword[]) => (
     <Table>
       <TableHeader>
@@ -510,7 +535,105 @@ function DashboardContent() {
                   )}
               </CardFooter>
             </Card>
-            
+
+            <Card className="shadow-xl rounded-xl overflow-hidden">
+                <CardHeader className="bg-primary/5 dark:bg-primary/10">
+                    <CardTitle className="flex items-center gap-2 text-xl"><BrainCircuit className="h-6 w-6 text-primary" /> Market Deep-Dive Analysis</CardTitle>
+                    <CardDescription>A comprehensive, C-suite level market report including SWOT, competitor benchmarks, and market sizing.</CardDescription>
+                </CardHeader>
+                <CardContent className="pt-6">
+                    {isGeneratingDeepDive && (
+                        <div className="flex flex-col items-center justify-center h-48 text-muted-foreground">
+                            <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+                            <p className="text-lg">AI is generating your deep-dive report...</p>
+                            <p className="text-sm">This involves complex analysis and may take a moment.</p>
+                        </div>
+                    )}
+                    {deepDiveResults && !isGeneratingDeepDive && (
+                        <div className="space-y-6">
+                            <div>
+                                <h3 className="text-lg font-semibold flex items-center gap-2 mb-2"><Briefcase className="h-5 w-5 text-primary" /> Executive Summary</h3>
+                                <p className="text-sm text-muted-foreground">{deepDiveResults.executiveSummary}</p>
+                            </div>
+
+                            <div>
+                                <h3 className="text-lg font-semibold flex items-center gap-2 mb-3"><Users className="h-5 w-5 text-primary" /> Market Sizing (TAM/SAM/SOM)</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="p-4 bg-muted/50 rounded-lg">
+                                        <h4 className="font-semibold flex items-center gap-2 text-sm"><Globe className="h-4 w-4"/>TAM</h4>
+                                        <p className="text-2xl font-bold text-primary">${(deepDiveResults.tamSamSom.tam.value / 1_000_000_000).toFixed(1)}B</p>
+                                        <p className="text-xs text-muted-foreground">{deepDiveResults.tamSamSom.tam.description}</p>
+                                    </div>
+                                    <div className="p-4 bg-muted/50 rounded-lg">
+                                        <h4 className="font-semibold flex items-center gap-2 text-sm"><Target className="h-4 w-4"/>SAM</h4>
+                                        <p className="text-2xl font-bold text-primary">${(deepDiveResults.tamSamSom.sam.value / 1_000_000).toFixed(1)}M</p>
+                                        <p className="text-xs text-muted-foreground">{deepDiveResults.tamSamSom.sam.description}</p>
+                                    </div>
+                                    <div className="p-4 bg-muted/50 rounded-lg">
+                                        <h4 className="font-semibold flex items-center gap-2 text-sm"><PieChart className="h-4 w-4"/>SOM</h4>
+                                        <p className="text-2xl font-bold text-primary">${(deepDiveResults.tamSamSom.som.value / 1_000_000).toFixed(1)}M</p>
+                                        <p className="text-xs text-muted-foreground">{deepDiveResults.tamSamSom.som.description}</p>
+                                    </div>
+                                </div>
+                            </div>
+                             <div>
+                                <h3 className="text-lg font-semibold flex items-center gap-2 mb-2"><Building2 className="h-5 w-5 text-primary" /> Competitor Benchmark</h3>
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Competitor</TableHead>
+                                            <TableHead>Strengths</TableHead>
+                                            <TableHead>Weaknesses</TableHead>
+                                            <TableHead className="text-right">Market Share</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {deepDiveResults.competitors.map(c => (
+                                            <TableRow key={c.name}>
+                                                <TableCell className="font-medium">{c.name}</TableCell>
+                                                <TableCell className="text-xs">{c.strengths}</TableCell>
+                                                <TableCell className="text-xs">{c.weaknesses}</TableCell>
+                                                <TableCell className="text-right font-semibold">{c.marketShare}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-semibold flex items-center gap-2 mb-3"><Sparkles className="h-5 w-5 text-primary" /> SWOT Analysis</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="p-4 bg-green-100/50 dark:bg-green-900/20 rounded-lg border-l-4 border-green-500">
+                                        <h4 className="font-semibold flex items-center gap-2 mb-2"><Shield className="h-5 w-5 text-green-600"/>Strengths</h4>
+                                        <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">{deepDiveResults.swot.strengths.map((s,i) => <li key={i}>{s}</li>)}</ul>
+                                    </div>
+                                    <div className="p-4 bg-red-100/50 dark:bg-red-900/20 rounded-lg border-l-4 border-red-500">
+                                        <h4 className="font-semibold flex items-center gap-2 mb-2"><ShieldOff className="h-5 w-5 text-red-600"/>Weaknesses</h4>
+                                        <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">{deepDiveResults.swot.weaknesses.map((w,i) => <li key={i}>{w}</li>)}</ul>
+                                    </div>
+                                    <div className="p-4 bg-blue-100/50 dark:bg-blue-900/20 rounded-lg border-l-4 border-blue-500">
+                                        <h4 className="font-semibold flex items-center gap-2 mb-2"><Sparkles className="h-5 w-5 text-blue-600"/>Opportunities</h4>
+                                        <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">{deepDiveResults.swot.opportunities.map((o,i) => <li key={i}>{o}</li>)}</ul>
+                                    </div>
+                                    <div className="p-4 bg-yellow-100/50 dark:bg-yellow-900/20 rounded-lg border-l-4 border-yellow-500">
+                                        <h4 className="font-semibold flex items-center gap-2 mb-2"><AlertTriangle className="h-5 w-5 text-yellow-600"/>Threats</h4>
+                                        <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">{deepDiveResults.swot.threats.map((t,i) => <li key={i}>{t}</li>)}</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {!isGeneratingDeepDive && !deepDiveResults && (
+                         <p className="text-muted-foreground text-center py-10">Your comprehensive market report will appear here. Click the button below to generate it.</p>
+                    )}
+                </CardContent>
+                <CardFooter className="bg-muted/50 dark:bg-muted/20 p-4 mt-auto">
+                    <Button onClick={handleDeepDiveAnalysis} className="w-full text-lg py-6 rounded-md" disabled={isOverallLoading || isGeneratingDeepDive || !businessType}>
+                    {isGeneratingDeepDive ? <Loader2 className="mr-2 h-5 w-5 animate-spin"/> : <BrainCircuit className="mr-2 h-5 w-5"/>}
+                    {isGeneratingDeepDive ? "Generating Report..." : "Generate Deep-Dive Report"}
+                    </Button>
+                </CardFooter>
+            </Card>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card className="shadow-xl rounded-xl overflow-hidden">
                 <CardHeader className="bg-primary/5 dark:bg-primary/10">
@@ -560,7 +683,6 @@ function DashboardContent() {
                 </CardFooter>
                 </Card>
             </div>
-
           </div>
         </div>
       </main>
@@ -575,4 +697,3 @@ export default function DashboardPage() {
     </Suspense>
   );
 }
-

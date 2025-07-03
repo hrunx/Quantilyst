@@ -623,6 +623,10 @@ body {
   margin-top: .125rem;
 }
 
+.mb-3 {
+  margin-bottom: .75rem;
+}
+
 .block {
   display: block;
 }
@@ -746,6 +750,10 @@ body {
 
 .h-3 {
   height: .75rem;
+}
+
+.h-48 {
+  height: 12rem;
 }
 
 .max-h-96 {
@@ -1262,6 +1270,26 @@ body {
   border-color: #0000;
 }
 
+.border-blue-500 {
+  --tw-border-opacity: 1;
+  border-color: rgb(59 130 246 / var(--tw-border-opacity, 1));
+}
+
+.border-green-500 {
+  --tw-border-opacity: 1;
+  border-color: rgb(34 197 94 / var(--tw-border-opacity, 1));
+}
+
+.border-red-500 {
+  --tw-border-opacity: 1;
+  border-color: rgb(239 68 68 / var(--tw-border-opacity, 1));
+}
+
+.border-yellow-500 {
+  --tw-border-opacity: 1;
+  border-color: rgb(234 179 8 / var(--tw-border-opacity, 1));
+}
+
 .border-l-transparent {
   border-left-color: #0000;
 }
@@ -1354,6 +1382,22 @@ body {
 
 .bg-transparent {
   background-color: #0000;
+}
+
+.bg-blue-100\/50 {
+  background-color: #dbeafe80;
+}
+
+.bg-green-100\/50 {
+  background-color: #dcfce780;
+}
+
+.bg-red-100\/50 {
+  background-color: #fee2e280;
+}
+
+.bg-yellow-100\/50 {
+  background-color: #fef9c380;
 }
 
 .bg-gradient-to-br {
@@ -1728,6 +1772,16 @@ body {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
+.text-blue-600 {
+  --tw-text-opacity: 1;
+  color: rgb(37 99 235 / var(--tw-text-opacity, 1));
+}
+
+.text-yellow-600 {
+  --tw-text-opacity: 1;
+  color: rgb(202 138 4 / var(--tw-text-opacity, 1));
 }
 
 .underline-offset-4 {
@@ -2755,6 +2809,22 @@ body {
   background-color: hsl(var(--primary) / .1);
 }
 
+.dark\:bg-blue-900\/20:is(.dark *) {
+  background-color: #1e3a8a33;
+}
+
+.dark\:bg-green-900\/20:is(.dark *) {
+  background-color: #14532d33;
+}
+
+.dark\:bg-red-900\/20:is(.dark *) {
+  background-color: #7f1d1d33;
+}
+
+.dark\:bg-yellow-900\/20:is(.dark *) {
+  background-color: #713f1233;
+}
+
 @media (width >= 640px) {
   .sm\:bottom-0 {
     bottom: 0;
@@ -2842,6 +2912,10 @@ body {
 
   .md\:grid-cols-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .md\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .md\:p-6 {

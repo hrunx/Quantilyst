@@ -7,6 +7,7 @@ import { seoContentSuggestions, SeoContentSuggestionsInput, SeoContentSuggestion
 import { advancedSeoKeywordAnalysis, AdvancedSeoKeywordAnalysisInput, AdvancedSeoKeywordAnalysisOutput } from '@/ai/flows/advanced-seo-keyword-analysis';
 import { generateTrendingKeywords, GenerateTrendingKeywordsInput, GenerateTrendingKeywordsOutput } from '@/ai/flows/generate-trending-keywords';
 import { generateChartTakeaway, GenerateChartTakeawayInput, GenerateChartTakeawayOutput } from '@/ai/flows/generate-chart-takeaway';
+import { marketDeepDive, MarketDeepDiveInput, MarketDeepDiveOutput } from '@/ai/flows/market-deep-dive';
 
 export async function getTrendingKeywordsAction(input: GenerateTrendingKeywordsInput): Promise<{ success: boolean; data?: GenerateTrendingKeywordsOutput; error?: string }> {
   try {
@@ -66,4 +67,14 @@ export async function getChartTakeawayAction(input: GenerateChartTakeawayInput):
         console.error("Error generating chart takeaway:", error);
         return { success: false, error: (error instanceof Error ? error.message : String(error)) || "Failed to generate chart takeaway." };
     }
+}
+
+export async function getMarketDeepDiveAction(input: MarketDeepDiveInput): Promise<{ success: boolean; data?: MarketDeepDiveOutput; error?: string }> {
+  try {
+    const result = await marketDeepDive(input);
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("Error generating market deep-dive:", error);
+    return { success: false, error: (error instanceof Error ? error.message : String(error)) || "Failed to generate market deep-dive." };
+  }
 }
