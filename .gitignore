@@ -1,45 +1,24 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
+# Ignore artifacts
+/dist
 /build
+/out
 
-# misc
-.DS_Store
-*.pem
+# Ignore Node.js dependencies
+/node_modules
+/package-lock.json
+/yarn.lock
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
+# Ignore editor/IDE files
+.vscode/
+.idea/
 
-# vercel
-.vercel
+# Ignore log files
+*.log
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# Ignore sensitive files (if any)
+*.env
 
-.genkit/*
-.env*
+# Ignore potential AI interaction/conversation files (adjust patterns as needed)
+*.ai.history
+*.conversation.log
 
-# firebase
-firebase-debug.log
-firestore-debug.log
