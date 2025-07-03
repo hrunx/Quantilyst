@@ -6,6 +6,7 @@ import { translateKeywordsArabic, TranslateKeywordsArabicInput, TranslateKeyword
 import { seoContentSuggestions, SeoContentSuggestionsInput, SeoContentSuggestionsOutput } from '@/ai/flows/seo-content-suggestions';
 import { advancedSeoKeywordAnalysis, AdvancedSeoKeywordAnalysisInput, AdvancedSeoKeywordAnalysisOutput } from '@/ai/flows/advanced-seo-keyword-analysis';
 import { generateTrendingKeywords, GenerateTrendingKeywordsInput, GenerateTrendingKeywordsOutput } from '@/ai/flows/generate-trending-keywords';
+import { generateChartTakeaway, GenerateChartTakeawayInput, GenerateChartTakeawayOutput } from '@/ai/flows/generate-chart-takeaway';
 
 export async function getTrendingKeywordsAction(input: GenerateTrendingKeywordsInput): Promise<{ success: boolean; data?: GenerateTrendingKeywordsOutput; error?: string }> {
   try {
@@ -55,4 +56,14 @@ export async function getAdvancedSeoAnalysisAction(input: AdvancedSeoKeywordAnal
     console.error("Error getting advanced SEO analysis:", error);
     return { success: false, error: (error instanceof Error ? error.message : String(error)) || "Failed to get advanced SEO analysis." };
   }
+}
+
+export async function getChartTakeawayAction(input: GenerateChartTakeawayInput): Promise<{ success: boolean; data?: GenerateChartTakeawayOutput; error?: string }> {
+    try {
+        const result = await generateChartTakeaway(input);
+        return { success: true, data: result };
+    } catch (error) {
+        console.error("Error generating chart takeaway:", error);
+        return { success: false, error: (error instanceof Error ? error.message : String(error)) || "Failed to generate chart takeaway." };
+    }
 }

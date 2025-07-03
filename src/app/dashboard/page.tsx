@@ -11,15 +11,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Lightbulb, LineChart as LucideLineChartIcon, Search, BarChart3, Settings2, Bell, Briefcase, MapPin, Globe, Sparkles, HelpCircle, FileText, ListChecks, TrendingUp, Loader2, Target, Users, Bot, VenetianMask } from 'lucide-react';
+import { Lightbulb, LineChart as LucideLineChartIcon, Search, BarChart3, Settings2, Bell, Briefcase, MapPin, Globe, Sparkles, HelpCircle, ListChecks, TrendingUp, Loader2, Target, Users, Bot, VenetianMask, MessageSquareQuote, CheckCircle, ExternalLink } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTooltip, Legend as RechartsLegend } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent, type ChartConfig } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Progress } from "@/components/ui/progress";
 
 import { mockTrendingKeywords, mockCountries } from '@/lib/mockData';
 import type { Keyword as AppKeyword, TimeFrame, TimeFrameKeywords } from '@/lib/mockData';
-import { getArabicTranslationsAction, getSeoSuggestionsAction, getAdvancedSeoAnalysisAction, getTrendingKeywordsAction } from '../actions';
+import { getArabicTranslationsAction, getSeoSuggestionsAction, getAdvancedSeoAnalysisAction, getTrendingKeywordsAction, getChartTakeawayAction } from '../actions';
 import type { TranslateKeywordsArabicOutput } from '@/ai/flows/translate-keywords-arabic';
 import type { SeoContentSuggestionsOutput } from '@/ai/flows/seo-content-suggestions';
 import type { AdvancedSeoKeywordAnalysisOutput } from '@/ai/flows/advanced-seo-keyword-analysis';
@@ -59,12 +60,16 @@ function DashboardContent() {
   const [advancedAnalysisResults, setAdvancedAnalysisResults] = useState<AdvancedSeoKeywordAnalysisOutput | null>(null);
   const [isAnalyzingAdvanced, setIsAnalyzingAdvanced] = useState(false);
   
+  const [chartTakeaway, setChartTakeaway] = useState("");
+  const [isGeneratingTakeaway, setIsGeneratingTakeaway] = useState(false);
+  
   const fetchKeywords = useCallback(async () => {
     if (!businessType) {
       toast({ title: "Input Required", description: "Business type is needed to fetch keywords.", variant: "destructive" });
       return null;
     }
     setIsLoadingKeywords(true);
+    setChartTakeaway("");
     // Reset dependent data
     setArabicKeywords([]);
     setSeoSuggestions([]);
@@ -83,6 +88,22 @@ function DashboardContent() {
         return mockTrendingKeywords;
     }
   }, [businessType, country, city, toast]);
+
+  const handleChartTakeaway = useCallback(async (keywordsForChart: AppKeyword[]) => {
+      if (!businessType || !keywordsForChart || keywordsForChart.length === 0) {
+          return;
+      }
+      setIsGeneratingTakeaway(true);
+      const chartDataString = JSON.stringify(keywordsForChart.map(kw => ({ name: kw.name, volume: kw.volume })));
+      const result = await getChartTakeawayAction({ businessType, keywordChartData: chartDataString });
+
+      if (result.success && result.data) {
+          setChartTakeaway(result.data.takeaway);
+      } else {
+          setChartTakeaway(""); // Clear on failure
+      }
+      setIsGeneratingTakeaway(false);
+  }, [businessType]);
 
 
   const handleTranslateKeywords = useCallback(async (keywordsForTranslation?: AppKeyword[]) => {
@@ -144,11 +165,13 @@ function DashboardContent() {
 
     const fetchedKeywordsResult = await fetchKeywords();
     if (fetchedKeywordsResult && fetchedKeywordsResult[activeTab] && fetchedKeywordsResult[activeTab].length > 0) {
+      const activeKeywords = fetchedKeywordsResult[activeTab];
       await Promise.all([
-        handleTranslateKeywords(fetchedKeywordsResult[activeTab]),
-        handleSeoSuggestions(fetchedKeywordsResult[activeTab])
+        handleTranslateKeywords(activeKeywords),
+        handleSeoSuggestions(activeKeywords),
+        handleChartTakeaway(activeKeywords)
       ]);
-      const firstKeywordName = fetchedKeywordsResult[activeTab][0]?.name;
+      const firstKeywordName = activeKeywords[0]?.name;
       if (firstKeywordName) {
         setAdvancedAnalysisKeyword(firstKeywordName);
       }
@@ -161,7 +184,7 @@ function DashboardContent() {
       toast({ title: "Dashboard Loaded!", description: "Insights are ready for your review.", variant: "default" });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [businessTypeFromQuery, fetchKeywords, handleTranslateKeywords, handleSeoSuggestions, activeTab, toast]);
+  }, [businessTypeFromQuery, fetchKeywords, handleTranslateKeywords, handleSeoSuggestions, handleChartTakeaway, activeTab, toast]);
 
   useEffect(() => {
     if (businessTypeFromQuery && countryFromQuery) {
@@ -183,11 +206,13 @@ function DashboardContent() {
 
     const fetchedKeywordsResult = await fetchKeywords();
     if (fetchedKeywordsResult && fetchedKeywordsResult[activeTab] && fetchedKeywordsResult[activeTab].length > 0) {
+      const activeKeywords = fetchedKeywordsResult[activeTab];
       await Promise.all([
-        handleTranslateKeywords(fetchedKeywordsResult[activeTab]),
-        handleSeoSuggestions(fetchedKeywordsResult[activeTab])
+        handleTranslateKeywords(activeKeywords),
+        handleSeoSuggestions(activeKeywords),
+        handleChartTakeaway(activeKeywords)
       ]);
-      const firstKeywordName = fetchedKeywordsResult[activeTab][0]?.name;
+      const firstKeywordName = activeKeywords[0]?.name;
       if (firstKeywordName && advancedAnalysisKeyword !== firstKeywordName) {
         setAdvancedAnalysisKeyword(firstKeywordName);
       }
@@ -381,6 +406,29 @@ function DashboardContent() {
                        <AccordionTrigger className="text-base"><BarChart3 className="mr-2 h-4 w-4" /> Difficulty Analysis</AccordionTrigger>
                        <AccordionContent className="text-sm">{advancedAnalysisResults.difficultyAnalysis}</AccordionContent>
                     </AccordionItem>
+                    <AccordionItem value="confidence">
+                       <AccordionTrigger className="text-base"><CheckCircle className="mr-2 h-4 w-4" /> Confidence &amp; Sources</AccordionTrigger>
+                       <AccordionContent className="space-y-4">
+                          <div>
+                            <Label className="text-sm font-semibold">Analysis Confidence</Label>
+                            <div className="flex items-center gap-2 mt-1">
+                                <Progress value={advancedAnalysisResults.confidenceScore} className="w-full h-2" />
+                                <span className="text-sm font-bold">{advancedAnalysisResults.confidenceScore}%</span>
+                            </div>
+                          </div>
+                          <div>
+                            <Label className="text-sm font-semibold">Simulated Data Sources</Label>
+                            <ul className="space-y-1 mt-1">
+                                {advancedAnalysisResults.simulatedSources.map((source, i) => (
+                                    <li key={`src-${i}`} className="text-sm text-muted-foreground flex items-center gap-2">
+                                        <ExternalLink className="h-3 w-3" />
+                                        <a href={source} target="_blank" rel="noopener noreferrer" className="hover:underline">{new URL(source).hostname}</a>
+                                    </li>
+                                ))}
+                            </ul>
+                          </div>
+                       </AccordionContent>
+                    </AccordionItem>
                   </Accordion>
                 )}
                  {!isAnalyzingAdvanced && !advancedAnalysisResults && <p className="text-sm text-muted-foreground text-center py-2">Enter a keyword and click analyze to reveal advanced AI insights.</p>}
@@ -444,6 +492,23 @@ function DashboardContent() {
                    <p className="text-muted-foreground text-center py-10">No data available for chart. Perform an analysis to see keyword volumes.</p>
                 )}
               </CardContent>
+              <CardFooter className="bg-muted/50 dark:bg-muted/20 p-4 border-t">
+                  {isGeneratingTakeaway ? (
+                       <div className="flex items-center w-full text-sm text-muted-foreground">
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin"/> AI is analyzing the chart to generate a key takeaway...
+                       </div>
+                  ) : chartTakeaway ? (
+                        <div className="flex items-start gap-3">
+                            <MessageSquareQuote className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                            <div>
+                                <h4 className="font-semibold text-foreground">CMO Takeaway</h4>
+                                <p className="text-sm text-muted-foreground">{chartTakeaway}</p>
+                            </div>
+                        </div>
+                  ) : (
+                      <p className="text-sm text-muted-foreground">The AI-generated takeaway for this chart will appear here after analysis.</p>
+                  )}
+              </CardFooter>
             </Card>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

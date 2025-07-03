@@ -37,6 +37,8 @@ const AdvancedSeoKeywordAnalysisOutputSchema = z.object({
   difficultyAnalysis: z
     .string()
     .describe('A brief qualitative analysis of the keyword\'s SEO difficulty and ranking potential.'),
+  confidenceScore: z.number().min(0).max(100).describe('A confidence score (0-100) of this analysis based on the perceived data quality.'),
+  simulatedSources: z.array(z.string()).describe('An array of 2-3 simulated example source URLs that would support this analysis, e.g., "https://trends.google.com/trends/", "https://www.similarweb.com/".'),
 });
 export type AdvancedSeoKeywordAnalysisOutput = z.infer<typeof AdvancedSeoKeywordAnalysisOutputSchema>;
 
@@ -63,6 +65,8 @@ Provide a comprehensive strategic brief covering the following areas. Your entir
 4.  **Content Angle**: Suggest a unique hook or angle for our content that will make it stand out from the competition.
 5.  **Detailed Content Outline**: Propose a structured outline for a piece of content (like a blog post). Include a compelling title and at least 3-4 main sections (H2s), each with 2-3 key talking points or sub-headings (H3s/bullets).
 6.  **Difficulty Analysis**: Give a concise, qualitative summary of the SEO difficulty. Explain *why* it's difficult or easy (e.g., "High authority domains dominate," "Low competition in this niche," etc.).
+7.  **Confidence Score**: Provide a confidence score from 0-100 for this analysis based on the specificity of the inputs. A niche B2B topic might be 75, a generic term like "coffee" might be 90.
+8.  **Simulated Sources**: Provide an array of 2-3 example URLs (e.g., "https://trends.google.com/trends/explore?q={{{keyword}}}", "https://ahrefs.com/keyword-explorer") that a real analyst would use to gather this data.
 
 Your entire response MUST be a valid JSON object that strictly follows this structure:
 {
@@ -77,7 +81,9 @@ Your entire response MUST be a valid JSON object that strictly follows this stru
       { "heading": "Section 2 Title (H2)", "points": ["Point 2.1", "Point 2.2", "Point 2.3"] }
     ]
   },
-  "difficultyAnalysis": "A qualitative analysis of the keyword's SEO difficulty."
+  "difficultyAnalysis": "A qualitative analysis of the keyword's SEO difficulty.",
+  "confidenceScore": 85,
+  "simulatedSources": ["https://trends.google.com/trends/", "https://www.semrush.com/"]
 }
 `,
 });
