@@ -19,7 +19,7 @@
 *.env
 
 # Ignore potential AI interaction/conversation files (adjust patterns as needed)
-*.ai.history
+*.ai_chat
 *.conversation.log
 # AI conversation and interaction files
 *.ai.history
