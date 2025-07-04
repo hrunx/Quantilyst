@@ -632,6 +632,10 @@ body {
   margin-top: auto;
 }
 
+.mt-0 {
+  margin-top: 0;
+}
+
 .block {
   display: block;
 }

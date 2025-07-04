@@ -10,13 +10,14 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Lightbulb, LineChart as LucideLineChartIcon, Search, BarChart3, Settings2, Bell, Briefcase, MapPin, Globe, Sparkles, HelpCircle, ListChecks, TrendingUp, Loader2, Target, Users, Bot, VenetianMask, MessageSquareQuote, CheckCircle, ExternalLink, Shield, ShieldOff, AlertTriangle, PieChart, Building2, BrainCircuit, BookCopy, Info, MousePointerClick } from 'lucide-react';
-import { Bar, ComposedChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTooltip, Legend as RechartsLegend } from 'recharts';
+import { Lightbulb, LineChart as LucideLineChartIcon, Search, BarChart3, Settings2, Bell, Briefcase, MapPin, Globe, Sparkles, HelpCircle, ListChecks, TrendingUp, Loader2, Target, Users, Bot, VenetianMask, MessageSquareQuote, CheckCircle, ExternalLink, Shield, ShieldOff, AlertTriangle, PieChart, Building2, BrainCircuit, BookCopy, Info, MousePointerClick, SlidersHorizontal, Filter } from 'lucide-react';
+import { Bar, ComposedChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTooltip, Legend as RechartsLegend, ScatterChart, Scatter } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent, type ChartConfig } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Progress } from "@/components/ui/progress";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Slider } from "@/components/ui/slider";
 
 import { mockCountries } from '@/lib/mockData';
 import { getArabicTranslationsAction, getSeoSuggestionsAction, getAdvancedSeoAnalysisAction, getTrendingKeywordsAction, getChartTakeawayAction, getMarketDeepDiveAction } from '../actions';
@@ -78,6 +79,12 @@ function DashboardContent() {
   const [deepDiveResults, setDeepDiveResults] = useState<MarketDeepDiveOutput | null>(null);
   const [isGeneratingDeepDive, setIsGeneratingDeepDive] = useState(false);
 
+  // Chart Filtering State
+  const [difficultyRange, setDifficultyRange] = useState<[number, number]>([0, 100]);
+  const [minVolume, setMinVolume] = useState<string>('');
+  const [keywordSearch, setKeywordSearch] = useState<string>('');
+  const [activeChartType, setActiveChartType] = useState('comparison');
+
   const fetchKeywords = useCallback(async () => {
     if (!businessType) {
       toast({ title: "Input Required", description: "Business type is needed to fetch keywords.", variant: "destructive" });
@@ -127,8 +134,8 @@ function DashboardContent() {
     if (!businessType || !keywordsToUse || keywordsToUse.length === 0) return;
 
     setIsTranslating(true);
-    const keywordNamesString = keywordsToUse.map(kw => kw.name).join(', ');
-    const result = await getArabicTranslationsAction({ businessType, keywords: keywordNamesString });
+    const keywordNames = keywordsToUse.map(kw => kw.name);
+    const result = await getArabicTranslationsAction({ businessType, keywords: keywordNames.join(', ') });
     
     if (result.success && result.data) {
       setArabicKeywords(result.data.translatedKeywords);
@@ -342,17 +349,24 @@ function DashboardContent() {
 
   const keywordChartData = useMemo(() => {
     const activeKeywords = currentKeywords[activeTab];
-    if (activeKeywords && activeKeywords.length > 0) {
-      return activeKeywords.slice(0, 10).map(kw => ({
+    if (!activeKeywords) return [];
+
+    return activeKeywords
+      .filter(kw => {
+        const volumeMatch = !minVolume || (kw.volume || 0) >= parseInt(minVolume, 10);
+        const difficultyMatch = (kw.difficulty || 0) >= difficultyRange[0] && (kw.difficulty || 0) <= difficultyRange[1];
+        const searchMatch = !keywordSearch || kw.name.toLowerCase().includes(keywordSearch.toLowerCase());
+        return volumeMatch && difficultyMatch && searchMatch;
+      })
+      .map(kw => ({
         name: kw.name, // Full name for click handler
         displayName: kw.name.length > 25 ? kw.name.substring(0, 22) + "..." : kw.name,
         volume: kw.volume as number,
         difficulty: kw.difficulty as number,
         change: kw.change,
-      }));
-    }
-    return [];
-  }, [currentKeywords, activeTab]);
+      }))
+      .slice(0, 20); // Limit to top 20 for chart performance
+  }, [currentKeywords, activeTab, minVolume, difficultyRange, keywordSearch]);
 
   const handleChartClick = (data: any) => {
     if (data && data.activePayload && data.activePayload[0]) {
@@ -573,66 +587,116 @@ function DashboardContent() {
             
             <Card className="shadow-xl rounded-xl overflow-hidden bg-card/80">
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-xl"><LucideLineChartIcon className="h-6 w-6 text-primary"/>Interactive Keyword Analysis</CardTitle>
-                    <CardDescription className="flex items-center gap-2">
-                        <MousePointerClick className="h-4 w-4" />
-                        Compare volume vs. difficulty. Click any bar to select that keyword for a deep-dive analysis.
+                    <CardTitle className="flex items-center gap-2 text-xl"><Filter className="h-6 w-6 text-primary"/>Interactive Keyword Analysis</CardTitle>
+                    <CardDescription className="flex items-start gap-2">
+                        <MousePointerClick className="h-4 w-4 mt-1 flex-shrink-0" />
+                        <span>Use the filters to refine your view. Switch between a direct comparison chart and an opportunity matrix. Click any data point to select that keyword for a deep-dive.</span>
                     </CardDescription>
                 </CardHeader>
-                <CardContent className="h-[450px] w-full pt-6"> 
-                    {(isLoadingKeywords || isOverallLoading) && keywordChartData.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
-                        <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-                        <p>Loading chart data...</p>
+                <CardContent className="pt-6"> 
+                    <div className="flex flex-col gap-4 border-b border-border/50 pb-4 mb-4">
+                        <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+                            <SlidersHorizontal className="h-4 w-4" />
+                            <span>Filter & Refine</span>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <Label htmlFor="keywordSearch" className="text-xs font-semibold">Keyword Search</Label>
+                                <Input id="keywordSearch" placeholder="Filter by name..." value={keywordSearch} onChange={(e) => setKeywordSearch(e.target.value)} className="h-9 mt-1" />
+                            </div>
+                            <div>
+                                <Label htmlFor="minVolume" className="text-xs font-semibold">Minimum Volume</Label>
+                                <Input id="minVolume" type="number" placeholder="e.g., 1000" value={minVolume} onChange={(e) => setMinVolume(e.target.value)} className="h-9 mt-1" />
+                            </div>
+                            <div>
+                                <Label className="text-xs font-semibold">Difficulty Range: <span className="font-bold text-foreground">{difficultyRange[0]} - {difficultyRange[1]}</span></Label>
+                                <Slider
+                                    value={difficultyRange}
+                                    onValueChange={(value) => setDifficultyRange(value as [number, number])}
+                                    max={100}
+                                    step={1}
+                                    className="mt-2"
+                                />
+                            </div>
+                        </div>
                     </div>
-                    ) : keywordChartData.length > 0 ? (
-                    <ChartContainer config={chartConfig} className="w-full h-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                             <ComposedChart data={keywordChartData} onClick={handleChartClick} margin={{ top: 5, right: 30, left: 20, bottom: 100 }}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border/50" />
-                                <XAxis 
-                                    dataKey="displayName" 
-                                    tickLine={false} 
-                                    axisLine={false} 
-                                    stroke="hsl(var(--muted-foreground))" 
-                                    angle={-45} 
-                                    textAnchor="end" 
-                                    interval={0} 
-                                    height={100} 
-                                    tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
-                                />
-                                <YAxis 
-                                    yAxisId="left" 
-                                    stroke="hsl(var(--chart-1))" 
-                                    tickFormatter={(value) => typeof value === 'number' && value >= 1000 ? `${value/1000}k` : (value || '').toLocaleString()} 
-                                    tickLine={false} 
-                                    axisLine={false} 
-                                    width={60} 
-                                    tick={{ fontSize: 10 }}
-                                />
-                                <YAxis 
-                                    yAxisId="right" 
-                                    orientation="right" 
-                                    stroke="hsl(var(--chart-2))" 
-                                    domain={[0, 100]} 
-                                    tickLine={false} 
-                                    axisLine={false} 
-                                    width={40} 
-                                    tick={{ fontSize: 10 }}
-                                />
-                                <RechartsTooltip 
-                                    cursor={{fill: 'hsl(var(--accent)/0.5)', radius: 4}} 
-                                    content={<CustomTooltip />} 
-                                />
-                                <ChartLegend content={<ChartLegendContent wrapperStyle={{paddingTop: '20px'}} />} />
-                                <Bar yAxisId="left" dataKey="volume" fill="var(--color-volume)" radius={[4, 4, 0, 0]} barSize={20} />
-                                <Bar yAxisId="right" dataKey="difficulty" fill="var(--color-difficulty)" radius={[4, 4, 0, 0]} barSize={20} />
-                            </ComposedChart>
-                        </ResponsiveContainer>
-                    </ChartContainer>
-                    ) : (
-                    <p className="text-muted-foreground text-center py-10">No data available. Perform an analysis to see keyword volumes.</p>
-                    )}
+
+                    <Tabs value={activeChartType} onValueChange={setActiveChartType} className="w-full">
+                        <TabsList className="grid w-full grid-cols-2 mb-4 bg-muted/70 dark:bg-muted/30 rounded-md">
+                            <TabsTrigger value="comparison" className="py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Volume vs. Difficulty</TabsTrigger>
+                            <TabsTrigger value="opportunity" className="py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Opportunity Matrix</TabsTrigger>
+                        </TabsList>
+                        <div className="h-[450px] w-full pt-6">
+                            {(isLoadingKeywords || isOverallLoading) && keywordChartData.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+                                <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+                                <p>Loading chart data...</p>
+                            </div>
+                            ) : keywordChartData.length > 0 ? (
+                            <ChartContainer config={chartConfig} className="w-full h-full">
+                                <TabsContent value="comparison" className="h-full mt-0">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <ComposedChart data={keywordChartData} onClick={handleChartClick} margin={{ top: 5, right: 20, left: 20, bottom: 60 }}>
+                                            <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border/50" />
+                                            <XAxis 
+                                                dataKey="displayName" 
+                                                tickLine={false} 
+                                                axisLine={false} 
+                                                stroke="hsl(var(--muted-foreground))" 
+                                                angle={-45} 
+                                                textAnchor="end" 
+                                                interval={0} 
+                                                height={80} 
+                                                tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
+                                            />
+                                            <YAxis yAxisId="left" stroke="hsl(var(--chart-1))" tickFormatter={(value) => typeof value === 'number' && value >= 1000 ? `${value/1000}k` : (value || '').toLocaleString()} tickLine={false} axisLine={false} width={60} tick={{ fontSize: 10 }}/>
+                                            <YAxis yAxisId="right" orientation="right" stroke="hsl(var(--chart-2))" domain={[0, 100]} tickLine={false} axisLine={false} width={40} tick={{ fontSize: 10 }}/>
+                                            <RechartsTooltip cursor={{fill: 'hsl(var(--accent)/0.5)', radius: 4}} content={<CustomTooltip />} />
+                                            <ChartLegend content={<ChartLegendContent wrapperStyle={{paddingTop: '20px'}} />} />
+                                            <Bar yAxisId="left" dataKey="volume" fill="var(--color-volume)" radius={[4, 4, 0, 0]} barSize={20} />
+                                            <Bar yAxisId="right" dataKey="difficulty" fill="var(--color-difficulty)" radius={[4, 4, 0, 0]} barSize={20} />
+                                        </ComposedChart>
+                                    </ResponsiveContainer>
+                                </TabsContent>
+                                <TabsContent value="opportunity" className="h-full mt-0">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <ScatterChart
+                                            margin={{ top: 20, right: 20, bottom: 60, left: 20 }}
+                                            onClick={handleChartClick}
+                                        >
+                                            <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border/50" />
+                                            <XAxis 
+                                                type="number" 
+                                                dataKey="difficulty" 
+                                                name="Difficulty" 
+                                                stroke="hsl(var(--muted-foreground))"
+                                                domain={[0, 100]}
+                                                tick={{ fontSize: 10 }}
+                                                label={{ value: 'SEO Difficulty →', position: 'insideBottom', dy: 20, fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                                            />
+                                            <YAxis 
+                                                type="number" 
+                                                dataKey="volume" 
+                                                name="Volume" 
+                                                stroke="hsl(var(--muted-foreground))"
+                                                tickFormatter={(value) => typeof value === 'number' && value >= 1000 ? `${value/1000}k` : (value || '').toLocaleString()}
+                                                tick={{ fontSize: 10 }}
+                                                label={{ value: 'Search Volume →', angle: -90, position: 'insideLeft', dx: -10, fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                                            />
+                                            <RechartsTooltip 
+                                                cursor={{ strokeDasharray: '3 3' }} 
+                                                content={<CustomTooltip />} 
+                                            />
+                                            <Scatter name="Keywords" data={keywordChartData} fill="hsl(var(--chart-1))" />
+                                        </ScatterChart>
+                                    </ResponsiveContainer>
+                                </TabsContent>
+                            </ChartContainer>
+                            ) : (
+                            <p className="text-muted-foreground text-center py-10">No data available for the current filters. Try expanding your criteria.</p>
+                            )}
+                        </div>
+                    </Tabs>
                 </CardContent>
                 <CardFooter className="p-4 border-t border-border/50">
                     {isGeneratingTakeaway ? (
