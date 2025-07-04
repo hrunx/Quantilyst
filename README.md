@@ -244,7 +244,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ---
 
-**Made with ❤️ by the Quantilyst Team**
+**Made with ❤️ by the HWAH **
 
 *Transforming data into strategy, one insight at a time.*
 
