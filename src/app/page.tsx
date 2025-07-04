@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Globe, Briefcase, MapPin, Search, BarChart3, Loader2 } from 'lucide-react'; // Added Loader2
+import { Globe, Briefcase, MapPin, Search, BarChart3, Loader2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { mockCountries } from '@/lib/mockData';
 
@@ -16,7 +16,7 @@ export default function SearchPage() {
   const [businessType, setBusinessType] = useState("");
   const [country, setCountry] = useState("US");
   const [city, setCity] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Added isLoading state
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
@@ -38,7 +38,7 @@ export default function SearchPage() {
       return;
     }
 
-    setIsLoading(true); // Set loading to true
+    setIsLoading(true);
 
     const query = new URLSearchParams({
       businessType: businessType.trim(),
@@ -47,18 +47,14 @@ export default function SearchPage() {
     if (city.trim()) {
       query.append('city', city.trim());
     }
-    // Simulate a short delay if needed, or directly push
-    // For actual async work before push, you'd await it here.
-    // For now, the loading state is mostly for the button's visual feedback.
     router.push(`/dashboard?${query.toString()}`);
-    // No need to setIsLoading(false) here as the page will navigate away.
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 p-4 text-white">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 text-foreground">
       <div className="max-w-2xl w-full space-y-8">
         <div className="text-center">
-          <BarChart3 className="mx-auto h-16 w-16 text-sky-400" />
+          <BarChart3 className="mx-auto h-16 w-16 text-primary" />
           <h1 className="mt-6 text-5xl font-extrabold tracking-tight">Quantilyst Market Intelligence</h1>
           <p className="mt-4 text-xl text-slate-300">
             Real-time, end-to-end market visibility for whoever cares.
@@ -68,41 +64,41 @@ export default function SearchPage() {
           </p>
         </div>
 
-        <Card className="bg-slate-800/70 border-slate-700 shadow-2xl backdrop-blur-md">
+        <Card className="bg-card/80 border-border shadow-2xl shadow-primary/10 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className="text-3xl font-semibold text-center text-sky-300 flex items-center justify-center gap-2">
-              <Search className="h-8 w-8" /> Configure Your Analysis
+            <CardTitle className="text-3xl font-semibold text-center text-primary flex items-center justify-center gap-2">
+              <Search className="h-8 w-8" /> Fire up the engine:
             </CardTitle>
             <CardDescription className="text-center text-slate-400 pt-2 text-base">
-              Fire up the engine: Tell us what you’re chasing; Quantilyst builds an executive-grade report in seconds.
+               Tell us what you’re chasing; Quantilyst builds an executive-grade report in seconds.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 pt-6">
             <div>
               <Label htmlFor="businessType" className="flex items-center gap-2 text-lg font-medium text-slate-200 mb-2">
-                <Briefcase className="h-5 w-5 text-sky-400" />Business Type / Industry
+                <Briefcase className="h-5 w-5 text-primary" />Business Type / Industry
               </Label>
               <Input
                 id="businessType"
                 placeholder="e.g., SaaS, Local Restaurant, B2B Tech"
                 value={businessType}
                 onChange={e => setBusinessType(e.target.value)}
-                className="bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-sky-500 focus:border-sky-500 text-lg p-3"
+                className="bg-input border-border text-foreground placeholder-muted-foreground focus:ring-primary focus:border-primary text-lg p-3"
               />
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <Label htmlFor="country" className="flex items-center gap-2 text-lg font-medium text-slate-200 mb-2">
-                  <Globe className="h-5 w-5 text-sky-400" />Target Country
+                  <Globe className="h-5 w-5 text-primary" />Target Country
                 </Label>
                 <Select value={country} onValueChange={setCountry}>
-                  <SelectTrigger id="country" className="bg-slate-700 border-slate-600 text-white focus:ring-sky-500 focus:border-sky-500 text-lg p-3 h-auto">
+                  <SelectTrigger id="country" className="bg-input border-border text-foreground focus:ring-primary focus:border-primary text-lg p-3 h-auto">
                     <SelectValue placeholder="Select country" />
                   </SelectTrigger>
-                  <SelectContent className="bg-slate-700 border-slate-600 text-white">
+                  <SelectContent className="bg-popover border-border text-popover-foreground">
                     {mockCountries.map(c => (
-                      <SelectItem key={c.value} value={c.value} className="text-lg focus:bg-sky-600">
+                      <SelectItem key={c.value} value={c.value} className="text-lg focus:bg-primary/20">
                         {c.label}
                       </SelectItem>
                     ))}
@@ -111,14 +107,14 @@ export default function SearchPage() {
               </div>
               <div>
                 <Label htmlFor="city" className="flex items-center gap-2 text-lg font-medium text-slate-200 mb-2">
-                  <MapPin className="h-5 w-5 text-sky-400" />Target City (Optional)
+                  <MapPin className="h-5 w-5 text-primary" />Target City (Optional)
                 </Label>
                 <Input
                   id="city"
                   placeholder="e.g., San Francisco, Riyadh"
                   value={city}
                   onChange={e => setCity(e.target.value)}
-                  className="bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-sky-500 focus:border-sky-500 text-lg p-3"
+                  className="bg-input border-border text-foreground placeholder-muted-foreground focus:ring-primary focus:border-primary text-lg p-3"
                 />
               </div>
             </div>
@@ -126,7 +122,7 @@ export default function SearchPage() {
           <CardFooter className="pt-8">
             <Button
               onClick={handleSearch}
-              className="w-full text-xl py-7 rounded-lg bg-sky-500 hover:bg-sky-600 transition-colors duration-300 ease-in-out transform hover:scale-105"
+              className="w-full text-xl py-7 rounded-lg bg-primary text-primary-foreground transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg hover:shadow-primary/40"
               disabled={isLoading || !businessType.trim() || !country}
             >
               {isLoading ? (
@@ -138,8 +134,8 @@ export default function SearchPage() {
             </Button>
           </CardFooter>
         </Card>
-        <p className="text-center text-sm text-slate-500">
-          Powered by Generative AI for cutting-edge market intelligence.
+        <p className="text-center text-sm text-muted-foreground/70">
+          Powered by HWAH Industries
         </p>
       </div>
     </div>

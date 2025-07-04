@@ -2,9 +2,9 @@
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
-import { Inter } from 'next/font/google'; // Using Inter as a fallback, Geist is not standard in Next.
+import { Roboto_Mono } from 'next/font/google';
 
-const inter = Inter({
+const robotoMono = Roboto_Mono({
   subsets: ['latin'],
   variable: '--font-sans',
 });
@@ -20,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.variable}>
-      <body className={`font-sans antialiased`}>
+    <html lang="en" className={robotoMono.variable} suppressHydrationWarning>
+      <body className={`font-sans antialiased dark`}>
         {children}
         <Toaster />
       </body>

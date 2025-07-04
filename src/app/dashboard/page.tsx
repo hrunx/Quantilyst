@@ -271,7 +271,7 @@ function DashboardContent() {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[35%]">Keyword</TableHead>
+          <TableHead className="w-[25%]">Keyword</TableHead>
           <TableHead>Sources</TableHead>
           <TableHead className="text-right">Volume/Trend</TableHead>
           <TableHead className="text-right">Change (%)</TableHead>
@@ -306,7 +306,7 @@ function DashboardContent() {
             </TableCell>
             <TableCell className="text-right">{keyword.volume?.toLocaleString() || 'N/A'}</TableCell>
             <TableCell className="text-right">
-              <span className={keyword.change >= 0 ? 'text-green-600' : 'text-red-600'}>
+              <span className={keyword.change >= 0 ? 'text-green-500' : 'text-red-500'}>
                 {keyword.change >= 0 ? <TrendingUp className="inline-block h-4 w-4 mr-1" /> : <TrendingUp className="inline-block h-4 w-4 mr-1 transform rotate-180" style={{transform: 'scaleY(-1)'}}/> }
                 {keyword.change}%
               </span>
@@ -398,12 +398,12 @@ function DashboardContent() {
 
 
   return (
-    <div className="flex flex-col min-h-screen bg-muted/30 dark:bg-background">
-      <header className="sticky top-0 z-50 bg-primary text-primary-foreground p-4 shadow-lg">
+    <div className="flex flex-col min-h-screen bg-background text-foreground">
+      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border/50 p-4 shadow-lg">
         <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <LucideLineChartIcon className="h-8 w-8" />
-            <h1 className="text-3xl font-bold tracking-tight">Quantilyst Cockpit</h1>
+          <div className="flex items-center gap-3">
+            <LucideLineChartIcon className="h-8 w-8 text-primary" />
+            <h1 className="text-2xl font-bold tracking-tight text-primary">Quantilyst Cockpit</h1>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" aria-label="Notifications"><Bell className="h-5 w-5" /></Button>
@@ -414,10 +414,10 @@ function DashboardContent() {
       </header>
 
       <main className="flex-grow container mx-auto p-4 md:p-6 lg:p-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-          <div className="lg:col-span-1 space-y-6">
-            <Card className="shadow-xl rounded-xl overflow-hidden">
-              <CardHeader className="bg-primary/5 dark:bg-primary/10">
+        <div className="grid grid-cols-12 gap-6 items-start">
+          <div className="col-span-12 lg:col-span-3 space-y-6">
+            <Card className="shadow-xl rounded-xl overflow-hidden bg-card/80">
+              <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl"><Search className="h-6 w-6 text-primary" /> Analysis Context</CardTitle>
                 <CardDescription>Insights are tailored for these criteria. Change and re-analyze as needed.</CardDescription>
               </CardHeader>
@@ -438,7 +438,7 @@ function DashboardContent() {
                   <Input id="city" placeholder="e.g., San Francisco, Riyadh" value={city} onChange={e => setCity(e.target.value)} className="mt-1"/>
                 </div>
               </CardContent>
-              <CardFooter className="bg-muted/50 dark:bg-muted/20 p-4">
+              <CardFooter className="p-4">
                 <Button onClick={handleManualReanalyze} className="w-full text-lg py-6 rounded-md" disabled={isOverallLoading || isLoadingKeywords || !businessType}>
                   {isOverallLoading || isLoadingKeywords ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <TrendingUp className="mr-2 h-5 w-5" />}
                   {isOverallLoading || isLoadingKeywords ? "Re-Analyzing..." : "Re-Analyze Market"}
@@ -446,8 +446,8 @@ function DashboardContent() {
               </CardFooter>
             </Card>
 
-            <Card ref={advancedAnalysisRef} className="shadow-xl rounded-xl overflow-hidden">
-              <CardHeader className="bg-primary/5 dark:bg-primary/10">
+            <Card ref={advancedAnalysisRef} className="shadow-xl rounded-xl overflow-hidden bg-card/80">
+              <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl"><Sparkles className="h-6 w-6 text-primary" /> CMO Strategic Brief</CardTitle>
                 <CardDescription>Deep strategic insights for any keyword.</CardDescription>
               </CardHeader>
@@ -540,7 +540,7 @@ function DashboardContent() {
                 )}
                  {!isAnalyzingAdvanced && !advancedAnalysisResults && <p className="text-sm text-muted-foreground text-center py-2">Enter a keyword and click analyze to reveal advanced AI insights.</p>}
               </CardContent>
-              <CardFooter className="bg-muted/50 dark:bg-muted/20 p-4">
+              <CardFooter className="p-4">
                 <Button onClick={handleAdvancedSeoAnalysis} className="w-full text-lg py-6 rounded-md" disabled={isOverallLoading || isAnalyzingAdvanced || !businessType || !advancedAnalysisKeyword}>
                   {isAnalyzingAdvanced ? <Loader2 className="mr-2 h-5 w-5 animate-spin"/> : <Bot className="mr-2 h-5 w-5" />}
                   {isAnalyzingAdvanced ? "Generating Brief..." : "Generate Strategic Brief"}
@@ -549,19 +549,19 @@ function DashboardContent() {
             </Card>
           </div>
 
-          <div className="lg:col-span-2 space-y-6">
-            <Card className="shadow-xl rounded-xl overflow-hidden">
-              <CardHeader className="bg-primary/5 dark:bg-primary/10">
+          <div className="col-span-12 lg:col-span-9 space-y-6">
+            <Card className="shadow-xl rounded-xl overflow-hidden bg-card/80">
+              <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl"><BarChart3 className="h-6 w-6 text-primary"/>Trending Keywords Dashboard</CardTitle>
                 <CardDescription>AI-generated keyword trends, volume, and difficulty based on your analysis criteria.</CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
                 <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as TimeFrame)} className="w-full">
                   <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-4 bg-muted/70 dark:bg-muted/30 rounded-md">
-                    <TabsTrigger value="hour" className="py-2 text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md">Past Hour</TabsTrigger>
-                    <TabsTrigger value="day" className="py-2 text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md">Past Day</TabsTrigger>
-                    <TabsTrigger value="week" className="py-2 text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md">Past Week</TabsTrigger>
-                    <TabsTrigger value="month" className="py-2 text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md">Past Month</TabsTrigger>
+                    <TabsTrigger value="hour" className="py-2 text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/30">Past Hour</TabsTrigger>
+                    <TabsTrigger value="day" className="py-2 text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/30">Past Day</TabsTrigger>
+                    <TabsTrigger value="week" className="py-2 text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/30">Past Week</TabsTrigger>
+                    <TabsTrigger value="month" className="py-2 text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/30">Past Month</TabsTrigger>
                   </TabsList>
                   <TabsContent value="hour">{renderKeywordTable(currentKeywords.hour)}</TabsContent>
                   <TabsContent value="day">{renderKeywordTable(currentKeywords.day)}</TabsContent>
@@ -571,8 +571,8 @@ function DashboardContent() {
               </CardContent>
             </Card>
             
-            <Card className="shadow-xl rounded-xl overflow-hidden">
-                <CardHeader className="bg-primary/5 dark:bg-primary/10">
+            <Card className="shadow-xl rounded-xl overflow-hidden bg-card/80">
+                <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-xl"><LucideLineChartIcon className="h-6 w-6 text-primary"/>Interactive Keyword Analysis</CardTitle>
                     <CardDescription className="flex items-center gap-2">
                         <MousePointerClick className="h-4 w-4" />
@@ -634,7 +634,7 @@ function DashboardContent() {
                     <p className="text-muted-foreground text-center py-10">No data available. Perform an analysis to see keyword volumes.</p>
                     )}
                 </CardContent>
-                <CardFooter className="bg-muted/50 dark:bg-muted/20 p-4 border-t">
+                <CardFooter className="p-4 border-t border-border/50">
                     {isGeneratingTakeaway ? (
                         <div className="flex items-center w-full text-sm text-muted-foreground">
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin"/> AI is analyzing the chart to generate a key takeaway...
@@ -653,8 +653,8 @@ function DashboardContent() {
                 </CardFooter>
             </Card>
 
-            <Card className="shadow-xl rounded-xl overflow-hidden">
-                <CardHeader className="bg-primary/5 dark:bg-primary/10">
+            <Card className="shadow-xl rounded-xl overflow-hidden bg-card/80">
+                <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-xl"><BrainCircuit className="h-6 w-6 text-primary" /> Market Deep-Dive Report</CardTitle>
                     <CardDescription>A comprehensive, C-suite level market report including SWOT, competitor benchmarks, and market sizing.</CardDescription>
                 </CardHeader>
@@ -728,20 +728,20 @@ function DashboardContent() {
                             <div>
                                 <h3 className="text-lg font-semibold flex items-center gap-2 mb-3"><Sparkles className="h-5 w-5 text-primary" /> SWOT Analysis</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div className="p-4 bg-green-100/50 dark:bg-green-900/20 rounded-lg border-l-4 border-green-500">
-                                        <h4 className="font-semibold flex items-center gap-2 mb-2"><Shield className="h-5 w-5 text-green-600"/>Strengths</h4>
+                                    <div className="p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+                                        <h4 className="font-semibold flex items-center gap-2 mb-2 text-primary"><Shield className="h-5 w-5"/>Strengths</h4>
                                         <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">{deepDiveResults.swot.strengths.map((s,i) => <li key={i}>{s}</li>)}</ul>
                                     </div>
-                                    <div className="p-4 bg-red-100/50 dark:bg-red-900/20 rounded-lg border-l-4 border-red-500">
-                                        <h4 className="font-semibold flex items-center gap-2 mb-2"><ShieldOff className="h-5 w-5 text-red-600"/>Weaknesses</h4>
+                                    <div className="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+                                        <h4 className="font-semibold flex items-center gap-2 mb-2 text-destructive"><ShieldOff className="h-5 w-5"/>Weaknesses</h4>
                                         <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">{deepDiveResults.swot.weaknesses.map((w,i) => <li key={i}>{w}</li>)}</ul>
                                     </div>
-                                    <div className="p-4 bg-blue-100/50 dark:bg-blue-900/20 rounded-lg border-l-4 border-blue-500">
-                                        <h4 className="font-semibold flex items-center gap-2 mb-2"><Sparkles className="h-5 w-5 text-blue-600"/>Opportunities</h4>
+                                    <div className="p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+                                        <h4 className="font-semibold flex items-center gap-2 mb-2 text-primary"><Sparkles className="h-5 w-5"/>Opportunities</h4>
                                         <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">{deepDiveResults.swot.opportunities.map((o,i) => <li key={i}>{o}</li>)}</ul>
                                     </div>
-                                    <div className="p-4 bg-yellow-100/50 dark:bg-yellow-900/20 rounded-lg border-l-4 border-yellow-500">
-                                        <h4 className="font-semibold flex items-center gap-2 mb-2"><AlertTriangle className="h-5 w-5 text-yellow-600"/>Threats</h4>
+                                    <div className="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+                                        <h4 className="font-semibold flex items-center gap-2 mb-2 text-destructive"><AlertTriangle className="h-5 w-5"/>Threats</h4>
                                         <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">{deepDiveResults.swot.threats.map((t,i) => <li key={i}>{t}</li>)}</ul>
                                     </div>
                                 </div>
@@ -752,7 +752,7 @@ function DashboardContent() {
                          <p className="text-muted-foreground text-center py-10">Your comprehensive market report will appear here. Click the button below to generate it.</p>
                     )}
                 </CardContent>
-                <CardFooter className="bg-muted/50 dark:bg-muted/20 p-4 mt-auto">
+                <CardFooter className="p-4 mt-auto">
                     <Button onClick={handleDeepDiveAnalysis} className="w-full text-lg py-6 rounded-md" disabled={isOverallLoading || isGeneratingDeepDive || !businessType}>
                     {isGeneratingDeepDive ? <Loader2 className="mr-2 h-5 w-5 animate-spin"/> : <BrainCircuit className="mr-2 h-5 w-5"/>}
                     {isGeneratingDeepDive ? "Generating Report..." : "Generate Deep-Dive Report"}
@@ -761,8 +761,8 @@ function DashboardContent() {
             </Card>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card className="shadow-xl rounded-xl overflow-hidden flex flex-col">
-                  <CardHeader className="bg-primary/5 dark:bg-primary/10">
+                <Card className="shadow-xl rounded-xl overflow-hidden flex flex-col bg-card/80">
+                  <CardHeader>
                       <CardTitle className="flex items-center gap-2 text-xl"><Globe className="h-6 w-6 text-primary" /> Arabic Keywords (KSA Focus)</CardTitle>
                       <CardDescription>Translated keywords for the KSA market with trend data.</CardDescription>
                   </CardHeader>
@@ -784,7 +784,7 @@ function DashboardContent() {
                                           <TableCell className="font-medium text-right" dir="rtl">{kw.keyword}</TableCell>
                                           <TableCell className="text-right">{kw.volume.toLocaleString()}</TableCell>
                                            <TableCell className="text-right">
-                                              <span className={kw.change >= 0 ? 'text-green-600' : 'text-red-600'}>
+                                              <span className={kw.change >= 0 ? 'text-green-500' : 'text-red-500'}>
                                                 {kw.change}%
                                               </span>
                                            </TableCell>
@@ -796,7 +796,7 @@ function DashboardContent() {
                           <p className="text-sm text-muted-foreground text-center py-2">Translated keywords will appear here.</p>
                       )}
                   </CardContent>
-                  <CardFooter className="bg-muted/50 dark:bg-muted/20 p-4 mt-auto">
+                  <CardFooter className="p-4 mt-auto">
                       <Button onClick={() => handleTranslateKeywords()} className="w-full text-lg py-6 rounded-md" disabled={isOverallLoading || isTranslating || !businessType || !currentKeywords[activeTab] || currentKeywords[activeTab].length === 0}>
                       {isTranslating ? <Loader2 className="mr-2 h-5 w-5 animate-spin"/> : <Globe className="mr-2 h-5 w-5"/>}
                       {isTranslating ? "Translating..." : "Translate to Arabic"}
@@ -805,8 +805,8 @@ function DashboardContent() {
                 </Card>
 
 
-                <Card className="shadow-xl rounded-xl overflow-hidden flex flex-col">
-                  <CardHeader className="bg-primary/5 dark:bg-primary/10">
+                <Card className="shadow-xl rounded-xl overflow-hidden flex flex-col bg-card/80">
+                  <CardHeader>
                       <CardTitle className="flex items-center gap-2 text-xl"><ListChecks className="h-6 w-6 text-primary" /> AI Content Briefs</CardTitle>
                       <CardDescription>Actionable content briefs based on current keyword trends.</CardDescription>
                   </CardHeader>
@@ -830,7 +830,7 @@ function DashboardContent() {
                           <p className="text-sm text-muted-foreground text-center py-10">Content briefs will appear here.</p>
                       )}
                   </CardContent>
-                  <CardFooter className="bg-muted/50 dark:bg-muted/20 p-4 mt-auto">
+                  <CardFooter className="p-4 mt-auto">
                       <Button onClick={() => handleSeoSuggestions()} className="w-full text-lg py-6 rounded-md" disabled={isOverallLoading || isSuggesting || !businessType || !currentKeywords[activeTab] || currentKeywords[activeTab].length === 0}>
                       {isSuggesting ? <Loader2 className="mr-2 h-5 w-5 animate-spin"/> : <Lightbulb className="mr-2 h-5 w-5"/>}
                       {isSuggesting ? "Briefing..." : "Generate Content Briefs"}
@@ -847,7 +847,7 @@ function DashboardContent() {
 
 export default function DashboardPage() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen bg-muted/30 dark:bg-background"><Loader2 className="h-12 w-12 animate-spin text-primary" /><p className="ml-4 text-xl">Loading Cockpit...</p></div>}>
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen bg-background"><Loader2 className="h-12 w-12 animate-spin text-primary" /><p className="ml-4 text-xl">Loading Cockpit...</p></div>}>
       <DashboardContent />
     </Suspense>
   );
