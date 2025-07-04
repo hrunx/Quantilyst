@@ -10,8 +10,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'HWAH Market Insights ',
-  description: 'Trending keyword analysis and SEO suggestions for your business.',
+  title: 'Quantilyst Market Intelligence',
+  description: 'Real-time, end-to-end market visibility for whoever cares.',
 };
 
 export default function RootLayout({
@@ -28,5 +28,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-    

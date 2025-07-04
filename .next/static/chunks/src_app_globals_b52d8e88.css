@@ -909,6 +909,10 @@ body {
   max-width: 32rem;
 }
 
+.max-w-xl {
+  max-width: 36rem;
+}
+
 .flex-1 {
   flex: 1;
 }
@@ -1789,6 +1793,10 @@ body {
 .text-red-500 {
   --tw-text-opacity: 1;
   color: rgb(239 68 68 / var(--tw-text-opacity, 1));
+}
+
+.text-sky-300\/90 {
+  color: #7dd3fce6;
 }
 
 .underline-offset-4 {

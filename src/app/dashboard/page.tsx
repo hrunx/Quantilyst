@@ -403,7 +403,7 @@ function DashboardContent() {
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center gap-2">
             <LucideLineChartIcon className="h-8 w-8" />
-            <h1 className="text-3xl font-bold tracking-tight">Market Insights Cockpit</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Quantilyst Cockpit</h1>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" aria-label="Notifications"><Bell className="h-5 w-5" /></Button>

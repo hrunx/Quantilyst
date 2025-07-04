@@ -59,11 +59,24 @@ export default function SearchPage() {
       <div className="max-w-2xl w-full space-y-8">
         <div className="text-center">
           <BarChart3 className="mx-auto h-16 w-16 text-sky-400" />
-          <h1 className="mt-6 text-5xl font-extrabold tracking-tight">HWAH Market Insights</h1>
+          <h1 className="mt-6 text-5xl font-extrabold tracking-tight">Quantilyst Market Intelligence</h1>
           <p className="mt-4 text-xl text-slate-300">
-            Unlock deep SEO analytics and content strategies tailored for your business.
+            Real-time, end-to-end market visibility for whoever cares.
+          </p>
+           <p className="mt-2 text-lg text-slate-400 max-w-xl mx-auto">
+            From search signals and social buzz to funding flows and competitive benchmarks—Quantilyst distills every datapoint into clear, actionable strategy.
           </p>
         </div>
+
+        <div className="text-center space-y-1">
+          <p className="text-lg font-semibold text-sky-300/90">
+              Fire up the engine:
+          </p>
+          <p className="text-base text-slate-400">
+              Tell us what you’re chasing; Quantilyst builds an executive-grade report in seconds.
+          </p>
+        </div>
+
 
         <Card className="bg-slate-800/70 border-slate-700 shadow-2xl backdrop-blur-md">
           <CardHeader>
