@@ -68,23 +68,13 @@ export default function SearchPage() {
           </p>
         </div>
 
-        <div className="text-center space-y-1">
-          <p className="text-lg font-semibold text-sky-300/90">
-              Fire up the engine:
-          </p>
-          <p className="text-base text-slate-400">
-              Tell us what you’re chasing; Quantilyst builds an executive-grade report in seconds.
-          </p>
-        </div>
-
-
         <Card className="bg-slate-800/70 border-slate-700 shadow-2xl backdrop-blur-md">
           <CardHeader>
             <CardTitle className="text-3xl font-semibold text-center text-sky-300 flex items-center justify-center gap-2">
               <Search className="h-8 w-8" /> Configure Your Analysis
             </CardTitle>
             <CardDescription className="text-center text-slate-400 pt-2 text-base">
-              Provide your business details to generate tailored market insights and SEO recommendations.
+              Fire up the engine: Tell us what you’re chasing; Quantilyst builds an executive-grade report in seconds.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 pt-6">
