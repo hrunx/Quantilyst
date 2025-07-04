@@ -16,7 +16,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLe
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Progress } from "@/components/ui/progress";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 import { mockCountries } from '@/lib/mockData';
 import { getArabicTranslationsAction, getSeoSuggestionsAction, getAdvancedSeoAnalysisAction, getTrendingKeywordsAction, getChartTakeawayAction, getMarketDeepDiveAction } from '../actions';
@@ -127,8 +127,8 @@ function DashboardContent() {
     if (!businessType || !keywordsToUse || keywordsToUse.length === 0) return;
 
     setIsTranslating(true);
-    const keywordNames = keywordsToUse.map(kw => kw.name);
-    const result = await getArabicTranslationsAction({ businessType, keywords: keywordNames });
+    const keywordNamesString = keywordsToUse.map(kw => kw.name).join(', ');
+    const result = await getArabicTranslationsAction({ businessType, keywords: keywordNamesString });
     
     if (result.success && result.data) {
       setArabicKeywords(result.data.translatedKeywords);
@@ -852,5 +852,3 @@ export default function DashboardPage() {
     </Suspense>
   );
 }
-
-    
