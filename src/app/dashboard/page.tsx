@@ -135,7 +135,7 @@ function DashboardContent() {
 
     setIsTranslating(true);
     const keywordNames = keywordsToUse.map(kw => kw.name);
-    const result = await getArabicTranslationsAction({ businessType, keywords: keywordNames.join(', ') });
+    const result = await getArabicTranslationsAction({ businessType, keywords: keywordNames });
     
     if (result.success && result.data) {
       setArabicKeywords(result.data.translatedKeywords);
@@ -489,7 +489,7 @@ function DashboardContent() {
                     </AccordionItem>
                      <AccordionItem value="angle">
                       <AccordionTrigger className="text-base"><Lightbulb className="mr-2 h-4 w-4" /> Unique Content Angle</AccordionTrigger>
-                      <AccordionContent className="text-sm">{advancedAnalysisResults.contentAngle}</AccordionContent>
+                      <AccordionContent className="text-sm">{advancedAnalysisResults.uniqueContentAngle}</AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="long_tail">
                       <AccordionTrigger className="text-base"><ListChecks className="mr-2 h-4 w-4" /> Long-tail Keywords</AccordionTrigger>
@@ -510,9 +510,9 @@ function DashboardContent() {
                     <AccordionItem value="outline">
                       <AccordionTrigger className="text-base"><BookCopy className="mr-2 h-4 w-4" /> Detailed Content Outline</AccordionTrigger>
                       <AccordionContent>
-                        <h4 className="font-semibold mb-2 text-md">{advancedAnalysisResults.detailedContentOutline.title}</h4>
+                        <h4 className="font-semibold mb-2 text-md">{advancedAnalysisResults.contentOutline.title}</h4>
                         <ul className="space-y-3">
-                          {advancedAnalysisResults.detailedContentOutline.sections.map((section, i) => (
+                          {advancedAnalysisResults.contentOutline.sections.map((section, i) => (
                             <li key={`s-${i}`} className="ml-2">
                               <p className="font-semibold">{section.heading}</p>
                               <ul className="list-disc list-inside space-y-1 text-sm pl-2 mt-1 text-muted-foreground">
@@ -540,7 +540,7 @@ function DashboardContent() {
                           <div>
                             <Label className="text-sm font-semibold">Simulated Data Sources</Label>
                             <ul className="space-y-1 mt-1">
-                                {advancedAnalysisResults.simulatedSources.map((source, i) => (
+                                {advancedAnalysisResults.simulatedDataSources.map((source, i) => (
                                     <li key={`src-${i}`} className="text-sm text-muted-foreground flex items-center gap-2">
                                         <ExternalLink className="h-3 w-3" />
                                         <span>{getHostname(source)}</span>

@@ -25,11 +25,9 @@
 *.ai.history
 *.conversation.log
 .idx/
-**/ai/
 **/*conversation*
 **/*chat*
 **/*assistant*
-**/genkit*
 .modified
 
 dist/
