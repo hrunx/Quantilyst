@@ -1,75 +1,52 @@
 
 'use server';
-
 /**
- * @fileOverview Provides an AI-generated, one-sentence takeaway for chart data.
+ * @fileOverview Defines the Genkit flow for generating a chart takeaway.
  *
- * - generateChartTakeaway - A function that provides an executive summary for a chart.
- * - GenerateChartTakeawayInput - The input type.
- * - GenerateChartTakeawayOutput - The return type.
+ * This flow takes chart data and business context to produce a single,
+ * insightful sentence summarizing the key takeaway, as a CMO would.
+ *
+ * The main export is `generateChartTakeaway`.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import {
+    GenerateChartTakeawayInputSchema,
+    type GenerateChartTakeawayInput,
+    GenerateChartTakeawayOutputSchema,
+    type GenerateChartTakeawayOutput
+} from '@/ai/types';
 
-const GenerateChartTakeawayInputSchema = z.object({
-  businessType: z
-    .string()
-    .describe('The type of business for context.'),
-  keywordChartData: z
-    .string()
-    .describe('A JSON string representing the data used to generate the chart.'),
-});
-export type GenerateChartTakeawayInput = z.infer<typeof GenerateChartTakeawayInputSchema>;
 
-const GenerateChartTakeawayOutputSchema = z.object({
-  takeaway: z
-    .string()
-    .describe('A single, insightful sentence summarizing the chart data from a CMO\'s perspective.'),
-});
-export type GenerateChartTakeawayOutput = z.infer<typeof GenerateChartTakeawayOutputSchema>;
-
-export async function generateChartTakeaway(
-  input: GenerateChartTakeawayInput
-): Promise<GenerateChartTakeawayOutput> {
-  return generateChartTakeawayFlow(input);
+export async function generateChartTakeaway(input: GenerateChartTakeawayInput): Promise<GenerateChartTakeawayOutput> {
+    return await generateChartTakeawayFlow(input);
 }
 
+
 const prompt = ai.definePrompt({
-  name: 'generateChartTakeawayPrompt',
-  input: {schema: GenerateChartTakeawayInputSchema},
-  output: {schema: GenerateChartTakeawayOutputSchema},
-  prompt: `You are a Chief Marketing Officer (CMO) with a talent for distilling complex data into a single, powerful insight.
+    name: 'generateChartTakeawayPrompt',
+    input: { schema: GenerateChartTakeawayInputSchema },
+    output: { schema: GenerateChartTakeawayOutputSchema },
+    prompt: `
+        You are a CMO analyzing a keyword volume chart for a "{{businessType}}" business.
+        The chart data is as follows: {{keywordChartData}}.
 
-Your task is to analyze the provided chart data for a given business type and provide a one-sentence executive summary or "takeaway". This sentence should be insightful and action-oriented.
-
-Business Context: {{{businessType}}}
-
-Chart Data (JSON):
-\`\`\`json
-{{{keywordChartData}}}
-\`\`\`
-
-Based on this data, what is the single most important takeaway for the marketing team?
-
-Example: "While 'AI tools' has the highest search volume, the rapid growth of 'Email automation' suggests an emerging opportunity we should target immediately."
-
-Your entire response MUST be a valid JSON object with a single key "takeaway".
-`,
+        Based on this data, provide a single, concise, executive-level sentence that summarizes the most important insight or takeaway for a marketing team. Focus on the story the numbers are telling.
+    `,
 });
 
+
 const generateChartTakeawayFlow = ai.defineFlow(
-  {
-    name: 'generateChartTakeawayFlow',
-    inputSchema: GenerateChartTakeawayInputSchema,
-    outputSchema: GenerateChartTakeawayOutputSchema,
-  },
-  async (input) => {
-    const genResponse = await prompt(input);
-    if (!genResponse.output) {
-      console.error('Generate Chart Takeaway Flow: AI model did not return parseable output.', 'Raw text:', genResponse.text);
-      throw new Error('AI model did not return valid structured output for chart takeaway.');
+    {
+        name: 'generateChartTakeawayFlow',
+        inputSchema: GenerateChartTakeawayInputSchema,
+        outputSchema: GenerateChartTakeawayOutputSchema,
+    },
+    async (input) => {
+        const { output } = await prompt(input);
+        if (!output) {
+            throw new Error('Failed to generate chart takeaway.');
+        }
+        return output;
     }
-    return genResponse.output;
-  }
 );

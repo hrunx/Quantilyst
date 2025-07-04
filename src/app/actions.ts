@@ -2,12 +2,28 @@
 // src/app/actions.ts
 'use server';
 
-import { translateKeywordsArabic, TranslateKeywordsArabicInput, TranslateKeywordsArabicOutput } from '@/ai/flows/translate-keywords-arabic';
-import { seoContentSuggestions, SeoContentSuggestionsInput, SeoContentSuggestionsOutput } from '@/ai/flows/seo-content-suggestions';
-import { advancedSeoKeywordAnalysis, AdvancedSeoKeywordAnalysisInput, AdvancedSeoKeywordAnalysisOutput } from '@/ai/flows/advanced-seo-keyword-analysis';
-import { generateTrendingKeywords, GenerateTrendingKeywordsInput, GenerateTrendingKeywordsOutput } from '@/ai/flows/generate-trending-keywords';
-import { generateChartTakeaway, GenerateChartTakeawayInput, GenerateChartTakeawayOutput } from '@/ai/flows/generate-chart-takeaway';
-import { marketDeepDive, MarketDeepDiveInput, MarketDeepDiveOutput } from '@/ai/flows/market-deep-dive';
+import { translateKeywordsArabic } from '@/ai/flows/translate-keywords-arabic';
+import { seoContentSuggestions } from '@/ai/flows/seo-content-suggestions';
+import { advancedSeoKeywordAnalysis } from '@/ai/flows/advanced-seo-keyword-analysis';
+import { generateTrendingKeywords } from '@/ai/flows/generate-trending-keywords';
+import { generateChartTakeaway } from '@/ai/flows/generate-chart-takeaway';
+import { marketDeepDive } from '@/ai/flows/market-deep-dive';
+
+import type {
+  TranslateKeywordsArabicInput,
+  TranslateKeywordsArabicOutput,
+  SeoContentSuggestionsInput,
+  SeoContentSuggestionsOutput,
+  AdvancedSeoKeywordAnalysisInput,
+  AdvancedSeoKeywordAnalysisOutput,
+  GenerateTrendingKeywordsInput,
+  GenerateTrendingKeywordsOutput,
+  GenerateChartTakeawayInput,
+  GenerateChartTakeawayOutput,
+  MarketDeepDiveInput,
+  MarketDeepDiveOutput,
+} from '@/ai/types';
+
 
 export async function getTrendingKeywordsAction(input: GenerateTrendingKeywordsInput): Promise<{ success: boolean; data?: GenerateTrendingKeywordsOutput; error?: string }> {
   try {

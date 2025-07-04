@@ -10,7 +10,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Lightbulb, LineChart as LucideLineChartIcon, Search, BarChart3, Settings2, Bell, Briefcase, MapPin, Globe, Sparkles, HelpCircle, ListChecks, TrendingUp, Loader2, Target, Users, Bot, VenetianMask, MessageSquareQuote, CheckCircle, ExternalLink, Shield, ShieldOff, AlertTriangle, PieChart, Building2, BrainCircuit, BookCopy } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTooltip, Legend as RechartsLegend } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent, type ChartConfig } from "@/components/ui/chart";
@@ -19,15 +18,18 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Progress } from "@/components/ui/progress";
 
 import { mockCountries } from '@/lib/mockData';
-import type { Keyword as AppKeyword, TimeFrame, TimeFrameKeywords } from '@/lib/mockData';
 import { getArabicTranslationsAction, getSeoSuggestionsAction, getAdvancedSeoAnalysisAction, getTrendingKeywordsAction, getChartTakeawayAction, getMarketDeepDiveAction } from '../actions';
-import type { TranslateKeywordsArabicOutput } from '@/ai/flows/translate-keywords-arabic';
-import type { SeoContentSuggestionsOutput } from '@/ai/flows/seo-content-suggestions';
-import type { AdvancedSeoKeywordAnalysisOutput } from '@/ai/flows/advanced-seo-keyword-analysis';
-import type { MarketDeepDiveOutput } from '@/ai/flows/market-deep-dive';
 import { useToast } from "@/hooks/use-toast";
 
-const emptyKeywords: TimeFrameKeywords = {
+import type { Keyword, GenerateTrendingKeywordsOutput } from '@/ai/types';
+import type { TranslateKeywordsArabicOutput } from '@/ai/types';
+import type { SeoContentSuggestionsOutput } from '@/ai/types';
+import type { AdvancedSeoKeywordAnalysisOutput } from '@/ai/types';
+import type { MarketDeepDiveOutput } from '@/ai/types';
+
+type TimeFrame = keyof GenerateTrendingKeywordsOutput;
+
+const emptyKeywords: GenerateTrendingKeywordsOutput = {
   hour: [],
   day: [],
   week: [],
@@ -46,7 +48,7 @@ function DashboardContent() {
   const [country, setCountry] = useState(countryFromQuery || "US");
   const [city, setCity] = useState(cityFromQuery || "");
 
-  const [currentKeywords, setCurrentKeywords] = useState<TimeFrameKeywords>(emptyKeywords);
+  const [currentKeywords, setCurrentKeywords] = useState<GenerateTrendingKeywordsOutput>(emptyKeywords);
   const [activeTab, setActiveTab] = useState<TimeFrame>("week");
   
   const [isOverallLoading, setIsOverallLoading] = useState(false);
@@ -94,7 +96,7 @@ function DashboardContent() {
     }
   }, [businessType, country, city, toast]);
 
-  const handleChartTakeaway = useCallback(async (keywordsForChart: AppKeyword[]) => {
+  const handleChartTakeaway = useCallback(async (keywordsForChart: Keyword[]) => {
       if (!businessType || !keywordsForChart || keywordsForChart.length === 0) {
           return;
       }
@@ -111,7 +113,7 @@ function DashboardContent() {
   }, [businessType]);
 
 
-  const handleTranslateKeywords = useCallback(async (keywordsForTranslation?: AppKeyword[]) => {
+  const handleTranslateKeywords = useCallback(async (keywordsForTranslation?: Keyword[]) => {
     const keywordsToUse = keywordsForTranslation || currentKeywords[activeTab];
     if (!businessType || !keywordsToUse || keywordsToUse.length === 0) return;
 
@@ -128,7 +130,7 @@ function DashboardContent() {
     setIsTranslating(false);
   }, [businessType, currentKeywords, activeTab, toast]);
 
-  const handleSeoSuggestions = useCallback(async (keywordsForSuggestions?: AppKeyword[]) => {
+  const handleSeoSuggestions = useCallback(async (keywordsForSuggestions?: Keyword[]) => {
     const keywordsToUse = keywordsForSuggestions || currentKeywords[activeTab];
     if (!businessType || !keywordsToUse || keywordsToUse.length === 0) return;
 
@@ -256,7 +258,7 @@ function DashboardContent() {
     setIsGeneratingDeepDive(false);
   };
 
-  const renderKeywordTable = (keywords: AppKeyword[]) => (
+  const renderKeywordTable = (keywords: Keyword[]) => (
     <Table>
       <TableHeader>
         <TableRow>

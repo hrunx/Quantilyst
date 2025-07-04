@@ -234,17 +234,19 @@ const ai = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$g
 
 var { g: global, __dirname } = __turbopack_context__;
 {
-/* __next_internal_action_entry_do_not_use__ {"404e1bddd8cdccdbcaa56d3144d7425f42454338aa":"translateKeywordsArabic"} */ __turbopack_context__.s({
+/* __next_internal_action_entry_do_not_use__ {"404e1bddd8cdccdbcaa56d3144d7425f42454338aa":"translateKeywordsArabic","7fc33fd9d58a22952e8de419e465469af2a0a2fa26":"TranslateKeywordsArabicInputSchema","7fdcba6bc123b9e7d90e2250488c9681fb6f8c799b":"TranslateKeywordsArabicOutputSchema"} */ __turbopack_context__.s({
+    "TranslateKeywordsArabicInputSchema": (()=>TranslateKeywordsArabicInputSchema),
+    "TranslateKeywordsArabicOutputSchema": (()=>TranslateKeywordsArabicOutputSchema),
     "translateKeywordsArabic": (()=>translateKeywordsArabic)
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/build/webpack/loaders/next-flight-loader/server-reference.js [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$app$2d$render$2f$encryption$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/app-render/encryption.js [app-rsc] (ecmascript)");
 /**
- * @fileOverview A flow to translate trending keywords into Arabic for the KSA region.
+ * @fileOverview Translates a list of keywords to Arabic and provides estimated trend data.
  *
- * - translateKeywordsArabic - A function that handles the translation and generation of Arabic keywords.
- * - TranslateKeywordsArabicInput - The input type for the translateKeywordsArabic function.
- * - TranslateKeywordsArabicOutput - The return type for the translateKeywordsArabic function.
+ * - translateKeywordsArabic: A function that performs the translation and data estimation.
+ * - TranslateKeywordsArabicInput: The input type for the function.
+ * - TranslateKeywordsArabicOutput: The return type for the function.
  */ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/ai/genkit.ts [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$module__evaluation$3e$__ = __turbopack_context__.i("[project]/node_modules/genkit/lib/index.mjs [app-rsc] (ecmascript) <module evaluation>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/genkit/lib/common.js [app-rsc] (ecmascript)");
@@ -253,16 +255,17 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 ;
 ;
 ;
-const TranslateKeywordsArabicInputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    businessType: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The type of business for which to generate keywords.'),
-    keywords: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe('An array of trending keywords to translate.')
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ TranslateKeywordsArabicInputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
+    businessType: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The type of business or industry for context.'),
+    keywords: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe('A list of keywords to translate to Arabic.')
 });
-const TranslateKeywordsArabicOutputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    translatedKeywords: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe('The translated keywords in Arabic.')
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ TranslateKeywordsArabicOutputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
+    translatedKeywords: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
+        keyword: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The translated Arabic keyword.'),
+        volume: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].number().describe('A realistic, simulated search volume for the KSA market.'),
+        change: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].number().describe('A realistic, simulated percentage trend change for the keyword.')
+    })).describe('An array of translated keywords with their trend data.')
 });
-async function /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ translateKeywordsArabic(input) {
-    return translateKeywordsArabicFlow(input);
-}
 const translateKeywordsArabicPrompt = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ai"].definePrompt({
     name: 'translateKeywordsArabicPrompt',
     input: {
@@ -271,12 +274,18 @@ const translateKeywordsArabicPrompt = __TURBOPACK__imported__module__$5b$project
     output: {
         schema: TranslateKeywordsArabicOutputSchema
     },
-    prompt: `You are an expert in translating keywords to Arabic, specifically for the KSA (Kingdom of Saudi Arabia) region. Given the business type and a list of trending keywords, translate the keywords into Arabic.
+    prompt: `You are a localization and SEO expert specializing in the Saudi Arabian (KSA) market.
+Your task is to translate a list of English keywords into Arabic and provide realistic, simulated SEO metrics for them.
 
-Business Type: {{{businessType}}}
-Trending Keywords: {{#each keywords}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}
+Business Context: {{businessType}}
+Keywords to Translate: {{#each keywords}}"{{this}}"{{#unless @last}}, {{/unless}}{{/each}}
 
-Return only the translated keywords in Arabic in an array.
+For each keyword, provide:
+1.  An accurate and culturally relevant Arabic translation.
+2.  A plausible, simulated search volume (e.g., between 500 and 50000).
+3.  A plausible, simulated trend change percentage (e.g., between -20 and +50).
+
+The final output must be a single, valid JSON object matching the requested schema.
 `
 });
 const translateKeywordsArabicFlow = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ai"].defineFlow({
@@ -287,10 +296,17 @@ const translateKeywordsArabicFlow = __TURBOPACK__imported__module__$5b$project$5
     const { output } = await translateKeywordsArabicPrompt(input);
     return output;
 });
+async function /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ translateKeywordsArabic(input) {
+    return await translateKeywordsArabicFlow(input);
+}
 ;
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$action$2d$validate$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ensureServerEntryExports"])([
+    TranslateKeywordsArabicInputSchema,
+    TranslateKeywordsArabicOutputSchema,
     translateKeywordsArabic
 ]);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(TranslateKeywordsArabicInputSchema, "7fc33fd9d58a22952e8de419e465469af2a0a2fa26", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(TranslateKeywordsArabicOutputSchema, "7fdcba6bc123b9e7d90e2250488c9681fb6f8c799b", null);
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(translateKeywordsArabic, "404e1bddd8cdccdbcaa56d3144d7425f42454338aa", null);
 }}),
 "[project]/src/ai/flows/seo-content-suggestions.ts [app-rsc] (ecmascript)": ((__turbopack_context__) => {
@@ -298,17 +314,19 @@ const translateKeywordsArabicFlow = __TURBOPACK__imported__module__$5b$project$5
 
 var { g: global, __dirname } = __turbopack_context__;
 {
-/* __next_internal_action_entry_do_not_use__ {"4055ca9384dd055b69f394fc3b4d96e6e1697ae563":"seoContentSuggestions"} */ __turbopack_context__.s({
+/* __next_internal_action_entry_do_not_use__ {"4055ca9384dd055b69f394fc3b4d96e6e1697ae563":"seoContentSuggestions","7fc14bfe4ae2704cf9588fcbefac793bede3ab5000":"SeoContentSuggestionsInputSchema","7fd63e4b86c8ca74fa5a2dfcf56438fed633600de8":"SeoContentSuggestionsOutputSchema"} */ __turbopack_context__.s({
+    "SeoContentSuggestionsInputSchema": (()=>SeoContentSuggestionsInputSchema),
+    "SeoContentSuggestionsOutputSchema": (()=>SeoContentSuggestionsOutputSchema),
     "seoContentSuggestions": (()=>seoContentSuggestions)
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/build/webpack/loaders/next-flight-loader/server-reference.js [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$app$2d$render$2f$encryption$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/app-render/encryption.js [app-rsc] (ecmascript)");
 /**
- * @fileOverview Provides AI-powered suggestions for SEO content based on trending keywords.
+ * @fileOverview Generates structured SEO content briefs based on trending keywords.
  *
- * - seoContentSuggestions - A function that provides SEO content suggestions.
- * - SeoContentSuggestionsInput - The input type for the seoContentSuggestions function.
- * - SeoContentSuggestionsOutput - The return type for the seoContentSuggestions function.
+ * - seoContentSuggestions: A function that generates the content briefs.
+ * - SeoContentSuggestionsInput: The input type for the function.
+ * - SeoContentSuggestionsOutput: The return type for the function.
  */ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/ai/genkit.ts [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$module__evaluation$3e$__ = __turbopack_context__.i("[project]/node_modules/genkit/lib/index.mjs [app-rsc] (ecmascript) <module evaluation>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/genkit/lib/common.js [app-rsc] (ecmascript)");
@@ -317,29 +335,18 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 ;
 ;
 ;
-const SeoContentSuggestionsInputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    businessType: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The type of business for which to generate SEO content suggestions.'),
-    trendingKeywords: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The current trending keywords related to the specified business type, as a comma-separated string.')
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ SeoContentSuggestionsInputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
+    businessType: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The type of business or industry for context.'),
+    trendingKeywords: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('A comma-separated list of trending keywords.')
 });
-const SeoContentSuggestionsOutputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    suggestions: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe('An array of AI-powered suggestions for SEO content based on trending keywords.')
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ SeoContentSuggestionsOutputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
+    suggestions: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
+        title: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("A compelling, SEO-friendly title for the content piece."),
+        hook: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("A short, engaging hook or introduction for the content."),
+        points: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe("A list of key talking points, questions to answer, or sections for the content.")
+    })).describe('An array of structured content briefs.')
 });
-async function /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ seoContentSuggestions(input) {
-    console.log("Calling seoContentSuggestionsFlow with input:", input);
-    const flowResult = await seoContentSuggestionsFlow(input);
-    if (!flowResult || !Array.isArray(flowResult.suggestions) || flowResult.suggestions.length === 0) {
-        const errorMsg = "No valid suggestions array output from seoContentSuggestionsFlow.";
-        console.error(errorMsg, "Received:", flowResult);
-        // Return an empty array or throw, depending on desired error handling.
-        // For now, let's ensure it matches the schema for an empty valid case.
-        // The action layer will handle if this should be an error to the user.
-        return {
-            suggestions: []
-        };
-    }
-    return flowResult;
-}
-const prompt = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ai"].definePrompt({
+const seoContentSuggestionsPrompt = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ai"].definePrompt({
     name: 'seoContentSuggestionsPrompt',
     input: {
         schema: SeoContentSuggestionsInputSchema
@@ -347,23 +354,19 @@ const prompt = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genk
     output: {
         schema: SeoContentSuggestionsOutputSchema
     },
-    prompt: `You are an AI expert in SEO content generation.
-Your task is to provide SEO content suggestions to improve website visibility and attract more customers, based on the provided business type and trending keywords.
+    prompt: `You are a Head of Content Strategy at a leading digital marketing agency.
+Your task is to generate a list of actionable, professional content briefs for a client.
 
-Business Type: {{{businessType}}}
-Trending Keywords: {{{trendingKeywords}}}
+Client's Business Type: {{businessType}}
+Current Trending Keywords: {{trendingKeywords}}
 
-Your entire response MUST be a valid JSON object. Do not include any text, explanations, or apologies outside of this JSON object.
-The JSON object must have a single key "suggestions". The value of "suggestions" must be an array of strings, where each string is a distinct content idea or SEO suggestion.
+Based on this information, generate 3-4 distinct and creative content briefs. Each brief must be structured as a JSON object with a title, a hook, and key points.
 
-Example of the required JSON format:
-{
-  "suggestions": [
-    "Develop a blog post series targeting '{{trendingKeywords}}' for '{{businessType}}'.",
-    "Create an infographic explaining how '{{businessType}}' benefits from 'keyword_example_1'.",
-    "Optimize existing product pages with terms related to 'keyword_example_2'."
-  ]
-}
+- **Title**: Make it compelling and optimized for search engines.
+- **Hook**: Write a 1-2 sentence introduction that grabs the reader's attention.
+- **Points**: List 3-5 bullet points that outline the core topics, questions, or sections the content should cover. These should be substantive and guide the writer.
+
+The output must be a single, valid JSON object containing an array of these structured suggestions.
 `
 });
 const seoContentSuggestionsFlow = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ai"].defineFlow({
@@ -371,26 +374,20 @@ const seoContentSuggestionsFlow = __TURBOPACK__imported__module__$5b$project$5d2
     inputSchema: SeoContentSuggestionsInputSchema,
     outputSchema: SeoContentSuggestionsOutputSchema
 }, async (input)=>{
-    const genResponse = await prompt(input);
-    console.log('SEO Flow Raw Text Response from model:', genResponse.text);
-    console.log('SEO Flow Parsed Output by Genkit:', genResponse.output);
-    if (!genResponse.output || !Array.isArray(genResponse.output.suggestions)) {
-        const errorMessage = 'AI model did not return valid suggestions in the expected array format.';
-        console.error(errorMessage, 'Raw text:', genResponse.text, 'Parsed output:', genResponse.output);
-        // If parsing fails or the structure is wrong, genResponse.output might be null or not match the schema.
-        // Genkit's zod parsing should handle this, but an explicit check is good.
-        // Returning an empty array if the suggestions are not in the correct format or empty.
-        return {
-            suggestions: []
-        };
-    }
-    // If suggestions array is present but empty, that's a valid output by schema.
-    return genResponse.output;
+    const { output } = await seoContentSuggestionsPrompt(input);
+    return output;
 });
+async function /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ seoContentSuggestions(input) {
+    return await seoContentSuggestionsFlow(input);
+}
 ;
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$action$2d$validate$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ensureServerEntryExports"])([
+    SeoContentSuggestionsInputSchema,
+    SeoContentSuggestionsOutputSchema,
     seoContentSuggestions
 ]);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(SeoContentSuggestionsInputSchema, "7fc14bfe4ae2704cf9588fcbefac793bede3ab5000", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(SeoContentSuggestionsOutputSchema, "7fd63e4b86c8ca74fa5a2dfcf56438fed633600de8", null);
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(seoContentSuggestions, "4055ca9384dd055b69f394fc3b4d96e6e1697ae563", null);
 }}),
 "[project]/src/ai/flows/advanced-seo-keyword-analysis.ts [app-rsc] (ecmascript)": ((__turbopack_context__) => {
@@ -398,17 +395,20 @@ const seoContentSuggestionsFlow = __TURBOPACK__imported__module__$5b$project$5d2
 
 var { g: global, __dirname } = __turbopack_context__;
 {
-/* __next_internal_action_entry_do_not_use__ {"4086aec02512530079b65319b43f31878a975fd56d":"advancedSeoKeywordAnalysis"} */ __turbopack_context__.s({
+/* __next_internal_action_entry_do_not_use__ {"4086aec02512530079b65319b43f31878a975fd56d":"advancedSeoKeywordAnalysis","7f335b9bda8ad7318a8cdb5f2effae6a2cde150afb":"AdvancedSeoKeywordAnalysisInputSchema","7f6c11479d1314bb8255c604d78966eebab7b1350b":"AdvancedSeoKeywordAnalysisOutputSchema"} */ __turbopack_context__.s({
+    "AdvancedSeoKeywordAnalysisInputSchema": (()=>AdvancedSeoKeywordAnalysisInputSchema),
+    "AdvancedSeoKeywordAnalysisOutputSchema": (()=>AdvancedSeoKeywordAnalysisOutputSchema),
     "advancedSeoKeywordAnalysis": (()=>advancedSeoKeywordAnalysis)
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/build/webpack/loaders/next-flight-loader/server-reference.js [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$app$2d$render$2f$encryption$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/app-render/encryption.js [app-rsc] (ecmascript)");
 /**
- * @fileOverview Provides comprehensive, CMO-level SEO and content strategy analysis for a given keyword.
+ * @fileOverview Provides advanced SEO analysis for a given keyword, including search intent,
+ * target audience, competitive landscape, unique content angles, and a detailed content outline.
  *
- * - advancedSeoKeywordAnalysis - A function that provides advanced SEO insights.
- * - AdvancedSeoKeywordAnalysisInput - The input type.
- * - AdvancedSeoKeywordAnalysisOutput - The return type.
+ * - advancedSeoKeywordAnalysis: A function that performs the analysis.
+ * - AdvancedSeoKeywordAnalysisInput: The input type for the analysis function.
+ * - AdvancedSeoKeywordAnalysisOutput: The return type for the analysis function.
  */ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/ai/genkit.ts [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$module__evaluation$3e$__ = __turbopack_context__.i("[project]/node_modules/genkit/lib/index.mjs [app-rsc] (ecmascript) <module evaluation>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/genkit/lib/common.js [app-rsc] (ecmascript)");
@@ -417,30 +417,29 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 ;
 ;
 ;
-const AdvancedSeoKeywordAnalysisInputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    businessType: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The type of business for which the keyword analysis is relevant.'),
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ AdvancedSeoKeywordAnalysisInputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
+    businessType: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The type of business or industry for context.'),
     keyword: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The specific keyword to analyze.')
 });
-const AdvancedSeoKeywordAnalysisOutputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    searchIntent: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("The primary search intent (e.g., 'Informational', 'Commercial', 'Transactional', 'Navigational')."),
-    targetAudience: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("A brief description of the target audience persona for this keyword."),
-    competitiveLandscape: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("A summary of the competitive landscape, identifying content gaps or opportunities."),
-    contentAngle: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("A unique content angle or hook to make the content stand out."),
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ AdvancedSeoKeywordAnalysisOutputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
+    searchIntent: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The primary user intent behind the keyword (e.g., Informational, Navigational, Commercial, Transactional).'),
+    targetAudience: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('A description of the ideal target audience for this keyword.'),
+    competitiveLandscape: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('A brief analysis of the current top-ranking content, identifying common themes and potential gaps.'),
+    contentAngle: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('A unique angle or hook to make content for this keyword stand out.'),
+    difficultyAnalysis: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('A qualitative analysis of how difficult it would be to rank for this keyword, considering the competition.'),
     detailedContentOutline: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-        title: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('A suggested compelling title for a piece of content about the keyword.'),
+        title: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('A compelling, SEO-friendly title for a piece of content.'),
         sections: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-            heading: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("Main section heading (H2)."),
-            points: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe("Key talking points or sub-topics for this section (H3s or bullet points).")
-        })).describe('An array of suggested main sections for the content.')
-    }).describe('A detailed content outline including a title and section details.'),
-    difficultyAnalysis: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('A brief qualitative analysis of the keyword\'s SEO difficulty and ranking potential.'),
-    confidenceScore: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].number().min(0).max(100).describe('A confidence score (0-100) of this analysis based on the perceived data quality.'),
-    simulatedSources: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe('An array of 2-3 simulated example source URLs that would support this analysis, e.g., "https://trends.google.com/trends/", "https://www.similarweb.com/".')
+            heading: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The heading for a section of the content.'),
+            points: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe('An array of key talking points or sub-topics for that section.')
+        })).describe('A list of sections to structure the content.')
+    }),
+    longTailKeywords: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe("A list of related long-tail keywords."),
+    relatedQuestions: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe("A list of common questions users ask related to this keyword."),
+    confidenceScore: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].number().min(0).max(100).describe('A confidence score (0-100) in the quality and accuracy of the analysis.'),
+    simulatedSources: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().url()).describe('An array of simulated source URLs that would be used for such an analysis (e.g., top-ranking blogs, market research sites).')
 });
-async function /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ advancedSeoKeywordAnalysis(input) {
-    return advancedSeoKeywordAnalysisFlow(input);
-}
-const prompt = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ai"].definePrompt({
+const advancedSeoKeywordAnalysisPrompt = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ai"].definePrompt({
     name: 'advancedSeoKeywordAnalysisPrompt',
     input: {
         schema: AdvancedSeoKeywordAnalysisInputSchema
@@ -448,57 +447,44 @@ const prompt = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genk
     output: {
         schema: AdvancedSeoKeywordAnalysisOutputSchema
     },
-    prompt: `You are a world-class Chief Marketing Officer (CMO) and SEO Strategist, tasked with providing a deep, actionable analysis for a given keyword, tailored to a specific business. Your audience is a marketing team that needs clear, strategic direction.
+    prompt: `You are a world-class CMO and SEO strategist. Your task is to perform an in-depth, professional analysis of a single keyword within the context of a specific business.
 
-Business Type: {{{businessType}}}
-Keyword for Analysis: {{{keyword}}}
+Business Context: {{businessType}}
+Keyword to Analyze: "{{keyword}}"
 
-Provide a comprehensive strategic brief covering the following areas. Your entire response MUST be a valid JSON object.
+Provide a comprehensive analysis covering all fields in the requested JSON output schema. The analysis must be professional, insightful, and directly actionable for a marketing team.
 
-1.  **Search Intent**: Classify the primary user intent. Is it Informational, Commercial Investigation, Transactional, or Navigational?
-2.  **Target Audience**: Describe the likely persona of the person searching this. What are their goals and pain points?
-3.  **Competitive Landscape**: Analyze the top search results. Are they dominated by blogs, e-commerce sites, videos, or forums? Identify a key opportunity or content gap.
-4.  **Content Angle**: Suggest a unique hook or angle for our content that will make it stand out from the competition.
-5.  **Detailed Content Outline**: Propose a structured outline for a piece of content (like a blog post). Include a compelling title and at least 3-4 main sections (H2s), each with 2-3 key talking points or sub-headings (H3s/bullets).
-6.  **Difficulty Analysis**: Give a concise, qualitative summary of the SEO difficulty. Explain *why* it's difficult or easy (e.g., "High authority domains dominate," "Low competition in this niche," etc.).
-7.  **Confidence Score**: Provide a confidence score from 0-100 for this analysis based on the specificity of the inputs. A niche B2B topic might be 75, a generic term like "coffee" might be 90.
-8.  **Simulated Sources**: Provide an array of 2-3 example URLs (e.g., "https://trends.google.com/trends/explore?q={{{keyword}}}", "https://ahrefs.com/keyword-explorer") that a real analyst would use to gather this data.
+- **Search Intent**: Clearly define the user's goal. Is it informational, transactional, etc.?
+- **Target Audience**: Be specific about the persona.
+- **Competitive Landscape**: Briefly summarize what kind of content currently ranks. What's the quality? Are they big brands or niche blogs?
+- **Content Angle**: Suggest a unique perspective. How can this business provide value that others aren't?
+- **Difficulty Analysis**: Give a realistic, qualitative assessment.
+- **Detailed Content Outline**: Create a logical structure for a blog post or article. The title should be engaging, and section points should be substantive.
+- **Long-tail Keywords**: Provide relevant, less competitive keyword variations.
+- **Related Questions**: Find questions people actually ask (think "People Also Ask" on Google).
+- **Confidence Score & Sources**: Provide a high confidence score and simulate realistic, authoritative sources (e.g., top blogs in the industry, major SEO tools, market research sites) to build trust.
 
-Your entire response MUST be a valid JSON object that strictly follows this structure:
-{
-  "searchIntent": "Informational",
-  "targetAudience": "A description of the target audience.",
-  "competitiveLandscape": "A summary of the SERP competition and opportunities.",
-  "contentAngle": "A unique hook or angle for the content.",
-  "detailedContentOutline": {
-    "title": "A Compelling and SEO-Optimized Title for '{{{keyword}}}'",
-    "sections": [
-      { "heading": "Section 1 Title (H2)", "points": ["Point 1.1", "Point 1.2"] },
-      { "heading": "Section 2 Title (H2)", "points": ["Point 2.1", "Point 2.2", "Point 2.3"] }
-    ]
-  },
-  "difficultyAnalysis": "A qualitative analysis of the keyword's SEO difficulty.",
-  "confidenceScore": 85,
-  "simulatedSources": ["https://trends.google.com/trends/", "https://www.semrush.com/"]
-}
-`
+Generate the analysis.`
 });
 const advancedSeoKeywordAnalysisFlow = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ai"].defineFlow({
     name: 'advancedSeoKeywordAnalysisFlow',
     inputSchema: AdvancedSeoKeywordAnalysisInputSchema,
     outputSchema: AdvancedSeoKeywordAnalysisOutputSchema
 }, async (input)=>{
-    const genResponse = await prompt(input);
-    if (!genResponse.output) {
-        console.error('Advanced SEO Analysis Flow: AI model did not return parseable output.', 'Raw text:', genResponse.text);
-        throw new Error('AI model did not return valid structured output for advanced SEO analysis.');
-    }
-    return genResponse.output;
+    const { output } = await advancedSeoKeywordAnalysisPrompt(input);
+    return output;
 });
+async function /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ advancedSeoKeywordAnalysis(input) {
+    return await advancedSeoKeywordAnalysisFlow(input);
+}
 ;
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$action$2d$validate$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ensureServerEntryExports"])([
+    AdvancedSeoKeywordAnalysisInputSchema,
+    AdvancedSeoKeywordAnalysisOutputSchema,
     advancedSeoKeywordAnalysis
 ]);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(AdvancedSeoKeywordAnalysisInputSchema, "7f335b9bda8ad7318a8cdb5f2effae6a2cde150afb", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(AdvancedSeoKeywordAnalysisOutputSchema, "7f6c11479d1314bb8255c604d78966eebab7b1350b", null);
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(advancedSeoKeywordAnalysis, "4086aec02512530079b65319b43f31878a975fd56d", null);
 }}),
 "[project]/src/ai/flows/generate-trending-keywords.ts [app-rsc] (ecmascript)": ((__turbopack_context__) => {
@@ -693,17 +679,20 @@ const generateChartTakeawayFlow = __TURBOPACK__imported__module__$5b$project$5d2
 
 var { g: global, __dirname } = __turbopack_context__;
 {
-/* __next_internal_action_entry_do_not_use__ {"40cd4bf49a4eaea760287ca32bafe8996affdb0229":"marketDeepDive"} */ __turbopack_context__.s({
+/* __next_internal_action_entry_do_not_use__ {"40cd4bf49a4eaea760287ca32bafe8996affdb0229":"marketDeepDive","7f3e4f43ca8135e7906408a2c7ead07b898f5db07d":"MarketDeepDiveInputSchema","7fb123c7118d196153a06f740d4b1b0a06614ae620":"MarketDeepDiveOutputSchema"} */ __turbopack_context__.s({
+    "MarketDeepDiveInputSchema": (()=>MarketDeepDiveInputSchema),
+    "MarketDeepDiveOutputSchema": (()=>MarketDeepDiveOutputSchema),
     "marketDeepDive": (()=>marketDeepDive)
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/build/webpack/loaders/next-flight-loader/server-reference.js [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$app$2d$render$2f$encryption$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/app-render/encryption.js [app-rsc] (ecmascript)");
 /**
- * @fileOverview Provides a comprehensive, C-suite level market deep-dive analysis.
+ * @fileOverview Generates a comprehensive, C-suite level market deep-dive report.
+ * This includes an executive summary, TAM/SAM/SOM analysis with sources, competitor benchmarking, and a SWOT analysis.
  *
- * - marketDeepDive - A function that generates a full market analysis report.
- * - MarketDeepDiveInput - The input type.
- * - MarketDeepDiveOutput - The return type.
+ * - marketDeepDive: A function that performs the deep-dive analysis.
+ * - MarketDeepDiveInput: The input type for the analysis function.
+ * - MarketDeepDiveOutput: The return type for the analysis function.
  */ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/ai/genkit.ts [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$module__evaluation$3e$__ = __turbopack_context__.i("[project]/node_modules/genkit/lib/index.mjs [app-rsc] (ecmascript) <module evaluation>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/genkit/lib/common.js [app-rsc] (ecmascript)");
@@ -712,44 +701,37 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 ;
 ;
 ;
-const MarketDeepDiveInputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    businessType: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The type of business or industry for which the analysis is relevant.'),
-    country: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The full name of the target country for the analysis (e.g., "United States", "Saudi Arabia").'),
-    city: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().optional().describe('The optional target city for more specific analysis.')
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ MarketDeepDiveInputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
+    businessType: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The type of business or industry for context.'),
+    country: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The target country for the analysis.'),
+    city: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().optional().describe('The target city for the analysis (if applicable).')
 });
-const MarketDeepDiveOutputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    executiveSummary: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("A concise, high-level summary of the entire market analysis, written for a C-suite audience."),
+const MarketValueSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
+    value: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].number().describe('The estimated market value in USD.'),
+    description: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('A brief description of this market segment.'),
+    sources: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().url()).describe('An array of simulated source URLs used to justify the estimation.')
+});
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ MarketDeepDiveOutputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
+    executiveSummary: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("A concise, C-suite level summary of the entire market analysis."),
     tamSamSom: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-        tam: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-            value: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].number().describe("Estimated value of the Total Addressable Market in USD."),
-            description: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("Explanation of the TAM calculation and scope.")
-        }),
-        sam: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-            value: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].number().describe("Estimated value of the Serviceable Available Market in USD."),
-            description: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("Explanation of the SAM calculation and scope.")
-        }),
-        som: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-            value: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].number().describe("Estimated value of the Serviceable Obtainable Market in USD."),
-            description: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("Explanation of the SOM calculation and scope for the next 1-2 years.")
-        })
-    }).describe("Analysis of the Total Addressable Market (TAM), Serviceable Available Market (SAM), and Serviceable Obtainable Market (SOM)."),
+        tam: MarketValueSchema.describe('Total Addressable Market'),
+        sam: MarketValueSchema.describe('Serviceable Addressable Market'),
+        som: MarketValueSchema.describe('Serviceable Obtainable Market')
+    }),
     competitors: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-        name: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("Name of the competitor."),
-        strengths: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("A brief summary of the competitor's key strengths."),
-        weaknesses: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("A brief summary of the competitor's key weaknesses."),
-        marketShare: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("Estimated market share percentage as a string (e.g., '15-20%').")
-    })).describe("A benchmark analysis of 3-5 key competitors."),
+        name: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('Name of the competitor.'),
+        strengths: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('Key strengths of the competitor.'),
+        weaknesses: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('Key weaknesses of the competitor.'),
+        marketShare: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('Estimated market share as a percentage string (e.g., "15%").')
+    })).describe('A list of key competitors and their analysis.'),
     swot: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-        strengths: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe("A list of internal strengths for a business of the specified type in this market."),
-        weaknesses: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe("A list of internal weaknesses."),
-        opportunities: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe("A list of external opportunities in the market."),
-        threats: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe("A list of external threats in the market.")
-    }).describe("A SWOT (Strengths, Weaknesses, Opportunities, Threats) analysis.")
+        strengths: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe('Internal strengths for the business in this market.'),
+        weaknesses: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe('Internal weaknesses for the business in this market.'),
+        opportunities: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe('External opportunities in the market.'),
+        threats: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe('External threats in the market.')
+    })
 });
-async function /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ marketDeepDive(input) {
-    return marketDeepDiveFlow(input);
-}
-const prompt = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ai"].definePrompt({
+const marketDeepDivePrompt = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ai"].definePrompt({
     name: 'marketDeepDivePrompt',
     input: {
         schema: MarketDeepDiveInputSchema
@@ -757,28 +739,22 @@ const prompt = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genk
     output: {
         schema: MarketDeepDiveOutputSchema
     },
-    prompt: `You are a Senior Partner at a Tier-1 management consulting firm (like McKinsey, Bain, or BCG), tasked with creating a comprehensive market deep-dive report for a client. Your analysis must be sharp, data-driven (even if simulated), and actionable.
+    prompt: `You are a top-tier market research analyst from a major consulting firm. Your task is to generate a comprehensive "Deep-Dive" report for a client based on their business profile.
 
-Client Business Profile:
-- Business Type / Industry: {{{businessType}}}
-- Target Country: {{{country}}}
-{{#if city}}- Target City: {{{city}}}{{/if}}
+Client Profile:
+- Business / Industry: {{businessType}}
+- Target Geography: {{city}}{{^city}}{{country}}{{/city}}{{#city}}, {{country}}{{/city}}
 
-Generate a complete analysis covering the following sections. Your entire response must be a single, valid JSON object that strictly adheres to the output schema.
+Generate a full report that is insightful, data-driven, and professional.
 
-1.  **Executive Summary**: A brief, high-level overview for a CEO. What is the key takeaway about this market right now?
-2.  **Market Sizing (TAM/SAM/SOM)**:
-    *   **TAM (Total Addressable Market)**: Estimate the total market demand for products/services like this, globally or in a major region. Provide a USD value and a brief explanation.
-    *   **SAM (Serviceable Available Market)**: Estimate the segment of the TAM targeted by the business's products/services that is within its geographical reach. Provide a USD value and explanation, narrowing the focus to {{{country}}}.
-    *   **SOM (Serviceable Obtainable Market)**: Estimate the portion of the SAM that can realistically be captured in the next 1-2 years. Provide a USD value and rationale.
-3.  **Competitor Benchmark**: Identify 3-5 key competitors in the {{{country}}} market. For each, provide their name, a key strength, a key weakness, and an estimated market share range (e.g., "10-15%").
-4.  **SWOT Analysis**: Provide a SWOT analysis for a *new entrant* or *existing player* matching the client's business type in this specific market.
-    *   **Strengths**: 2-3 internal advantages.
-    *   **Weaknesses**: 2-3 internal disadvantages.
-    *   **Opportunities**: 2-3 external market opportunities to seize.
-    *   **Threats**: 2-3 external threats to be aware of.
+**Instructions for each section:**
 
-Your entire response MUST be a single, valid JSON object. Do not include any text or markdown outside of the JSON structure.
+- **Executive Summary**: Write a short, powerful summary that a busy executive can read to get the complete picture.
+- **TAM/SAM/SOM**: Generate realistic, non-zero market size estimations in USD. The numbers should be logical relative to each other (TAM > SAM > SOM). For each, provide a brief description and, crucially, a list of 2-3 **simulated but realistic source URLs** (e.g., from Statista, Gartner, marketresearch.com, government reports, industry publications) to justify your estimations.
+- **Competitor Benchmark**: Identify 3-4 plausible competitors. Provide concise, believable strengths and weaknesses. Estimate their market share.
+- **SWOT Analysis**: Provide 3-4 distinct and actionable points for each category (Strengths, Weaknesses, Opportunities, Threats) tailored to the client's business type and target market.
+
+The final output must be a single, valid JSON object matching the schema. Do not include any commentary outside of the JSON structure.
 `
 });
 const marketDeepDiveFlow = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ai"].defineFlow({
@@ -786,17 +762,20 @@ const marketDeepDiveFlow = __TURBOPACK__imported__module__$5b$project$5d2f$src$2
     inputSchema: MarketDeepDiveInputSchema,
     outputSchema: MarketDeepDiveOutputSchema
 }, async (input)=>{
-    const genResponse = await prompt(input);
-    if (!genResponse.output) {
-        console.error('Market Deep-Dive Flow: AI model did not return parseable output.', 'Raw text:', genResponse.text);
-        throw new Error('AI model did not return valid structured output for the deep-dive analysis.');
-    }
-    return genResponse.output;
+    const { output } = await marketDeepDivePrompt(input);
+    return output;
 });
+async function /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ marketDeepDive(input) {
+    return marketDeepDiveFlow(input);
+}
 ;
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$action$2d$validate$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ensureServerEntryExports"])([
+    MarketDeepDiveInputSchema,
+    MarketDeepDiveOutputSchema,
     marketDeepDive
 ]);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(MarketDeepDiveInputSchema, "7f3e4f43ca8135e7906408a2c7ead07b898f5db07d", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(MarketDeepDiveOutputSchema, "7fb123c7118d196153a06f740d4b1b0a06614ae620", null);
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(marketDeepDive, "40cd4bf49a4eaea760287ca32bafe8996affdb0229", null);
 }}),
 "[project]/src/app/actions.ts [app-rsc] (ecmascript)": ((__turbopack_context__) => {
@@ -871,22 +850,12 @@ async function /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ getArabicTranslationsAc
 async function /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ getSeoSuggestionsAction(input) {
     try {
         const result = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$flows$2f$seo$2d$content$2d$suggestions$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["seoContentSuggestions"])(input);
-        if (result && result.suggestions && result.suggestions.length > 0) {
+        if (result && result.suggestions) {
             return {
                 success: true,
                 data: result
             };
-        } else if (result && result.suggestions && result.suggestions.length === 0) {
-            // Changed this to be a success case with an informative message if AI finds nothing specific.
-            return {
-                success: true,
-                data: {
-                    suggestions: []
-                },
-                error: "No specific suggestions were generated for the given input, but the process completed."
-            };
         }
-        // This case might indicate an unexpected empty or malformed response from the flow that wasn't an error but also not a valid success.
         return {
             success: false,
             error: "Failed to get valid SEO suggestions. The AI did not return expected data."

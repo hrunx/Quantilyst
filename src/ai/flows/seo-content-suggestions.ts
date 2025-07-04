@@ -1,56 +1,42 @@
+
 'use server';
 /**
- * @fileOverview Generates structured SEO content briefs based on trending keywords.
+ * @fileOverview This file defines the Genkit flow for generating SEO content suggestions.
  *
- * - seoContentSuggestions: A function that generates the content briefs.
- * - SeoContentSuggestionsInput: The input type for the function.
- * - SeoContentSuggestionsOutput: The return type for the function.
+ * This flow provides actionable content briefs based on trending keywords for a given
+ * business type. Each brief includes a title, hook, and key talking points.
+ *
+ * The main export is `seoContentSuggestions`.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import {
+  SeoContentSuggestionsInputSchema,
+  type SeoContentSuggestionsInput,
+  SeoContentSuggestionsOutputSchema,
+  type SeoContentSuggestionsOutput,
+} from '@/ai/types';
 
-export const SeoContentSuggestionsInputSchema = z.object({
-  businessType: z
-    .string()
-    .describe('The type of business or industry for context.'),
-  trendingKeywords: z
-    .string()
-    .describe('A comma-separated list of trending keywords.'),
-});
-export type SeoContentSuggestionsInput = z.infer<
-  typeof SeoContentSuggestionsInputSchema
->;
 
-export const SeoContentSuggestionsOutputSchema = z.object({
-  suggestions: z.array(z.object({
-    title: z.string().describe("A compelling, SEO-friendly title for the content piece."),
-    hook: z.string().describe("A short, engaging hook or introduction for the content."),
-    points: z.array(z.string()).describe("A list of key talking points, questions to answer, or sections for the content."),
-  })).describe('An array of structured content briefs.'),
-});
-export type SeoContentSuggestionsOutput = z.infer<
-  typeof SeoContentSuggestionsOutputSchema
->;
+export async function seoContentSuggestions(
+  input: SeoContentSuggestionsInput
+): Promise<SeoContentSuggestionsOutput> {
+  return await seoContentSuggestionsFlow(input);
+}
 
-const seoContentSuggestionsPrompt = ai.definePrompt({
+const prompt = ai.definePrompt({
   name: 'seoContentSuggestionsPrompt',
-  input: {schema: SeoContentSuggestionsInputSchema},
-  output: {schema: SeoContentSuggestionsOutputSchema},
-  prompt: `You are a Head of Content Strategy at a leading digital marketing agency.
-Your task is to generate a list of actionable, professional content briefs for a client.
+  input: { schema: SeoContentSuggestionsInputSchema },
+  output: { schema: SeoContentSuggestionsOutputSchema },
+  prompt: `
+    You are an expert Content Strategist for a "{{businessType}}" business.
+    Based on the following trending keywords: "{{trendingKeywords}}", generate 3 distinct and actionable content briefs.
 
-Client's Business Type: {{businessType}}
-Current Trending Keywords: {{trendingKeywords}}
-
-Based on this information, generate 3-4 distinct and creative content briefs. Each brief must be structured as a JSON object with a title, a hook, and key points.
-
-- **Title**: Make it compelling and optimized for search engines.
-- **Hook**: Write a 1-2 sentence introduction that grabs the reader's attention.
-- **Points**: List 3-5 bullet points that outline the core topics, questions, or sections the content should cover. These should be substantive and guide the writer.
-
-The output must be a single, valid JSON object containing an array of these structured suggestions.
-`,
+    Each brief in the "suggestions" array must be a JSON object containing:
+    1.  **title**: A compelling, SEO-friendly title for the content.
+    2.  **hook**: An engaging opening line or hook to capture the reader's attention.
+    3.  **points**: A list of 3-4 key talking points or sections that should be covered in the content.
+  `,
 });
 
 const seoContentSuggestionsFlow = ai.defineFlow(
@@ -60,13 +46,10 @@ const seoContentSuggestionsFlow = ai.defineFlow(
     outputSchema: SeoContentSuggestionsOutputSchema,
   },
   async (input) => {
-    const {output} = await seoContentSuggestionsPrompt(input);
-    return output!;
+    const { output } = await prompt(input);
+    if (!output) {
+      throw new Error('Failed to generate SEO content suggestions.');
+    }
+    return output;
   }
 );
-
-export async function seoContentSuggestions(
-  input: SeoContentSuggestionsInput
-): Promise<SeoContentSuggestionsOutput> {
-  return await seoContentSuggestionsFlow(input);
-}

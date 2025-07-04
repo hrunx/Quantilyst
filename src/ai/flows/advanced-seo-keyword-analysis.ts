@@ -1,92 +1,48 @@
+
 'use server';
 /**
- * @fileOverview Provides advanced SEO analysis for a given keyword, including search intent,
- * target audience, competitive landscape, unique content angles, and a detailed content outline.
+ * @fileOverview This file defines the Genkit flow for advanced SEO keyword analysis.
  *
- * - advancedSeoKeywordAnalysis: A function that performs the analysis.
- * - AdvancedSeoKeywordAnalysisInput: The input type for the analysis function.
- * - AdvancedSeoKeywordAnalysisOutput: The return type for the analysis function.
+ * This flow provides a deep, CMO-level strategic brief for a given keyword, including
+ * search intent, target audience, competitive landscape, content angles, and more.
+ *
+ * The main export is `advancedSeoKeywordAnalysis`, which is the entry point for this flow.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import {
+  AdvancedSeoKeywordAnalysisInputSchema,
+  type AdvancedSeoKeywordAnalysisInput,
+  AdvancedSeoKeywordAnalysisOutputSchema,
+  type AdvancedSeoKeywordAnalysisOutput,
+} from '@/ai/types';
 
-export const AdvancedSeoKeywordAnalysisInputSchema = z.object({
-  businessType: z
-    .string()
-    .describe('The type of business or industry for context.'),
-  keyword: z.string().describe('The specific keyword to analyze.'),
-});
-export type AdvancedSeoKeywordAnalysisInput = z.infer<
-  typeof AdvancedSeoKeywordAnalysisInputSchema
->;
+export async function advancedSeoKeywordAnalysis(
+  input: AdvancedSeoKeywordAnalysisInput
+): Promise<AdvancedSeoKeywordAnalysisOutput> {
+  return await advancedSeoKeywordAnalysisFlow(input);
+}
 
-export const AdvancedSeoKeywordAnalysisOutputSchema = z.object({
-  searchIntent: z
-    .string()
-    .describe(
-      'The primary user intent behind the keyword (e.g., Informational, Navigational, Commercial, Transactional).'
-    ),
-  targetAudience: z
-    .string()
-    .describe(
-      'A description of the ideal target audience for this keyword.'
-    ),
-  competitiveLandscape: z
-    .string()
-    .describe(
-      'A brief analysis of the current top-ranking content, identifying common themes and potential gaps.'
-    ),
-  contentAngle: z
-    .string()
-    .describe(
-      'A unique angle or hook to make content for this keyword stand out.'
-    ),
-  difficultyAnalysis: z
-    .string()
-    .describe(
-      'A qualitative analysis of how difficult it would be to rank for this keyword, considering the competition.'
-    ),
-  detailedContentOutline: z.object({
-    title: z.string().describe('A compelling, SEO-friendly title for a piece of content.'),
-    sections: z.array(
-      z.object({
-        heading: z.string().describe('The heading for a section of the content.'),
-        points: z.array(z.string()).describe('An array of key talking points or sub-topics for that section.'),
-      })
-    ).describe('A list of sections to structure the content.'),
-  }),
-  longTailKeywords: z.array(z.string()).describe("A list of related long-tail keywords."),
-  relatedQuestions: z.array(z.string()).describe("A list of common questions users ask related to this keyword."),
-  confidenceScore: z.number().min(0).max(100).describe('A confidence score (0-100) in the quality and accuracy of the analysis.'),
-  simulatedSources: z.array(z.string().url()).describe('An array of simulated source URLs that would be used for such an analysis (e.g., top-ranking blogs, market research sites).'),
-});
-export type AdvancedSeoKeywordAnalysisOutput = z.infer<
-  typeof AdvancedSeoKeywordAnalysisOutputSchema
->;
-
-const advancedSeoKeywordAnalysisPrompt = ai.definePrompt({
+const prompt = ai.definePrompt({
   name: 'advancedSeoKeywordAnalysisPrompt',
-  input: {schema: AdvancedSeoKeywordAnalysisInputSchema},
-  output: {schema: AdvancedSeoKeywordAnalysisOutputSchema},
-  prompt: `You are a world-class CMO and SEO strategist. Your task is to perform an in-depth, professional analysis of a single keyword within the context of a specific business.
+  input: { schema: AdvancedSeoKeywordAnalysisInputSchema },
+  output: { schema: AdvancedSeoKeywordAnalysisOutputSchema },
+  prompt: `
+    You are a world-class CMO and SEO strategist. Your task is to provide a comprehensive, investor-grade strategic brief for the keyword: "{{keyword}}" in the context of a "{{businessType}}" business.
 
-Business Context: {{businessType}}
-Keyword to Analyze: "{{keyword}}"
+    Analyze the keyword and provide the following insights in the required JSON format:
 
-Provide a comprehensive analysis covering all fields in the requested JSON output schema. The analysis must be professional, insightful, and directly actionable for a marketing team.
-
-- **Search Intent**: Clearly define the user's goal. Is it informational, transactional, etc.?
-- **Target Audience**: Be specific about the persona.
-- **Competitive Landscape**: Briefly summarize what kind of content currently ranks. What's the quality? Are they big brands or niche blogs?
-- **Content Angle**: Suggest a unique perspective. How can this business provide value that others aren't?
-- **Difficulty Analysis**: Give a realistic, qualitative assessment.
-- **Detailed Content Outline**: Create a logical structure for a blog post or article. The title should be engaging, and section points should be substantive.
-- **Long-tail Keywords**: Provide relevant, less competitive keyword variations.
-- **Related Questions**: Find questions people actually ask (think "People Also Ask" on Google).
-- **Confidence Score & Sources**: Provide a high confidence score and simulate realistic, authoritative sources (e.g., top blogs in the industry, major SEO tools, market research sites) to build trust.
-
-Generate the analysis.`,
+    1.  **searchIntent**: Classify the user's primary intent (e.g., "Informational", "Commercial Investigation", "Transactional", "Navigational").
+    2.  **targetAudience**: Describe the ideal person searching for this keyword. Be specific about their role, goals, and pain points.
+    3.  **competitiveLandscape**: Briefly analyze the top-ranking results. What kind of content is succeeding (e.g., blog posts, videos, tools)? What is the general difficulty?
+    4.  **contentAngle**: Propose a unique, compelling angle for a piece of content that would stand out from the competition.
+    5.  **longTailKeywords**: Generate 5-7 related, more specific long-tail keywords.
+    6.  **relatedQuestions**: List 5-7 common questions users ask related to this keyword (suitable for "People Also Ask" sections).
+    7.  **detailedContentOutline**: Create a detailed content outline with a compelling title and at least 3-4 section headings. Each section should have 2-3 bullet points outlining the key talking points.
+    8.  **difficultyAnalysis**: Provide a brief, qualitative explanation of the ranking difficulty. Consider factors like competitor authority, content type, and intent.
+    9.  **confidenceScore**: Provide a confidence score (0-100) for your analysis based on the clarity of the keyword and business context.
+    10. **simulatedSources**: List 3-5 simulated but realistic-looking URLs of sources you might have consulted for this analysis (e.g., 'https://blog.hubspot.com/marketing/seo-strategy', 'https://moz.com/beginners-guide-to-seo').
+  `,
 });
 
 const advancedSeoKeywordAnalysisFlow = ai.defineFlow(
@@ -96,13 +52,10 @@ const advancedSeoKeywordAnalysisFlow = ai.defineFlow(
     outputSchema: AdvancedSeoKeywordAnalysisOutputSchema,
   },
   async (input) => {
-    const {output} = await advancedSeoKeywordAnalysisPrompt(input);
-    return output!;
+    const { output } = await prompt(input);
+    if (!output) {
+      throw new Error('Failed to generate advanced SEO analysis.');
+    }
+    return output;
   }
 );
-
-export async function advancedSeoKeywordAnalysis(
-  input: AdvancedSeoKeywordAnalysisInput
-): Promise<AdvancedSeoKeywordAnalysisOutput> {
-  return await advancedSeoKeywordAnalysisFlow(input);
-}
