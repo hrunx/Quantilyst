@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useMemo, Suspense, useCallback } from 'react';
@@ -10,22 +9,19 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Lightbulb, LineChart as LucideLineChartIcon, Search, BarChart3, Settings2, Bell, Briefcase, MapPin, Globe, Sparkles, HelpCircle, ListChecks, TrendingUp, Loader2, Target, Users, Bot, VenetianMask, MessageSquareQuote, CheckCircle, ExternalLink, Shield, ShieldOff, AlertTriangle, PieChart, Building2, BrainCircuit, BookCopy } from 'lucide-react';
+import { Lightbulb, LineChart as LucideLineChartIcon, Search, BarChart3, Settings2, Bell, Briefcase, MapPin, Globe, Sparkles, HelpCircle, ListChecks, TrendingUp, Loader2, Target, Users, Bot, VenetianMask, MessageSquareQuote, CheckCircle, ExternalLink, Shield, ShieldOff, AlertTriangle, PieChart, Building2, BrainCircuit, BookCopy, Info } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTooltip, Legend as RechartsLegend } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent, type ChartConfig } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Progress } from "@/components/ui/progress";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 import { mockCountries } from '@/lib/mockData';
 import { getArabicTranslationsAction, getSeoSuggestionsAction, getAdvancedSeoAnalysisAction, getTrendingKeywordsAction, getChartTakeawayAction, getMarketDeepDiveAction } from '../actions';
 import { useToast } from "@/hooks/use-toast";
 
-import type { Keyword, GenerateTrendingKeywordsOutput } from '@/ai/types';
-import type { TranslateKeywordsArabicOutput } from '@/ai/types';
-import type { SeoContentSuggestionsOutput } from '@/ai/types';
-import type { AdvancedSeoKeywordAnalysisOutput } from '@/ai/types';
-import type { MarketDeepDiveOutput } from '@/ai/types';
+import type { Keyword, GenerateTrendingKeywordsOutput, TranslateKeywordsArabicOutput, SeoContentSuggestionsOutput, AdvancedSeoKeywordAnalysisOutput, MarketDeepDiveOutput } from '@/ai/types';
 
 type TimeFrame = keyof GenerateTrendingKeywordsOutput;
 
@@ -36,14 +32,11 @@ const emptyKeywords: GenerateTrendingKeywordsOutput = {
   month: [],
 };
 
-// Helper function to safely get hostname from a URL
 const getHostname = (url: string) => {
   try {
-    // Check if the URL string has a protocol, add https if it's missing
     const fullUrl = url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`;
     return new URL(fullUrl).hostname;
   } catch (e) {
-    // If it's still not a valid URL, return the original string or a placeholder
     return url || 'Invalid Source';
   }
 };
@@ -103,7 +96,7 @@ function DashboardContent() {
         return result.data;
     } else {
         toast({ title: "Keyword Fetch Failed", description: result.error || "Could not fetch AI-generated keywords.", variant: "destructive" });
-        setCurrentKeywords(emptyKeywords); // Clear on error
+        setCurrentKeywords(emptyKeywords);
         setIsLoadingKeywords(false);
         return null;
     }
@@ -120,7 +113,7 @@ function DashboardContent() {
       if (result.success && result.data) {
           setChartTakeaway(result.data.takeaway);
       } else {
-          setChartTakeaway(""); // Clear on failure
+          setChartTakeaway("");
       }
       setIsGeneratingTakeaway(false);
   }, [businessType]);
@@ -131,7 +124,7 @@ function DashboardContent() {
     if (!businessType || !keywordsToUse || keywordsToUse.length === 0) return;
 
     setIsTranslating(true);
-    const keywordNames = keywordsToUse.map(kw => kw.name);
+    const keywordNames = keywordsToUse.map(kw => kw.name).join(', ');
     const result = await getArabicTranslationsAction({ businessType, keywords: keywordNames });
     
     if (result.success && result.data) {
@@ -275,7 +268,8 @@ function DashboardContent() {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[40%]">Keyword</TableHead>
+          <TableHead className="w-[35%]">Keyword</TableHead>
+          <TableHead>Sources</TableHead>
           <TableHead className="text-right">Volume/Trend</TableHead>
           <TableHead className="text-right">Change (%)</TableHead>
           <TableHead className="text-right">Difficulty</TableHead>
@@ -284,10 +278,29 @@ function DashboardContent() {
       </TableHeader>
       <TableBody>
         {(isLoadingKeywords || isOverallLoading) && !keywords?.length ? (
-           <TableRow><TableCell colSpan={5} className="text-center py-10 text-muted-foreground">Loading keywords...</TableCell></TableRow>
+           <TableRow><TableCell colSpan={6} className="text-center py-10 text-muted-foreground">Loading keywords...</TableCell></TableRow>
         ) : keywords && keywords.length > 0 ? keywords.map(keyword => (
           <TableRow key={keyword.id}>
             <TableCell className="font-medium">{keyword.name}</TableCell>
+            <TableCell>
+              {keyword.sources && keyword.sources.length > 0 && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-6 w-6">
+                        <Info className="h-4 w-4 text-muted-foreground" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="font-semibold">Simulated Sources</p>
+                      <ul className="list-disc list-inside text-sm">
+                        {keyword.sources.map((src, i) => <li key={i}>{src}</li>)}
+                      </ul>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+            </TableCell>
             <TableCell className="text-right">{keyword.volume?.toLocaleString() || 'N/A'}</TableCell>
             <TableCell className="text-right">
               <span className={keyword.change >= 0 ? 'text-green-600' : 'text-red-600'}>
@@ -304,7 +317,7 @@ function DashboardContent() {
           </TableRow>
         )) : (
           <TableRow>
-            <TableCell colSpan={5} className="text-center py-10 text-muted-foreground">
+            <TableCell colSpan={6} className="text-center py-10 text-muted-foreground">
               No keywords to display. Perform an analysis to populate this table.
             </TableCell>
           </TableRow>

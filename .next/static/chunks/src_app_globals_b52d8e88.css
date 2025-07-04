@@ -877,6 +877,10 @@ body {
   width: 100%;
 }
 
+.w-\[35\%\] {
+  width: 35%;
+}
+
 .min-w-0 {
   min-width: 0;
 }

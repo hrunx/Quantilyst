@@ -1,22 +1,16 @@
-
 'use server';
 /**
- * @fileOverview This file defines the Genkit flow for generating trending keywords.
- *
- * This flow acts as a Market Trend Analysis Engine, taking a business type and location
- * to generate a realistic and relevant set of trending keywords for different timeframes.
- *
- * The main export is `generateTrendingKeywords`.
+ * @fileOverview A flow for generating relevant trending keywords.
+ * This acts as a Market Trend Analysis Engine, taking business context
+ * and returning a list of relevant, AI-generated keywords with simulated metrics.
  */
 
-import { ai } from '@/ai/genkit';
+import {ai} from '@/ai/genkit';
 import {
   GenerateTrendingKeywordsInputSchema,
-  type GenerateTrendingKeywordsInput,
   GenerateTrendingKeywordsOutputSchema,
-  type GenerateTrendingKeywordsOutput,
 } from '@/ai/types';
-
+import type {GenerateTrendingKeywordsOutput, GenerateTrendingKeywordsInput} from '@/ai/types';
 
 export async function generateTrendingKeywords(
   input: GenerateTrendingKeywordsInput
@@ -26,24 +20,21 @@ export async function generateTrendingKeywords(
 
 const prompt = ai.definePrompt({
   name: 'generateTrendingKeywordsPrompt',
-  input: { schema: GenerateTrendingKeywordsInputSchema },
-  output: { schema: GenerateTrendingKeywordsOutputSchema },
+  input: {schema: GenerateTrendingKeywordsInputSchema},
+  output: {schema: GenerateTrendingKeywordsOutputSchema},
   prompt: `
-    You are a Market Trend Analysis Engine. Your task is to generate a list of trending keywords for a "{{businessType}}" business located in {{country}}{{#if city}}, {{city}}{{/if}}.
+    You are a world-class Market Trend Analyst AI. Your task is to generate a list of trending keywords relevant to a specific business context.
 
-    The keywords must be highly relevant to the business type and location provided. Do NOT include generic, unrelated, or placeholder keywords like "sustainable business practices" unless it is directly relevant to the query.
-
-    Generate realistic-looking data for each keyword, including:
-    - id: A unique identifier (e.g., h1, d1, w1, m1).
-    - name: The keyword phrase.
-    - volume: An estimated search volume or trend score. This should vary realistically across different timeframes.
-    - change: The percentage change. This should be dynamic.
-    - difficulty: An SEO difficulty score from 0-100.
-    - serpFeatures: A list of 0-2 relevant SERP features (e.g., "Featured Snippet", "Local Pack", "News Carousel", "Video Carousel", "People Also Ask").
-
-    Provide lists for the past hour, day, week, and month. The number of keywords should be smaller for shorter timeframes (e.g., 3-4 for hour/day) and larger for longer ones (e.g., 5-10 for week/month). Ensure the data is plausible and contextually appropriate.
+    **Instructions:**
+    1.  **Analyze the Input:** Carefully consider the user's business type: '{{{businessType}}}', country: '{{{country}}}', and city: '{{{city}}}'.
+    2.  **Generate Relevant Keywords:** Create lists of keywords that are genuinely trending for that business in that location. DO NOT use generic or unrelated keywords like "sustainable business practices" unless the business is in the sustainability sector. All keywords must be highly relevant.
+    3.  **Simulate Realistic Metrics:** For each keyword, provide realistic-looking (but simulated) data for search volume, trend change percentage, and SEO difficulty.
+    4.  **Provide Simulated Sources:** For each keyword, list 1-2 plausible (but simulated) sources for the trend data, such as 'Google Trends', 'Exploding Topics', 'SEMrush Data', or a relevant industry publication. This adds a layer of authenticity.
+    5.  **Categorize by Time Frame:** Generate keyword lists for the past hour, day, week, and month.
+    6.  **Adhere Strictly to the Output Schema:** Ensure the output is a valid JSON object that matches the required schema. Each keyword must have a unique 'id'.
   `,
 });
+
 
 const generateTrendingKeywordsFlow = ai.defineFlow(
   {
@@ -52,10 +43,25 @@ const generateTrendingKeywordsFlow = ai.defineFlow(
     outputSchema: GenerateTrendingKeywordsOutputSchema,
   },
   async (input) => {
-    const { output } = await prompt(input);
+    const llmResponse = await prompt(input);
+    const output = llmResponse.output;
+
     if (!output) {
-      throw new Error('Failed to generate trending keywords.');
+      throw new Error('AI did not return valid trending keyword data.');
     }
+    
+    // Ensure unique IDs
+    const allKeywords = [...output.hour, ...output.day, ...output.week, ...output.month];
+    const usedIds = new Set<string>();
+    allKeywords.forEach((kw, index) => {
+      let newId = kw.id || `kw-${index}`;
+      while (usedIds.has(newId)) {
+        newId = `kw-${index}-${Math.random().toString(36).substring(7)}`;
+      }
+      kw.id = newId;
+      usedIds.add(newId);
+    });
+
     return output;
   }
 );
