@@ -529,7 +529,7 @@ function DashboardContent() {
                                 {advancedAnalysisResults.simulatedSources.map((source, i) => (
                                     <li key={`src-${i}`} className="text-sm text-muted-foreground flex items-center gap-2">
                                         <ExternalLink className="h-3 w-3" />
-                                        <a href={source} target="_blank" rel="noopener noreferrer" className="hover:underline">{getHostname(source)}</a>
+                                        <span>{getHostname(source)}</span>
                                     </li>
                                 ))}
                             </ul>
@@ -697,7 +697,7 @@ function DashboardContent() {
                                   <ul className="text-xs text-muted-foreground list-disc list-inside">
                                       {/* Aggregating all sources for display */}
                                       {[...deepDiveResults.tamSamSom.tam.sources, ...deepDiveResults.tamSamSom.sam.sources, ...deepDiveResults.tamSamSom.som.sources].filter((v, i, a) => a.indexOf(v) === i).map((src, i) => (
-                                          <li key={i}><a href={src} target="_blank" rel="noopener noreferrer" className="hover:underline">{getHostname(src)}</a></li>
+                                          <li key={i}><span>{getHostname(src)}</span></li>
                                       ))}
                                   </ul>
                                 </div>

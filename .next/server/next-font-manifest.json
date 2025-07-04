@@ -1,5 +1,8 @@
 {
   "app": {
+    "[project]/src/app/_not-found/page": [
+      "static/media/L0x5DF4xlVMF_BfR8bXMIjhLq3_cXbKD-s.p.f7723675.woff2"
+    ],
     "[project]/src/app/dashboard/page": [
       "static/media/L0x5DF4xlVMF_BfR8bXMIjhLq3_cXbKD-s.p.f7723675.woff2"
     ],
