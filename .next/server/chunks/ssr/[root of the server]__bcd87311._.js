@@ -86,7 +86,7 @@ var __TURBOPACK__imported__module__$5b$next$5d2f$internal$2f$font$2f$google$2f$i
 ;
 ;
 const metadata = {
-    title: 'Market Insights Pro',
+    title: 'HWAH Market Insights ',
     description: 'Trending keyword analysis and SEO suggestions for your business.'
 };
 function RootLayout({ children }) {

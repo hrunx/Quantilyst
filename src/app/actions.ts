@@ -35,13 +35,9 @@ export async function getArabicTranslationsAction(input: TranslateKeywordsArabic
 export async function getSeoSuggestionsAction(input: SeoContentSuggestionsInput): Promise<{ success: boolean; data?: SeoContentSuggestionsOutput; error?: string }> {
   try {
     const result = await seoContentSuggestions(input);
-    if (result && result.suggestions && result.suggestions.length > 0) {
+    if (result && result.suggestions) {
       return { success: true, data: result };
-    } else if (result && result.suggestions && result.suggestions.length === 0) {
-      // Changed this to be a success case with an informative message if AI finds nothing specific.
-      return { success: true, data: {suggestions: []}, error: "No specific suggestions were generated for the given input, but the process completed." };
     }
-    // This case might indicate an unexpected empty or malformed response from the flow that wasn't an error but also not a valid success.
     return { success: false, error: "Failed to get valid SEO suggestions. The AI did not return expected data."};
   } catch (error) {
     console.error("Error getting SEO suggestions:", error);

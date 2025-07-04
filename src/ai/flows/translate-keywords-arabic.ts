@@ -1,41 +1,66 @@
 'use server';
-
 /**
- * @fileOverview A flow to translate trending keywords into Arabic for the KSA region.
+ * @fileOverview Translates a list of keywords to Arabic and provides estimated trend data.
  *
- * - translateKeywordsArabic - A function that handles the translation and generation of Arabic keywords.
- * - TranslateKeywordsArabicInput - The input type for the translateKeywordsArabic function.
- * - TranslateKeywordsArabicOutput - The return type for the translateKeywordsArabic function.
+ * - translateKeywordsArabic: A function that performs the translation and data estimation.
+ * - TranslateKeywordsArabicInput: The input type for the function.
+ * - TranslateKeywordsArabicOutput: The return type for the function.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-const TranslateKeywordsArabicInputSchema = z.object({
-  businessType: z.string().describe('The type of business for which to generate keywords.'),
-  keywords: z.array(z.string()).describe('An array of trending keywords to translate.'),
+export const TranslateKeywordsArabicInputSchema = z.object({
+  businessType: z
+    .string()
+    .describe('The type of business or industry for context.'),
+  keywords: z
+    .array(z.string())
+    .describe('A list of keywords to translate to Arabic.'),
 });
-export type TranslateKeywordsArabicInput = z.infer<typeof TranslateKeywordsArabicInputSchema>;
+export type TranslateKeywordsArabicInput = z.infer<
+  typeof TranslateKeywordsArabicInputSchema
+>;
 
-const TranslateKeywordsArabicOutputSchema = z.object({
-  translatedKeywords: z.array(z.string()).describe('The translated keywords in Arabic.'),
+export const TranslateKeywordsArabicOutputSchema = z.object({
+  translatedKeywords: z
+    .array(
+      z.object({
+        keyword: z.string().describe('The translated Arabic keyword.'),
+        volume: z
+          .number()
+          .describe(
+            'A realistic, simulated search volume for the KSA market.'
+          ),
+        change: z
+          .number()
+          .describe(
+            'A realistic, simulated percentage trend change for the keyword.'
+          ),
+      })
+    )
+    .describe('An array of translated keywords with their trend data.'),
 });
-export type TranslateKeywordsArabicOutput = z.infer<typeof TranslateKeywordsArabicOutputSchema>;
-
-export async function translateKeywordsArabic(input: TranslateKeywordsArabicInput): Promise<TranslateKeywordsArabicOutput> {
-  return translateKeywordsArabicFlow(input);
-}
+export type TranslateKeywordsArabicOutput = z.infer<
+  typeof TranslateKeywordsArabicOutputSchema
+>;
 
 const translateKeywordsArabicPrompt = ai.definePrompt({
   name: 'translateKeywordsArabicPrompt',
   input: {schema: TranslateKeywordsArabicInputSchema},
   output: {schema: TranslateKeywordsArabicOutputSchema},
-  prompt: `You are an expert in translating keywords to Arabic, specifically for the KSA (Kingdom of Saudi Arabia) region. Given the business type and a list of trending keywords, translate the keywords into Arabic.
+  prompt: `You are a localization and SEO expert specializing in the Saudi Arabian (KSA) market.
+Your task is to translate a list of English keywords into Arabic and provide realistic, simulated SEO metrics for them.
 
-Business Type: {{{businessType}}}
-Trending Keywords: {{#each keywords}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}
+Business Context: {{businessType}}
+Keywords to Translate: {{#each keywords}}"{{this}}"{{#unless @last}}, {{/unless}}{{/each}}
 
-Return only the translated keywords in Arabic in an array.
+For each keyword, provide:
+1.  An accurate and culturally relevant Arabic translation.
+2.  A plausible, simulated search volume (e.g., between 500 and 50000).
+3.  A plausible, simulated trend change percentage (e.g., between -20 and +50).
+
+The final output must be a single, valid JSON object matching the requested schema.
 `,
 });
 
@@ -45,8 +70,14 @@ const translateKeywordsArabicFlow = ai.defineFlow(
     inputSchema: TranslateKeywordsArabicInputSchema,
     outputSchema: TranslateKeywordsArabicOutputSchema,
   },
-  async input => {
+  async (input) => {
     const {output} = await translateKeywordsArabicPrompt(input);
     return output!;
   }
 );
+
+export async function translateKeywordsArabic(
+  input: TranslateKeywordsArabicInput
+): Promise<TranslateKeywordsArabicOutput> {
+  return await translateKeywordsArabicFlow(input);
+}
