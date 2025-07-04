@@ -7,7 +7,7 @@ runtime.loadChunk("server/chunks/ssr/[root of the server]__bcd87311._.js");
 runtime.loadChunk("server/chunks/ssr/node_modules_96715ba7._.js");
 runtime.loadChunk("server/chunks/ssr/node_modules_next_dist_client_components_forbidden-error_ea7ea172.js");
 runtime.loadChunk("server/chunks/ssr/node_modules_next_dist_client_components_unauthorized-error_c8949b27.js");
-runtime.loadChunk("server/chunks/ssr/node_modules_node-fetch_src_index_81205604.js");
+runtime.loadChunk("server/chunks/ssr/node_modules_node-fetch_src_index_bc5e99e0.js");
 runtime.loadChunk("server/chunks/ssr/node_modules_next_dist_51599fea._.js");
 runtime.loadChunk("server/chunks/ssr/node_modules_@genkit-ai_core_lib_7fa917ad._.js");
 runtime.loadChunk("server/chunks/ssr/node_modules_zod_lib_9973ecc6._.js");

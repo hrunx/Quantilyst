@@ -234,10 +234,7 @@ const ai = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$g
 
 var { g: global, __dirname } = __turbopack_context__;
 {
-/**
- * @fileOverview Centralized type definitions and Zod schemas for all AI flows.
- * This file does NOT use 'use server' and can be safely imported on the client and server.
- */ __turbopack_context__.s({
+/* __next_internal_action_entry_do_not_use__ {"7f02e9766421c2bb832650c8224f77f91bccd31713":"MarketDeepDiveInputSchema","7f0a13ec4509de991190d13de0265e7e761559dfae":"GenerateChartTakeawayOutputSchema","7f11a33d4fd6463e3a0878bc7e73b0e92a3a216f45":"SeoContentSuggestionsInputSchema","7f21daa615f46869106992226445b023df79405ecd":"SeoContentSuggestionSchema","7f268dea1c0a4efa023b1f423e9858d48b907bf5e8":"AdvancedSeoKeywordAnalysisOutputSchema","7f2f811ce05740dbe45af3150d872a12ab90b15c1a":"GenerateChartTakeawayInputSchema","7f35a094bae4fe3ca0cc0fd509c713d3c0e0b313ae":"TranslateKeywordsArabicInputSchema","7f4eee3b7760704750309c58b8cc614d325f6241bb":"AdvancedSeoKeywordAnalysisInputSchema","7f5ab08a2ef86d06417331b7a0164d1f252d781de1":"TranslateKeywordsArabicOutputSchema","7f5d2aa5b1461f76449886a255c3ab27e73c6c7829":"GenerateTrendingKeywordsOutputSchema","7f6fef01e2e273e5450972d3c1ab1024ec3447ec94":"TranslatedKeywordSchema","7f77adcb6ce396ed2bda9d0700620e5ac76fdf2933":"KeywordSchema","7f825103fa9d1e5822d640744a40a7ecad690efc2c":"MarketDeepDiveOutputSchema","7f8b51d3d2cb36f7ed6ef79ba52c4f93eec1823ebb":"GenerateTrendingKeywordsInputSchema","7fa7822d64f7eb4151e5f6f601651a5f9fd12df9de":"SeoContentSuggestionsOutputSchema"} */ __turbopack_context__.s({
     "AdvancedSeoKeywordAnalysisInputSchema": (()=>AdvancedSeoKeywordAnalysisInputSchema),
     "AdvancedSeoKeywordAnalysisOutputSchema": (()=>AdvancedSeoKeywordAnalysisOutputSchema),
     "GenerateChartTakeawayInputSchema": (()=>GenerateChartTakeawayInputSchema),
@@ -247,117 +244,163 @@ var { g: global, __dirname } = __turbopack_context__;
     "KeywordSchema": (()=>KeywordSchema),
     "MarketDeepDiveInputSchema": (()=>MarketDeepDiveInputSchema),
     "MarketDeepDiveOutputSchema": (()=>MarketDeepDiveOutputSchema),
+    "SeoContentSuggestionSchema": (()=>SeoContentSuggestionSchema),
     "SeoContentSuggestionsInputSchema": (()=>SeoContentSuggestionsInputSchema),
     "SeoContentSuggestionsOutputSchema": (()=>SeoContentSuggestionsOutputSchema),
-    "SuggestionSchema": (()=>SuggestionSchema),
     "TranslateKeywordsArabicInputSchema": (()=>TranslateKeywordsArabicInputSchema),
     "TranslateKeywordsArabicOutputSchema": (()=>TranslateKeywordsArabicOutputSchema),
     "TranslatedKeywordSchema": (()=>TranslatedKeywordSchema)
 });
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/zod/lib/index.mjs [app-rsc] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/build/webpack/loaders/next-flight-loader/server-reference.js [app-rsc] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$app$2d$render$2f$encryption$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/app-render/encryption.js [app-rsc] (ecmascript)");
+(()=>{
+    const e = new Error("Cannot find module 'genkit/zod'");
+    e.code = 'MODULE_NOT_FOUND';
+    throw e;
+})();
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$action$2d$validate$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/build/webpack/loaders/next-flight-loader/action-validate.js [app-rsc] (ecmascript)");
 ;
-const GenerateTrendingKeywordsInputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    businessType: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The type of business or industry, e.g., "SaaS for project management".'),
-    country: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The target country for the analysis, e.g., "United States".'),
-    city: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().optional().describe('The optional target city for more localized trends, e.g., "San Francisco".')
+;
+;
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ KeywordSchema = z.object({
+    id: z.string().describe('A unique identifier for the keyword.'),
+    name: z.string().describe('The trending keyword phrase.'),
+    volume: z.number().optional().describe('An estimated search volume or trend score.'),
+    change: z.number().describe('The percentage change over the time period (e.g., week-over-week). Can be positive or negative.'),
+    difficulty: z.number().optional().describe('An estimated SEO difficulty score (0-100).'),
+    serpFeatures: z.array(z.string()).optional().describe('A list of observed SERP features (e.g., "Featured Snippet", "Local Pack").'),
+    sources: z.array(z.string()).optional().describe("A list of simulated source URLs or names where this trend data was observed (e.g., 'Google Trends', 'Exploding Topics').")
 });
-const KeywordSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    id: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("A unique identifier for the keyword, like 'w1' or 'd2'."),
-    name: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("The trending keyword or phrase."),
-    volume: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].number().describe("An estimated search volume or trend score, as an integer."),
-    change: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].number().describe("The percentage change over the time period (e.g., 18 for 18%)."),
-    difficulty: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].number().min(0).max(100).describe("An estimated SEO difficulty score from 0 to 100."),
-    serpFeatures: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe("A list of observed SERP features, like 'Featured Snippet', 'Local Pack', or 'Video Carousel'.")
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ GenerateTrendingKeywordsInputSchema = z.object({
+    businessType: z.string().describe('The type of business or industry for which to find keywords.'),
+    country: z.string().describe('The target country for the keyword analysis.'),
+    city: z.string().optional().describe('The target city for the keyword analysis (if applicable).')
 });
-const GenerateTrendingKeywordsOutputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    hour: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(KeywordSchema).describe("An array of 3-5 keywords trending in the past hour."),
-    day: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(KeywordSchema).describe("An array of 3-5 keywords trending in the past day."),
-    week: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(KeywordSchema).describe("An array of 5-10 keywords trending in the past week."),
-    month: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(KeywordSchema).describe("An array of 5-10 keywords trending in the past month.")
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ GenerateTrendingKeywordsOutputSchema = z.object({
+    hour: z.array(KeywordSchema).describe('Keywords trending in the past hour.'),
+    day: z.array(KeywordSchema).describe('Keywords trending in the past 24 hours.'),
+    week: z.array(KeywordSchema).describe('Keywords trending in the past week.'),
+    month: z.array(KeywordSchema).describe('Keywords trending in the past month.')
 });
-const TranslateKeywordsArabicInputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    businessType: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The type of business or industry, used for context.'),
-    keywords: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe('An array of English keywords to translate.')
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ TranslateKeywordsArabicInputSchema = z.object({
+    businessType: z.string().describe('The business context for the translation.'),
+    keywords: z.string().describe('A comma-separated list of keywords to translate.')
 });
-const TranslatedKeywordSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    keyword: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The translated keyword in Arabic.'),
-    volume: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].number().describe('Estimated search volume for the Arabic keyword in the KSA region.'),
-    change: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].number().describe('Estimated trend change percentage for the Arabic keyword.')
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ TranslatedKeywordSchema = z.object({
+    keyword: z.string().describe('The translated keyword in Arabic.'),
+    volume: z.number().describe("Estimated search volume for the keyword in the KSA market."),
+    change: z.number().describe("Estimated trend change percentage for the keyword in the KSA market.")
 });
-const TranslateKeywordsArabicOutputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    translatedKeywords: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(TranslatedKeywordSchema).describe('An array of translated keywords with their KSA-specific trend data.')
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ TranslateKeywordsArabicOutputSchema = z.object({
+    translatedKeywords: z.array(TranslatedKeywordSchema)
 });
-const SeoContentSuggestionsInputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    businessType: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The type of business or industry for context.'),
-    trendingKeywords: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('A comma-separated string of the top 3-5 trending keywords.')
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ SeoContentSuggestionsInputSchema = z.object({
+    businessType: z.string().describe('The user\'s business type or industry.'),
+    trendingKeywords: z.string().describe('A comma-separated list of trending keywords to base the suggestions on.')
 });
-const SuggestionSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    title: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("A compelling, SEO-friendly title for a piece of content."),
-    hook: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("A 1-2 sentence engaging hook to draw the reader in."),
-    points: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe("An array of 3-5 key talking points or sections for the content brief.")
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ SeoContentSuggestionSchema = z.object({
+    title: z.string().describe("A compelling, SEO-friendly title for a piece of content."),
+    hook: z.string().describe("An engaging opening sentence or hook to capture the reader's attention."),
+    points: z.array(z.string()).describe("A list of key talking points or sections for the content.")
 });
-const SeoContentSuggestionsOutputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    suggestions: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(SuggestionSchema).describe('An array of 2-3 content strategy briefs.')
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ SeoContentSuggestionsOutputSchema = z.object({
+    suggestions: z.array(SeoContentSuggestionSchema).describe('A list of content suggestions based on the provided keywords.')
 });
-const AdvancedSeoKeywordAnalysisInputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    businessType: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The type of business or industry for context.'),
-    keyword: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The specific keyword for in-depth analysis.')
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ AdvancedSeoKeywordAnalysisInputSchema = z.object({
+    businessType: z.string().describe('The user\'s business type or industry.'),
+    keyword: z.string().describe('The specific keyword for in-depth analysis.')
 });
-const AdvancedSeoKeywordAnalysisOutputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    searchIntent: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The primary search intent (e.g., Informational, Commercial, Transactional, Navigational).'),
-    targetAudience: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('A description of the ideal target audience for this keyword.'),
-    competitiveLandscape: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('A brief analysis of the current top-ranking content and where the opportunities are.'),
-    contentAngle: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('A unique angle or perspective to make content stand out.'),
-    longTailKeywords: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe('A list of 3-5 related long-tail keyword variations.'),
-    relatedQuestions: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe("A list of 3-5 common questions users ask related to this keyword (for 'People Also Ask' sections)."),
-    detailedContentOutline: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-        title: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('A fully-formed, compelling title for an article or blog post.'),
-        sections: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-            heading: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The heading for a section of the article.'),
-            points: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe('An array of key topics or bullet points to cover within that section.')
-        })).describe('An array of sections that make up the content outline.')
-    }).describe('A detailed outline for a piece of content, including a title and section breakdowns.'),
-    difficultyAnalysis: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('A qualitative analysis of why this keyword is easy, medium, or hard to rank for.'),
-    confidenceScore: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].number().min(0).max(100).describe('A confidence score (0-100) representing the quality and certainty of the analysis.'),
-    simulatedSources: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe('An array of up to 3 simulated source URLs (e.g., "https://www.competitor.com/blog/related-topic", "https://www.industry-report.com/stats") that informed the analysis.')
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ AdvancedSeoKeywordAnalysisOutputSchema = z.object({
+    searchIntent: z.string().describe("The primary user intent behind the search (e.g., 'Informational', 'Commercial', 'Transactional')."),
+    targetAudience: z.string().describe('A description of the ideal target audience for this keyword.'),
+    competitiveLandscape: z.string().describe('An analysis of the current top-ranking content and competitors.'),
+    contentAngle: z.string().describe('A unique angle or perspective to make the content stand out.'),
+    longTailKeywords: z.array(z.string()).describe('A list of related long-tail keyword variations.'),
+    relatedQuestions: z.array(z.string()).describe('A list of common questions users ask related to this keyword.'),
+    detailedContentOutline: z.object({
+        title: z.string().describe("The proposed title for the content piece."),
+        sections: z.array(z.object({
+            heading: z.string().describe("The heading for a section of the content."),
+            points: z.array(z.string()).describe("Key bullet points or topics to cover within that section.")
+        })).describe("The sections that make up the content outline.")
+    }),
+    difficultyAnalysis: z.string().describe("An analysis of why the keyword is difficult or easy to rank for."),
+    confidenceScore: z.number().describe("The AI's confidence in its analysis, from 0 to 100."),
+    simulatedSources: z.array(z.string()).describe("A list of simulated source URLs or names used for this analysis (e.g., 'Ahrefs Data', 'SEMrush Analysis').")
 });
-const GenerateChartTakeawayInputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    businessType: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The business type for context.'),
-    keywordChartData: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('A JSON string representing the data shown in the chart, typically an array of objects with "name" and "volume" keys.')
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ GenerateChartTakeawayInputSchema = z.object({
+    businessType: z.string().describe("The business context for the chart analysis."),
+    keywordChartData: z.string().describe("A JSON string representing an array of keyword objects, each with 'name' and 'volume' properties.")
 });
-const GenerateChartTakeawayOutputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    takeaway: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("A single, concise, CMO-level sentence summarizing the key insight or takeaway from the chart data.")
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ GenerateChartTakeawayOutputSchema = z.object({
+    takeaway: z.string().describe("A single, concise sentence summarizing the key insight from the chart data, tailored for a CMO.")
 });
-const MarketDeepDiveInputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    businessType: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The type of business or industry, e.g., "SaaS for project management".'),
-    country: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The target country for the analysis, e.g., "United States".'),
-    city: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().optional().describe('The optional target city for a more localized report, e.g., "San Francisco".')
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ MarketDeepDiveInputSchema = z.object({
+    businessType: z.string().describe('The user\'s business type or industry.'),
+    country: z.string().describe('The target country for the report.'),
+    city: z.string().optional().describe('The target city for the report (if applicable).')
 });
-const MarketValueSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    value: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].number().describe('The estimated market value in USD.'),
-    description: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('A brief explanation of how this value was derived.'),
-    sources: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe('Simulated source URLs for this data point (e.g., https://www.gartner.com/en/documents/...).')
+const MarketValueSchema = z.object({
+    value: z.number().describe("The estimated market value in USD."),
+    description: z.string().describe("A brief description of what this market segment represents."),
+    sources: z.array(z.string()).describe("A list of simulated source names or reports used for this estimation (e.g., 'Gartner 2023 Report', 'Statista Market Sizing').")
 });
-const MarketDeepDiveOutputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    executiveSummary: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("A C-suite level executive summary of the market analysis."),
-    tamSamSom: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-        tam: MarketValueSchema.describe('Total Addressable Market'),
-        sam: MarketValueSchema.describe('Serviceable Available Market'),
-        som: MarketValueSchema.describe('Serviceable Obtainable Market')
-    }).describe("TAM/SAM/SOM analysis with value, description, and simulated sources."),
-    competitors: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-        name: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("Name of the competitor."),
-        strengths: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("Key strengths of the competitor."),
-        weaknesses: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("Key weaknesses of the competitor."),
-        marketShare: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe("Estimated market share as a percentage string (e.g., '15%').")
-    })).describe("A benchmark of 3-5 key competitors."),
-    swot: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-        strengths: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe("A list of internal strengths for the business type in this market."),
-        weaknesses: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe("A list of internal weaknesses."),
-        opportunities: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe("A list of external opportunities in the market."),
-        threats: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].array(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string()).describe("A list of external threats in the market.")
-    }).describe("A full SWOT analysis.")
+const TamSamSomSchema = z.object({
+    tam: MarketValueSchema.describe("Total Addressable Market"),
+    sam: MarketValueSchema.describe("Serviceable Addressable Market"),
+    som: MarketValueSchema.describe("Serviceable Obtainable Market")
 });
+const CompetitorSchema = z.object({
+    name: z.string().describe("The name of the competitor."),
+    strengths: z.string().describe("The competitor's key strengths."),
+    weaknesses: z.string().describe("The competitor's key weaknesses."),
+    marketShare: z.string().describe("The competitor's estimated market share (as a percentage string, e.g., '15%').")
+});
+const SwotSchema = z.object({
+    strengths: z.array(z.string()).describe("Internal factors that give the business an advantage."),
+    weaknesses: z.array(z.string()).describe("Internal factors that place the business at a disadvantage."),
+    opportunities: z.array(z.string()).describe("External factors that the business could exploit to its advantage."),
+    threats: z.array(z.string()).describe("External factors that could cause trouble for the business.")
+});
+const /*#__TURBOPACK_DISABLE_EXPORT_MERGING__*/ MarketDeepDiveOutputSchema = z.object({
+    executiveSummary: z.string().describe("A high-level summary of the entire market deep-dive report, suitable for a C-suite executive."),
+    tamSamSom: TamSamSomSchema.describe("The market sizing analysis."),
+    competitors: z.array(CompetitorSchema).describe("An analysis of key competitors in the market."),
+    swot: SwotSchema.describe("A SWOT analysis for the user's business in this market.")
+});
+;
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$action$2d$validate$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ensureServerEntryExports"])([
+    KeywordSchema,
+    GenerateTrendingKeywordsInputSchema,
+    GenerateTrendingKeywordsOutputSchema,
+    TranslateKeywordsArabicInputSchema,
+    TranslatedKeywordSchema,
+    TranslateKeywordsArabicOutputSchema,
+    SeoContentSuggestionsInputSchema,
+    SeoContentSuggestionSchema,
+    SeoContentSuggestionsOutputSchema,
+    AdvancedSeoKeywordAnalysisInputSchema,
+    AdvancedSeoKeywordAnalysisOutputSchema,
+    GenerateChartTakeawayInputSchema,
+    GenerateChartTakeawayOutputSchema,
+    MarketDeepDiveInputSchema,
+    MarketDeepDiveOutputSchema
+]);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(KeywordSchema, "7f77adcb6ce396ed2bda9d0700620e5ac76fdf2933", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(GenerateTrendingKeywordsInputSchema, "7f8b51d3d2cb36f7ed6ef79ba52c4f93eec1823ebb", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(GenerateTrendingKeywordsOutputSchema, "7f5d2aa5b1461f76449886a255c3ab27e73c6c7829", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(TranslateKeywordsArabicInputSchema, "7f35a094bae4fe3ca0cc0fd509c713d3c0e0b313ae", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(TranslatedKeywordSchema, "7f6fef01e2e273e5450972d3c1ab1024ec3447ec94", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(TranslateKeywordsArabicOutputSchema, "7f5ab08a2ef86d06417331b7a0164d1f252d781de1", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(SeoContentSuggestionsInputSchema, "7f11a33d4fd6463e3a0878bc7e73b0e92a3a216f45", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(SeoContentSuggestionSchema, "7f21daa615f46869106992226445b023df79405ecd", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(SeoContentSuggestionsOutputSchema, "7fa7822d64f7eb4151e5f6f601651a5f9fd12df9de", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(AdvancedSeoKeywordAnalysisInputSchema, "7f4eee3b7760704750309c58b8cc614d325f6241bb", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(AdvancedSeoKeywordAnalysisOutputSchema, "7f268dea1c0a4efa023b1f423e9858d48b907bf5e8", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(GenerateChartTakeawayInputSchema, "7f2f811ce05740dbe45af3150d872a12ab90b15c1a", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(GenerateChartTakeawayOutputSchema, "7f0a13ec4509de991190d13de0265e7e761559dfae", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(MarketDeepDiveInputSchema, "7f02e9766421c2bb832650c8224f77f91bccd31713", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(MarketDeepDiveOutputSchema, "7f825103fa9d1e5822d640744a40a7ecad690efc2c", null);
 }}),
 "[project]/src/ai/flows/translate-keywords-arabic.ts [app-rsc] (ecmascript)": ((__turbopack_context__) => {
 "use strict";
@@ -370,12 +413,9 @@ var { g: global, __dirname } = __turbopack_context__;
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/build/webpack/loaders/next-flight-loader/server-reference.js [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$app$2d$render$2f$encryption$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/app-render/encryption.js [app-rsc] (ecmascript)");
 /**
- * @fileOverview Defines the Genkit flow for translating keywords to Arabic.
- *
- * This flow translates a list of English keywords to Arabic, focusing on the KSA market,
- * and provides simulated trend data for the translated keywords.
- *
- * The main export is `translateKeywordsArabic`.
+ * @fileOverview A flow for translating keywords to Arabic.
+ * It translates a list of English keywords to Arabic, providing
+ * estimated search volume and trend data for the KSA market.
  */ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/ai/genkit.ts [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$types$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/ai/types.ts [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$action$2d$validate$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/build/webpack/loaders/next-flight-loader/action-validate.js [app-rsc] (ecmascript)");
@@ -395,13 +435,18 @@ const prompt = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genk
         schema: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$types$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["TranslateKeywordsArabicOutputSchema"]
     },
     prompt: `
-    You are an expert marketing translator specializing in the Saudi Arabia (KSA) market for a "{{businessType}}" business.
-    Translate the following English keywords into natural, market-appropriate Arabic.
-    
-    Keywords to translate: {{jsonStringify keywords}}
+        You are a master SEO specialist and linguist focused on the Saudi Arabia (KSA) market.
+        Your task is to translate a list of English keywords into Arabic and provide estimated market data for them.
 
-    For each translated keyword, provide a realistic estimated search volume and a trend change percentage in the required JSON format.
-  `
+        **Business Context:** {{{businessType}}}
+        **Keywords to Translate:** {{{keywords}}}
+
+        **Instructions:**
+        1.  Translate each English keyword from the list into the most commercially relevant and commonly searched Arabic equivalent for the KSA market.
+        2.  For each translated Arabic keyword, provide a realistic (but simulated) estimated search **volume**.
+        3.  For each translated Arabic keyword, provide a realistic (but simulated) trend **change** percentage.
+        4.  Return the data strictly in the format specified by the output schema.
+    `
 });
 const translateKeywordsArabicFlow = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ai"].defineFlow({
     name: 'translateKeywordsArabicFlow',
@@ -410,7 +455,7 @@ const translateKeywordsArabicFlow = __TURBOPACK__imported__module__$5b$project$5
 }, async (input)=>{
     const { output } = await prompt(input);
     if (!output) {
-        throw new Error('Failed to translate keywords to Arabic.');
+        throw new Error('AI did not return valid Arabic translation data.');
     }
     return output;
 });
@@ -562,12 +607,9 @@ var { g: global, __dirname } = __turbopack_context__;
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/build/webpack/loaders/next-flight-loader/server-reference.js [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$app$2d$render$2f$encryption$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/app-render/encryption.js [app-rsc] (ecmascript)");
 /**
- * @fileOverview This file defines the Genkit flow for generating trending keywords.
- *
- * This flow acts as a Market Trend Analysis Engine, taking a business type and location
- * to generate a realistic and relevant set of trending keywords for different timeframes.
- *
- * The main export is `generateTrendingKeywords`.
+ * @fileOverview A flow for generating relevant trending keywords.
+ * This acts as a Market Trend Analysis Engine, taking business context
+ * and returning a list of relevant, AI-generated keywords with simulated metrics.
  */ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/ai/genkit.ts [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$types$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/ai/types.ts [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$action$2d$validate$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/build/webpack/loaders/next-flight-loader/action-validate.js [app-rsc] (ecmascript)");
@@ -587,19 +629,15 @@ const prompt = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genk
         schema: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$types$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["GenerateTrendingKeywordsOutputSchema"]
     },
     prompt: `
-    You are a Market Trend Analysis Engine. Your task is to generate a list of trending keywords for a "{{businessType}}" business located in {{country}}{{#if city}}, {{city}}{{/if}}.
+    You are a world-class Market Trend Analyst AI. Your task is to generate a list of trending keywords relevant to a specific business context.
 
-    The keywords must be highly relevant to the business type and location provided. Do NOT include generic, unrelated, or placeholder keywords like "sustainable business practices" unless it is directly relevant to the query.
-
-    Generate realistic-looking data for each keyword, including:
-    - id: A unique identifier (e.g., h1, d1, w1, m1).
-    - name: The keyword phrase.
-    - volume: An estimated search volume or trend score. This should vary realistically across different timeframes.
-    - change: The percentage change. This should be dynamic.
-    - difficulty: An SEO difficulty score from 0-100.
-    - serpFeatures: A list of 0-2 relevant SERP features (e.g., "Featured Snippet", "Local Pack", "News Carousel", "Video Carousel", "People Also Ask").
-
-    Provide lists for the past hour, day, week, and month. The number of keywords should be smaller for shorter timeframes (e.g., 3-4 for hour/day) and larger for longer ones (e.g., 5-10 for week/month). Ensure the data is plausible and contextually appropriate.
+    **Instructions:**
+    1.  **Analyze the Input:** Carefully consider the user's business type: '{{{businessType}}}', country: '{{{country}}}', and city: '{{{city}}}'.
+    2.  **Generate Relevant Keywords:** Create lists of keywords that are genuinely trending for that business in that location. DO NOT use generic or unrelated keywords like "sustainable business practices" unless the business is in the sustainability sector. All keywords must be highly relevant.
+    3.  **Simulate Realistic Metrics:** For each keyword, provide realistic-looking (but simulated) data for search volume, trend change percentage, and SEO difficulty.
+    4.  **Provide Simulated Sources:** For each keyword, list 1-2 plausible (but simulated) sources for the trend data, such as 'Google Trends', 'Exploding Topics', 'SEMrush Data', or a relevant industry publication. This adds a layer of authenticity.
+    5.  **Categorize by Time Frame:** Generate keyword lists for the past hour, day, week, and month.
+    6.  **Adhere Strictly to the Output Schema:** Ensure the output is a valid JSON object that matches the required schema. Each keyword must have a unique 'id'.
   `
 });
 const generateTrendingKeywordsFlow = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ai"].defineFlow({
@@ -607,10 +645,27 @@ const generateTrendingKeywordsFlow = __TURBOPACK__imported__module__$5b$project$
     inputSchema: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$types$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["GenerateTrendingKeywordsInputSchema"],
     outputSchema: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$types$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["GenerateTrendingKeywordsOutputSchema"]
 }, async (input)=>{
-    const { output } = await prompt(input);
+    const llmResponse = await prompt(input);
+    const output = llmResponse.output;
     if (!output) {
-        throw new Error('Failed to generate trending keywords.');
+        throw new Error('AI did not return valid trending keyword data.');
     }
+    // Ensure unique IDs
+    const allKeywords = [
+        ...output.hour,
+        ...output.day,
+        ...output.week,
+        ...output.month
+    ];
+    const usedIds = new Set();
+    allKeywords.forEach((kw, index)=>{
+        let newId = kw.id || `kw-${index}`;
+        while(usedIds.has(newId)){
+            newId = `kw-${index}-${Math.random().toString(36).substring(7)}`;
+        }
+        kw.id = newId;
+        usedIds.add(newId);
+    });
     return output;
 });
 ;
