@@ -31,3 +31,9 @@
 **/*assistant*
 **/genkit*
 .modified
+
+dist/
+.next/
+build/
+*.chunk.*
+*.map

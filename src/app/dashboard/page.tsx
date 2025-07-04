@@ -1,6 +1,7 @@
+
 "use client";
 
-import React, { useState, useEffect, useMemo, Suspense, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, Suspense, useCallback, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,8 +10,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Lightbulb, LineChart as LucideLineChartIcon, Search, BarChart3, Settings2, Bell, Briefcase, MapPin, Globe, Sparkles, HelpCircle, ListChecks, TrendingUp, Loader2, Target, Users, Bot, VenetianMask, MessageSquareQuote, CheckCircle, ExternalLink, Shield, ShieldOff, AlertTriangle, PieChart, Building2, BrainCircuit, BookCopy, Info } from 'lucide-react';
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTooltip, Legend as RechartsLegend } from 'recharts';
+import { Lightbulb, LineChart as LucideLineChartIcon, Search, BarChart3, Settings2, Bell, Briefcase, MapPin, Globe, Sparkles, HelpCircle, ListChecks, TrendingUp, Loader2, Target, Users, Bot, VenetianMask, MessageSquareQuote, CheckCircle, ExternalLink, Shield, ShieldOff, AlertTriangle, PieChart, Building2, BrainCircuit, BookCopy, Info, MousePointerClick } from 'lucide-react';
+import { Bar, ComposedChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTooltip, Legend as RechartsLegend } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent, type ChartConfig } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -45,6 +46,8 @@ const getHostname = (url: string) => {
 function DashboardContent() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
+  const advancedAnalysisRef = useRef<HTMLDivElement>(null);
+
 
   const businessTypeFromQuery = searchParams.get('businessType');
   const countryFromQuery = searchParams.get('country');
@@ -124,7 +127,7 @@ function DashboardContent() {
     if (!businessType || !keywordsToUse || keywordsToUse.length === 0) return;
 
     setIsTranslating(true);
-    const keywordNames = keywordsToUse.map(kw => kw.name).join(', ');
+    const keywordNames = keywordsToUse.map(kw => kw.name);
     const result = await getArabicTranslationsAction({ businessType, keywords: keywordNames });
     
     if (result.success && result.data) {
@@ -328,21 +331,71 @@ function DashboardContent() {
 
   const chartConfig = {
     volume: {
-      label: "Volume",
+      label: "Search Volume",
       color: "hsl(var(--chart-1))",
+    },
+    difficulty: {
+      label: "SEO Difficulty",
+      color: "hsl(var(--chart-2))",
     },
   } satisfies ChartConfig;
 
   const keywordChartData = useMemo(() => {
     const activeKeywords = currentKeywords[activeTab];
-    if (activeKeywords && activeKeywords.length > 0 && activeKeywords.every(kw => kw.volume !== undefined && kw.name)) {
-      return activeKeywords.slice(0, 10).map(kw => ({ 
-        name: kw.name.length > 30 ? kw.name.substring(0, 27) + "..." : kw.name, 
+    if (activeKeywords && activeKeywords.length > 0) {
+      return activeKeywords.slice(0, 10).map(kw => ({
+        name: kw.name, // Full name for click handler
+        displayName: kw.name.length > 25 ? kw.name.substring(0, 22) + "..." : kw.name,
         volume: kw.volume as number,
+        difficulty: kw.difficulty as number,
+        change: kw.change,
       }));
     }
     return [];
   }, [currentKeywords, activeTab]);
+
+  const handleChartClick = (data: any) => {
+    if (data && data.activePayload && data.activePayload[0]) {
+      const keywordName = data.activePayload[0].payload.name;
+      setAdvancedAnalysisKeyword(keywordName);
+      toast({
+          title: "Keyword Selected",
+          description: `"${keywordName}" is ready for a deep-dive. Click "Generate Strategic Brief" to begin.`
+      });
+      if (advancedAnalysisRef.current) {
+        advancedAnalysisRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  };
+
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className="p-4 bg-background/90 border rounded-lg shadow-lg backdrop-blur-sm">
+          <p className="font-bold text-lg text-foreground mb-2">{data.name}</p>
+          <div className="space-y-1 text-sm">
+            <div className="flex justify-between items-center gap-4">
+              <span className="text-muted-foreground flex items-center"><span className="w-2 h-2 rounded-full mr-2" style={{backgroundColor: 'hsl(var(--chart-1))'}}/>Volume:</span>
+              <span className="font-mono font-semibold">{data.volume.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between items-center gap-4">
+              <span className="text-muted-foreground flex items-center"><span className="w-2 h-2 rounded-full mr-2" style={{backgroundColor: 'hsl(var(--chart-2))'}}/>Difficulty:</span>
+              <span className="font-mono font-semibold">{data.difficulty}/100</span>
+            </div>
+            <div className="flex justify-between items-center gap-4">
+               <span className="text-muted-foreground">Change:</span>
+               <span className={`font-mono font-semibold ${data.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                 {data.change >= 0 ? '+' : ''}{data.change}%
+               </span>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
 
   return (
     <div className="flex flex-col min-h-screen bg-muted/30 dark:bg-background">
@@ -393,7 +446,7 @@ function DashboardContent() {
               </CardFooter>
             </Card>
 
-            <Card className="shadow-xl rounded-xl overflow-hidden">
+            <Card ref={advancedAnalysisRef} className="shadow-xl rounded-xl overflow-hidden">
               <CardHeader className="bg-primary/5 dark:bg-primary/10">
                 <CardTitle className="flex items-center gap-2 text-xl"><Sparkles className="h-6 w-6 text-primary" /> CMO Strategic Brief</CardTitle>
                 <CardDescription>Deep strategic insights for any keyword.</CardDescription>
@@ -519,50 +572,85 @@ function DashboardContent() {
             </Card>
             
             <Card className="shadow-xl rounded-xl overflow-hidden">
-              <CardHeader className="bg-primary/5 dark:bg-primary/10">
-                <CardTitle className="flex items-center gap-2 text-xl"><LucideLineChartIcon className="h-6 w-6 text-primary"/>Top Keyword Volume Visualization</CardTitle>
-                 <CardDescription>Visual breakdown of search volumes for the top keywords from the active tab.</CardDescription>
-              </CardHeader>
-              <CardContent className="h-[450px] w-full pt-6"> 
-                {(isLoadingKeywords || isOverallLoading) && keywordChartData.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
-                    <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-                    <p>Loading chart data...</p>
-                  </div>
-                ) : keywordChartData.length > 0 ? (
-                  <ChartContainer config={chartConfig} className="w-full h-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={keywordChartData} margin={{ top: 5, right: 20, left: 20, bottom: 100 }}>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border/50" />
-                        <XAxis dataKey="name" tickLine={false} axisLine={false} stroke="hsl(var(--muted-foreground))" angle={-45} textAnchor="end" interval={0} height={100} tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}/>
-                        <YAxis stroke="hsl(var(--muted-foreground))" tickFormatter={(value) => value >= 1000 ? `${value/1000}k` : value.toLocaleString()} tickLine={false} axisLine={false} width={60} tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}/>
-                        <ChartTooltip cursor={{fill: 'hsl(var(--accent)/0.5)', radius: 4}} content={<ChartTooltipContent indicator="dot" />}/>
-                        <ChartLegend content={<ChartLegendContent wrapperStyle={{paddingTop: '20px'}} />} />
-                        <Bar dataKey="volume" fill="var(--color-volume)" radius={[4, 4, 0, 0]} barSize={30}/>
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                ) : (
-                   <p className="text-muted-foreground text-center py-10">No data available. Perform an analysis to see keyword volumes.</p>
-                )}
-              </CardContent>
-              <CardFooter className="bg-muted/50 dark:bg-muted/20 p-4 border-t">
-                  {isGeneratingTakeaway ? (
-                       <div className="flex items-center w-full text-sm text-muted-foreground">
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin"/> AI is analyzing the chart to generate a key takeaway...
-                       </div>
-                  ) : chartTakeaway ? (
-                        <div className="flex items-start gap-3">
-                            <MessageSquareQuote className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                            <div>
-                                <h4 className="font-semibold text-foreground">CMO Takeaway</h4>
-                                <p className="text-sm text-muted-foreground">{chartTakeaway}</p>
-                            </div>
+                <CardHeader className="bg-primary/5 dark:bg-primary/10">
+                    <CardTitle className="flex items-center gap-2 text-xl"><LucideLineChartIcon className="h-6 w-6 text-primary"/>Interactive Keyword Analysis</CardTitle>
+                    <CardDescription className="flex items-center gap-2">
+                        <MousePointerClick className="h-4 w-4" />
+                        Compare volume vs. difficulty. Click any bar to select that keyword for a deep-dive analysis.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="h-[450px] w-full pt-6"> 
+                    {(isLoadingKeywords || isOverallLoading) && keywordChartData.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+                        <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+                        <p>Loading chart data...</p>
+                    </div>
+                    ) : keywordChartData.length > 0 ? (
+                    <ChartContainer config={chartConfig} className="w-full h-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                             <ComposedChart data={keywordChartData} onClick={handleChartClick} margin={{ top: 5, right: 30, left: 20, bottom: 100 }}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border/50" />
+                                <XAxis 
+                                    dataKey="displayName" 
+                                    tickLine={false} 
+                                    axisLine={false} 
+                                    stroke="hsl(var(--muted-foreground))" 
+                                    angle={-45} 
+                                    textAnchor="end" 
+                                    interval={0} 
+                                    height={100} 
+                                    tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
+                                />
+                                <YAxis 
+                                    yAxisId="left" 
+                                    stroke="hsl(var(--chart-1))" 
+                                    tickFormatter={(value) => typeof value === 'number' && value >= 1000 ? `${value/1000}k` : (value || '').toLocaleString()} 
+                                    tickLine={false} 
+                                    axisLine={false} 
+                                    width={60} 
+                                    tick={{ fontSize: 10 }}
+                                />
+                                <YAxis 
+                                    yAxisId="right" 
+                                    orientation="right" 
+                                    stroke="hsl(var(--chart-2))" 
+                                    domain={[0, 100]} 
+                                    tickLine={false} 
+                                    axisLine={false} 
+                                    width={40} 
+                                    tick={{ fontSize: 10 }}
+                                />
+                                <RechartsTooltip 
+                                    cursor={{fill: 'hsl(var(--accent)/0.5)', radius: 4}} 
+                                    content={<CustomTooltip />} 
+                                />
+                                <ChartLegend content={<ChartLegendContent wrapperStyle={{paddingTop: '20px'}} />} />
+                                <Bar yAxisId="left" dataKey="volume" fill="var(--color-volume)" radius={[4, 4, 0, 0]} barSize={20} />
+                                <Bar yAxisId="right" dataKey="difficulty" fill="var(--color-difficulty)" radius={[4, 4, 0, 0]} barSize={20} />
+                            </ComposedChart>
+                        </ResponsiveContainer>
+                    </ChartContainer>
+                    ) : (
+                    <p className="text-muted-foreground text-center py-10">No data available. Perform an analysis to see keyword volumes.</p>
+                    )}
+                </CardContent>
+                <CardFooter className="bg-muted/50 dark:bg-muted/20 p-4 border-t">
+                    {isGeneratingTakeaway ? (
+                        <div className="flex items-center w-full text-sm text-muted-foreground">
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin"/> AI is analyzing the chart to generate a key takeaway...
                         </div>
-                  ) : (
-                      <p className="text-sm text-muted-foreground">The AI-generated takeaway for this chart will appear here after analysis.</p>
-                  )}
-              </CardFooter>
+                    ) : chartTakeaway ? (
+                            <div className="flex items-start gap-3">
+                                <MessageSquareQuote className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                                <div>
+                                    <h4 className="font-semibold text-foreground">CMO Takeaway</h4>
+                                    <p className="text-sm text-muted-foreground">{chartTakeaway}</p>
+                                </div>
+                            </div>
+                    ) : (
+                        <p className="text-sm text-muted-foreground">The AI-generated takeaway for this chart will appear here after analysis.</p>
+                    )}
+                </CardFooter>
             </Card>
 
             <Card className="shadow-xl rounded-xl overflow-hidden">
@@ -764,3 +852,5 @@ export default function DashboardPage() {
     </Suspense>
   );
 }
+
+    
