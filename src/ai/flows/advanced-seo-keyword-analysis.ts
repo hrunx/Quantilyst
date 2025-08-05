@@ -22,66 +22,47 @@ export async function advancedSeoKeywordAnalysis(
   input: AdvancedSeoKeywordAnalysisInput
 ): Promise<AdvancedSeoKeywordAnalysisOutput> {
   
-  const systemPrompt = `You are a world-class CMO and Senior SEO Strategist at a top-tier digital marketing agency with 20+ years of experience. You have access to premium SEO tools, competitive analysis platforms, and real-time search data.`;
+  const systemPrompt = `You are a Senior Partner at McKinsey Digital with 20+ years leading SEO strategy for Fortune 500 companies. Your keyword analysis directly influences billion-dollar marketing investments and competitive positioning strategies.
 
-  const userPrompt = `Generate a comprehensive, executive-level SEO strategic analysis for the keyword "${input.keyword}" in the context of the ${input.businessType} industry.
+CRITICAL: Every recommendation must be INVESTMENT-GRADE with precise, actionable insights suitable for C-suite strategic planning and multi-million dollar marketing budgets.`;
 
-**REQUIREMENTS FOR STRATEGIC SEO ANALYSIS:**
+  const userPrompt = `Analyze keyword "${input.keyword}" for ${input.businessType} industry with C-suite strategic precision.
 
-1. **SEARCH INTENT ANALYSIS**:
-   - Determine primary search intent (Informational, Navigational, Commercial, Transactional)
-   - Analyze user journey stage and conversion potential
-   - Identify intent modifiers and semantic patterns
+**REQUIRED JSON STRUCTURE (INVESTMENT-GRADE PRECISION):**
+{
+  "searchIntent": "Commercial",
+  "targetAudience": "Detailed user persona with demographics and behavior patterns",
+  "competitiveLandscape": "Specific competitor analysis with market positioning",
+  "uniqueContentAngle": "Defensible content strategy with competitive advantage",
+  "longTailKeywords": ["related keyword 1", "related keyword 2", "related keyword 3", "related keyword 4", "related keyword 5"],
+  "relatedQuestions": ["What is...", "How to...", "Why does...", "Best practices for..."],
+  "contentOutline": {
+    "title": "SEO-optimized content title under 60 characters",
+    "sections": [
+      {
+        "heading": "Section 1 Title",
+        "points": ["Key point 1", "Key point 2", "Key point 3"]
+      },
+      {
+        "heading": "Section 2 Title", 
+        "points": ["Key point 1", "Key point 2", "Key point 3"]
+      }
+    ]
+  },
+  "difficultyAnalysis": "Specific ranking difficulty assessment with success factors",
+  "confidenceScore": 85,
+  "simulatedDataSources": ["https://semrush.com/analytics", "https://ahrefs.com/keywords", "https://searchconsole.google.com"]
+}
 
-2. **TARGET AUDIENCE PROFILING**:
-   - Define detailed user persona demographics and psychographics
-   - Identify pain points, goals, and motivations
-   - Analyze search behavior patterns and preferences
+**INVESTMENT-GRADE REQUIREMENTS:**
+- Search Intent: Precise classification with conversion potential analysis
+- Target Audience: Specific demographics, pain points, and search behavior
+- Competitive Analysis: Real market positioning with actionable differentiation
+- Content Strategy: Implementable recommendations with measurable outcomes
+- Keywords: Realistic search terms with actual commercial value
+- Sources: Professional URLs to legitimate SEO intelligence platforms
 
-3. **COMPETITIVE LANDSCAPE ASSESSMENT**:
-   - Analyze current top-ranking content and competitors
-   - Identify content gaps and differentiation opportunities
-   - Assess competitor strengths, weaknesses, and strategies
-
-4. **UNIQUE CONTENT STRATEGY**:
-   - Develop a defensible, unique content angle
-   - Recommend content format and distribution strategy
-   - Identify competitive advantages and differentiation points
-
-5. **LONG-TAIL KEYWORD EXPANSION**:
-   - Provide 5+ semantically related long-tail keywords
-   - Include search volume estimates and difficulty scores
-   - Focus on high-value, low-competition opportunities
-
-6. **RELATED QUESTIONS & TOPICS**:
-   - Identify common user questions and pain points
-   - Suggest FAQ content and topic clusters
-   - Include voice search and conversational queries
-
-7. **CONTENT OUTLINE & STRATEGY**:
-   - Create detailed content structure with compelling title
-   - Provide section-by-section content recommendations
-   - Include optimization tips for featured snippets and rankings
-
-8. **DIFFICULTY & SUCCESS ANALYSIS**:
-   - Assess ranking difficulty and competition level
-   - Identify success factors and optimization requirements
-   - Provide realistic timeline and resource recommendations
-
-9. **CONFIDENCE & DATA SOURCES**:
-   - Assign confidence score (0-100) based on data quality
-   - List simulated data sources for credibility
-   - Include methodology and analytical approach
-
-**STRATEGIC FOCUS:**
-- Provide actionable, implementable recommendations
-- Consider current SEO best practices and algorithm updates
-- Include technical SEO and user experience factors
-- Address content marketing and distribution strategy
-
-**OUTPUT FORMAT:** Return a valid JSON object with comprehensive analysis data.
-
-Ensure all recommendations are specific, strategic, and provide genuine competitive advantage for ${input.businessType} content marketing.`;
+**CRITICAL:** This analysis drives million-dollar marketing decisions. Precision over creativity.`;
 
   try {
     const result = await generateWithSchema<AdvancedSeoKeywordAnalysisOutput>(
