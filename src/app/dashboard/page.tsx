@@ -101,10 +101,22 @@ function DashboardContent() {
     const result = await getTrendingKeywordsAction({ businessType, country: countryName, city: city || undefined });
     
     if (result.success && result.data) {
+        console.log('✅ Keywords fetch successful! Data structure:', {
+          hasHour: !!result.data.hour,
+          hasDay: !!result.data.day, 
+          hasWeek: !!result.data.week,
+          hasMonth: !!result.data.month,
+          hourCount: result.data.hour?.length || 0,
+          dayCount: result.data.day?.length || 0,
+          weekCount: result.data.week?.length || 0,
+          monthCount: result.data.month?.length || 0,
+          sampleData: result.data.week?.[0] || 'No week data'
+        });
         setCurrentKeywords(result.data);
         setIsLoadingKeywords(false);
         return result.data;
     } else {
+        console.error('❌ Keywords fetch failed:', result.error);
         toast({ title: "Keyword Fetch Failed", description: result.error || "Could not fetch AI-generated keywords.", variant: "destructive" });
         setCurrentKeywords(emptyKeywords);
         setIsLoadingKeywords(false);
@@ -117,7 +129,7 @@ function DashboardContent() {
           return;
       }
       setIsGeneratingTakeaway(true);
-      const chartDataString = JSON.stringify(keywordsForChart.map(kw => ({ name: kw.name, volume: kw.volume })));
+      const chartDataString = JSON.stringify(keywordsForChart.filter(kw => kw && kw.name).map(kw => ({ name: kw.name, volume: kw.volume || 0 })));
       const result = await getChartTakeawayAction({ businessType, keywordChartData: chartDataString });
 
       if (result.success && result.data) {
@@ -134,12 +146,18 @@ function DashboardContent() {
     if (!businessType || !keywordsToUse || keywordsToUse.length === 0) return;
 
     setIsTranslating(true);
-    const keywordNames = keywordsToUse.map(kw => kw.name);
+    const keywordNames = keywordsToUse.filter(kw => kw && kw.name).map(kw => kw.name);
     const result = await getArabicTranslationsAction({ businessType, keywords: keywordNames });
     
     if (result.success && result.data) {
+      console.log('✅ Arabic translation successful! Data structure:', {
+        hasTranslatedKeywords: !!result.data.translatedKeywords,
+        keywordCount: result.data.translatedKeywords?.length || 0,
+        sampleKeyword: result.data.translatedKeywords?.[0] || 'No keywords'
+      });
       setArabicKeywords(result.data.translatedKeywords);
     } else {
+      console.error('❌ Arabic translation failed:', result.error);
       setArabicKeywords([]);
       toast({ title: "Translation Failed", description: result.error || "Could not translate keywords.", variant: "destructive" });
     }
@@ -151,7 +169,7 @@ function DashboardContent() {
     if (!businessType || !keywordsToUse || keywordsToUse.length === 0) return;
 
     setIsSuggesting(true);
-    const keywordNamesString = keywordsToUse.map(kw => kw.name).join(', ');
+    const keywordNamesString = keywordsToUse.filter(kw => kw && kw.name).map(kw => kw.name).join(', ');
     const result = await getSeoSuggestionsAction({ businessType, trendingKeywords: keywordNamesString });
 
     if (result.success && result.data && result.data.suggestions.length > 0) {
@@ -169,7 +187,39 @@ function DashboardContent() {
     setIsOverallLoading(true);
     toast({ title: "Loading Dashboard", description: `Fetching initial insights for ${businessTypeFromQuery}...` });
 
-    const fetchedKeywordsResult = await fetchKeywords();
+    // Run keywords and deep-dive in parallel for faster loading
+    const [fetchedKeywordsResult] = await Promise.all([
+      fetchKeywords(),
+      // Generate deep-dive report automatically
+      (async () => {
+        if (countryFromQuery) {
+          setIsGeneratingDeepDive(true);
+          const countryName = mockCountries.find(c => c.value === countryFromQuery)?.label || countryFromQuery;
+          const deepDiveResult = await getMarketDeepDiveAction({ 
+            businessType: businessTypeFromQuery, 
+            country: countryName, 
+            city: cityFromQuery || undefined 
+          });
+          
+          if (deepDiveResult.success && deepDiveResult.data) {
+            console.log('✅ Deep-dive fetch successful! Data structure:', {
+              hasExecutiveSummary: !!deepDiveResult.data.executiveSummary,
+              hasTamSamSom: !!deepDiveResult.data.tamSamSom,
+              hasCompetitors: !!deepDiveResult.data.competitors,
+              hasSwot: !!deepDiveResult.data.swot,
+              competitorsCount: deepDiveResult.data.competitors?.length || 0,
+              tamValue: deepDiveResult.data.tamSamSom?.tam?.value || 'No TAM',
+              sampleCompetitor: deepDiveResult.data.competitors?.[0]?.name || 'No competitors'
+            });
+            setDeepDiveResults(deepDiveResult.data);
+          } else {
+            console.error('❌ Deep-dive fetch failed:', deepDiveResult.error);
+          }
+          setIsGeneratingDeepDive(false);
+        }
+      })()
+    ]);
+
     if (fetchedKeywordsResult && fetchedKeywordsResult[activeTab] && fetchedKeywordsResult[activeTab].length > 0) {
       const activeKeywords = fetchedKeywordsResult[activeTab];
       await Promise.all([
@@ -210,7 +260,28 @@ function DashboardContent() {
     setIsOverallLoading(true);
     toast({ title: "Re-analyzing Market Data", description: `Updating all insights for ${businessType}...` });
 
-    const fetchedKeywordsResult = await fetchKeywords();
+    // Run keywords and deep-dive in parallel for faster loading
+    const [fetchedKeywordsResult] = await Promise.all([
+      fetchKeywords(),
+      // Re-generate deep-dive report automatically
+      (async () => {
+        if (country) {
+          setIsGeneratingDeepDive(true);
+          const countryName = mockCountries.find(c => c.value === country)?.label || country;
+          const deepDiveResult = await getMarketDeepDiveAction({ 
+            businessType, 
+            country: countryName, 
+            city: city || undefined 
+          });
+          
+          if (deepDiveResult.success && deepDiveResult.data) {
+            setDeepDiveResults(deepDiveResult.data);
+          }
+          setIsGeneratingDeepDive(false);
+        }
+      })()
+    ]);
+
     if (fetchedKeywordsResult && fetchedKeywordsResult[activeTab] && fetchedKeywordsResult[activeTab].length > 0) {
       const activeKeywords = fetchedKeywordsResult[activeTab];
       await Promise.all([
@@ -289,7 +360,7 @@ function DashboardContent() {
       <TableBody>
         {(isLoadingKeywords || isOverallLoading) && !keywords?.length ? (
            <TableRow><TableCell colSpan={6} className="text-center py-10 text-muted-foreground">Loading keywords...</TableCell></TableRow>
-        ) : keywords && keywords.length > 0 ? keywords.map(keyword => (
+        ) : keywords && keywords.length > 0 ? keywords.filter(keyword => keyword && keyword.name).map(keyword => (
           <TableRow key={keyword.id}>
             <TableCell className="font-medium">{keyword.name}</TableCell>
             <TableCell>
@@ -302,9 +373,21 @@ function DashboardContent() {
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p className="font-semibold">Simulated Sources</p>
-                      <ul className="list-disc list-inside text-sm">
-                        {keyword.sources.map((src, i) => <li key={i}>{src}</li>)}
+                      <p className="font-semibold">Data Sources</p>
+                      <ul className="list-disc list-inside text-sm space-y-1">
+                        {keyword.sources.map((src, i) => (
+                          <li key={i}>
+                            <a 
+                              href={src.startsWith('http') ? src : `https://${src}`} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-blue-400 hover:text-blue-200 underline hover:no-underline transition-colors"
+                            >
+                              {getHostname(src)}
+                              <ExternalLink className="inline h-2 w-2 ml-1" />
+                            </a>
+                          </li>
+                        ))}
                       </ul>
                     </TooltipContent>
                   </Tooltip>
@@ -353,6 +436,9 @@ function DashboardContent() {
 
     return activeKeywords
       .filter(kw => {
+        // Add null checks for keyword object and properties
+        if (!kw || !kw.name) return false;
+        
         const volumeMatch = !minVolume || (kw.volume || 0) >= parseInt(minVolume, 10);
         const difficultyMatch = (kw.difficulty || 0) >= difficultyRange[0] && (kw.difficulty || 0) <= difficultyRange[1];
         const searchMatch = !keywordSearch || kw.name.toLowerCase().includes(keywordSearch.toLowerCase());
@@ -360,7 +446,7 @@ function DashboardContent() {
       })
       .map(kw => ({
         name: kw.name, // Full name for click handler
-        displayName: kw.name.length > 25 ? kw.name.substring(0, 22) + "..." : kw.name,
+        displayName: kw.name && kw.name.length > 25 ? kw.name.substring(0, 22) + "..." : kw.name || '',
         volume: kw.volume as number,
         difficulty: kw.difficulty as number,
         change: kw.change,
@@ -495,7 +581,7 @@ function DashboardContent() {
                       <AccordionTrigger className="text-base"><ListChecks className="mr-2 h-4 w-4" /> Long-tail Keywords</AccordionTrigger>
                        <AccordionContent>
                          <ul className="space-y-1 list-disc list-inside text-sm">
-                           {advancedAnalysisResults.longTailKeywords.map((kw, i) => <li key={i}>{kw}</li>)}
+                           {advancedAnalysisResults.longTailKeywords?.map((kw, i) => <li key={i}>{kw}</li>) || <li>No long-tail keywords available</li>}
                          </ul>
                        </AccordionContent>
                     </AccordionItem>
@@ -503,23 +589,23 @@ function DashboardContent() {
                       <AccordionTrigger className="text-base"><HelpCircle className="mr-2 h-4 w-4" /> Related Questions</AccordionTrigger>
                        <AccordionContent>
                          <ul className="space-y-1 list-disc list-inside text-sm">
-                           {advancedAnalysisResults.relatedQuestions.map((q, i) => <li key={i}>{q}</li>)}
+                           {advancedAnalysisResults.relatedQuestions?.map((q, i) => <li key={i}>{q}</li>) || <li>No related questions available</li>}
                          </ul>
                        </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="outline">
                       <AccordionTrigger className="text-base"><BookCopy className="mr-2 h-4 w-4" /> Detailed Content Outline</AccordionTrigger>
                       <AccordionContent>
-                        <h4 className="font-semibold mb-2 text-md">{advancedAnalysisResults.contentOutline.title}</h4>
+                        <h4 className="font-semibold mb-2 text-md">{advancedAnalysisResults.contentOutline?.title || 'Content Outline'}</h4>
                         <ul className="space-y-3">
-                          {advancedAnalysisResults.contentOutline.sections.map((section, i) => (
+                                                          {advancedAnalysisResults.contentOutline?.sections?.map((section, i) => (
                             <li key={`s-${i}`} className="ml-2">
                               <p className="font-semibold">{section.heading}</p>
                               <ul className="list-disc list-inside space-y-1 text-sm pl-2 mt-1 text-muted-foreground">
-                                {section.points.map((point, pIdx) => <li key={`p-${pIdx}`}>{point}</li>)}
+                                {section.points?.map((point, pIdx) => <li key={`p-${pIdx}`}>{point}</li>) || <li>No points available</li>}
                               </ul>
                             </li>
-                          ))}
+                          )) || <li>No content outline available</li>}
                         </ul>
                       </AccordionContent>
                     </AccordionItem>
@@ -540,7 +626,7 @@ function DashboardContent() {
                           <div>
                             <Label className="text-sm font-semibold">Simulated Data Sources</Label>
                             <ul className="space-y-1 mt-1">
-                                {advancedAnalysisResults.simulatedDataSources.map((source, i) => (
+                                {advancedAnalysisResults.simulatedDataSources?.map((source, i) => (
                                     <li key={`src-${i}`} className="text-sm text-muted-foreground flex items-center gap-2">
                                         <ExternalLink className="h-3 w-3" />
                                         <span>{getHostname(source)}</span>
@@ -734,7 +820,7 @@ function DashboardContent() {
                         <div className="space-y-6">
                             <div>
                                 <h3 className="text-lg font-semibold flex items-center gap-2 mb-2"><Briefcase className="h-5 w-5 text-primary" /> Executive Summary</h3>
-                                <p className="text-sm text-muted-foreground">{deepDiveResults.executiveSummary}</p>
+                                <p className="text-sm text-muted-foreground">{deepDiveResults?.executiveSummary}</p>
                             </div>
 
                             <div>
@@ -742,27 +828,73 @@ function DashboardContent() {
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div className="p-4 bg-muted/50 rounded-lg">
                                         <h4 className="font-semibold flex items-center gap-2 text-sm"><Globe className="h-4 w-4"/>TAM</h4>
-                                        <p className="text-2xl font-bold text-primary">${(deepDiveResults.tamSamSom.tam.value / 1_000_000_000).toFixed(1)}B</p>
-                                        <p className="text-xs text-muted-foreground">{deepDiveResults.tamSamSom.tam.description}</p>
+                                        {deepDiveResults?.tamSamSom?.tam ? (
+                                            <>
+                                                <p className="text-2xl font-bold text-primary">${(deepDiveResults.tamSamSom.tam.value / 1_000_000_000).toFixed(1)}B</p>
+                                                <p className="text-xs text-muted-foreground">{deepDiveResults.tamSamSom.tam.description}</p>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <p className="text-2xl font-bold text-muted-foreground">--</p>
+                                                <p className="text-xs text-muted-foreground">Generate deep-dive report</p>
+                                            </>
+                                        )}
                                     </div>
                                     <div className="p-4 bg-muted/50 rounded-lg">
                                         <h4 className="font-semibold flex items-center gap-2 text-sm"><Target className="h-4 w-4"/>SAM</h4>
-                                        <p className="text-2xl font-bold text-primary">${(deepDiveResults.tamSamSom.sam.value / 1_000_000).toFixed(1)}M</p>
-                                        <p className="text-xs text-muted-foreground">{deepDiveResults.tamSamSom.sam.description}</p>
+                                        {deepDiveResults?.tamSamSom?.sam ? (
+                                            <>
+                                                <p className="text-2xl font-bold text-primary">${(deepDiveResults.tamSamSom.sam.value / 1_000_000).toFixed(1)}M</p>
+                                                <p className="text-xs text-muted-foreground">{deepDiveResults.tamSamSom.sam.description}</p>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <p className="text-2xl font-bold text-muted-foreground">--</p>
+                                                <p className="text-xs text-muted-foreground">Generate deep-dive report</p>
+                                            </>
+                                        )}
                                     </div>
                                     <div className="p-4 bg-muted/50 rounded-lg">
                                         <h4 className="font-semibold flex items-center gap-2 text-sm"><PieChart className="h-4 w-4"/>SOM</h4>
-                                        <p className="text-2xl font-bold text-primary">${(deepDiveResults.tamSamSom.som.value / 1_000_000).toFixed(1)}M</p>
-                                        <p className="text-xs text-muted-foreground">{deepDiveResults.tamSamSom.som.description}</p>
+                                        {deepDiveResults?.tamSamSom?.som ? (
+                                            <>
+                                                <p className="text-2xl font-bold text-primary">${(deepDiveResults.tamSamSom.som.value / 1_000_000).toFixed(1)}M</p>
+                                                <p className="text-xs text-muted-foreground">{deepDiveResults.tamSamSom.som.description}</p>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <p className="text-2xl font-bold text-muted-foreground">--</p>
+                                                <p className="text-xs text-muted-foreground">Generate deep-dive report</p>
+                                            </>
+                                        )}
                                     </div>
                                 </div>
                                 <div className="mt-4 space-y-2">
-                                  <h4 className="font-semibold text-sm">Data Sources (Simulated)</h4>
+                                  <h4 className="font-semibold text-sm flex items-center gap-2">
+                                  <Shield className="h-4 w-4 text-green-600" />
+                                  Investment-Grade Sources
+                                </h4>
                                   <ul className="text-xs text-muted-foreground list-disc list-inside">
                                       {/* Aggregating all sources for display */}
-                                      {[...deepDiveResults.tamSamSom.tam.sources, ...deepDiveResults.tamSamSom.sam.sources, ...deepDiveResults.tamSamSom.som.sources].filter((v, i, a) => a.indexOf(v) === i).map((src, i) => (
-                                          <li key={i}><span>{getHostname(src)}</span></li>
-                                      ))}
+                                      {deepDiveResults?.tamSamSom ? [
+                                          ...(deepDiveResults.tamSamSom.tam?.sources || []), 
+                                          ...(deepDiveResults.tamSamSom.sam?.sources || []), 
+                                          ...(deepDiveResults.tamSamSom.som?.sources || [])
+                                      ].filter((v, i, a) => a.indexOf(v) === i).map((src, i) => (
+                                          <li key={i}>
+                                            <a 
+                                              href={src.startsWith('http') ? src : `https://${src}`} 
+                                              target="_blank" 
+                                              rel="noopener noreferrer"
+                                              className="text-blue-600 hover:text-blue-800 underline hover:no-underline transition-colors"
+                                            >
+                                              {getHostname(src)}
+                                              <ExternalLink className="inline h-3 w-3 ml-1" />
+                                            </a>
+                                          </li>
+                                      )) : (
+                                          <li>Generate deep-dive report to see data sources</li>
+                                      )}
                                   </ul>
                                 </div>
                             </div>
@@ -778,7 +910,7 @@ function DashboardContent() {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {deepDiveResults.competitors.map(c => (
+                                        {deepDiveResults?.competitors?.map(c => (
                                             <TableRow key={c.name}>
                                                 <TableCell className="font-medium">{c.name}</TableCell>
                                                 <TableCell className="text-xs">{c.strengths}</TableCell>
@@ -794,19 +926,19 @@ function DashboardContent() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
                                         <h4 className="font-semibold flex items-center gap-2 mb-2 text-primary"><Shield className="h-5 w-5"/>Strengths</h4>
-                                        <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">{deepDiveResults.swot.strengths.map((s,i) => <li key={i}>{s}</li>)}</ul>
+                                        <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">{deepDiveResults?.swot?.strengths?.map((s,i) => <li key={i}>{s}</li>)}</ul>
                                     </div>
                                     <div className="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
                                         <h4 className="font-semibold flex items-center gap-2 mb-2 text-destructive"><ShieldOff className="h-5 w-5"/>Weaknesses</h4>
-                                        <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">{deepDiveResults.swot.weaknesses.map((w,i) => <li key={i}>{w}</li>)}</ul>
+                                        <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">{deepDiveResults?.swot?.weaknesses?.map((w,i) => <li key={i}>{w}</li>)}</ul>
                                     </div>
                                     <div className="p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
                                         <h4 className="font-semibold flex items-center gap-2 mb-2 text-primary"><Sparkles className="h-5 w-5"/>Opportunities</h4>
-                                        <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">{deepDiveResults.swot.opportunities.map((o,i) => <li key={i}>{o}</li>)}</ul>
+                                        <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">{deepDiveResults?.swot?.opportunities?.map((o,i) => <li key={i}>{o}</li>)}</ul>
                                     </div>
                                     <div className="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
                                         <h4 className="font-semibold flex items-center gap-2 mb-2 text-destructive"><AlertTriangle className="h-5 w-5"/>Threats</h4>
-                                        <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">{deepDiveResults.swot.threats.map((t,i) => <li key={i}>{t}</li>)}</ul>
+                                        <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">{deepDiveResults?.swot?.threats?.map((t,i) => <li key={i}>{t}</li>)}</ul>
                                     </div>
                                 </div>
                             </div>
@@ -833,7 +965,7 @@ function DashboardContent() {
                   <CardContent className="pt-6 flex-grow">
                       {isTranslating ? (
                           <div className="flex justify-center items-center h-full"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
-                      ) : arabicKeywords.length > 0 ? (
+                      ) : arabicKeywords && arabicKeywords.length > 0 ? (
                           <Table>
                               <TableHeader>
                                   <TableRow>

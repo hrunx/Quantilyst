@@ -9,7 +9,7 @@
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-98.9%25-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
-[![Google AI](https://img.shields.io/badge/Google-AI%20Genkit-4285F4?style=flat-square&logo=google)](https://firebase.google.com/docs/genkit)
+[![OpenRouter](https://img.shields.io/badge/OpenRouter-Horizon%20Beta-FF6B35?style=flat-square&logo=openai)](https://openrouter.ai/)
 
 *From search signals and social buzz to funding flows and competitive benchmarks—Quantilyst distills every datapoint into clear, actionable strategy.*
 
@@ -26,7 +26,7 @@
 ### 💡 Why Quantilyst?
 
 - **🎯 Executive-Grade Insights**: C-suite level analysis and strategic recommendations
-- **🤖 AI-Powered**: Leverages Google's Gemini AI for intelligent market analysis
+- **🤖 AI-Powered**: Leverages OpenRouter's Horizon Beta model for superior market analysis
 - **🌍 Global Focus**: Specialized features for international markets (KSA/Arabic support)
 - **📊 Interactive Dashboards**: Beautiful, responsive charts and data visualizations
 - **⚡ Real-time**: Live trending keyword analysis and market signals
@@ -97,7 +97,7 @@ Concise, one-sentence summaries of chart data providing immediate actionable ins
 |----------|------------|
 | **Framework** | ![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js) Next.js 15 (App Router) |
 | **Language** | ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript) TypeScript |
-| **AI/ML** | ![Google AI](https://img.shields.io/badge/Google-Genkit-4285F4?style=flat-square&logo=google) Genkit with Gemini |
+| **AI/ML** | ![OpenRouter](https://img.shields.io/badge/OpenRouter-Horizon%20Beta-FF6B35?style=flat-square&logo=openai) Genkit with Horizon Beta |
 | **UI Framework** | ![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react) React 18 |
 | **Styling** | ![Tailwind](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=flat-square&logo=tailwind-css) Tailwind CSS |
 | **Components** | ![Radix UI](https://img.shields.io/badge/Radix-UI-161618?style=flat-square) ShadCN-UI + Radix |
@@ -113,7 +113,7 @@ Concise, one-sentence summaries of chart data providing immediate actionable ins
 
 - **Node.js** 18+ 
 - **npm** or **yarn**
-- **Google AI API Key** ([Get one here](https://ai.google.dev/))
+- **OpenRouter API Key** ([Get one here](https://openrouter.ai/keys))
 
 ### Installation
 
@@ -131,7 +131,7 @@ Concise, one-sentence summaries of chart data providing immediate actionable ins
 3. **Set up environment variables**
    ```bash
    # Create .env file in the root directory
-   echo "GOOGLE_API_KEY=your_google_api_key_here" > .env
+   echo "OPENROUTER_API_KEY=sk-or-v1-your-api-key-here" > .env
    ```
 
 4. **Run the development server**
@@ -225,7 +225,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## 🙏 Acknowledgments
 
-- **Google AI** for the powerful Gemini models
+- **OpenRouter** for access to the powerful Horizon Beta model
 - **Vercel** for the amazing Next.js framework
 - **ShadCN** for the beautiful UI components
 - **Recharts** for the interactive chart library

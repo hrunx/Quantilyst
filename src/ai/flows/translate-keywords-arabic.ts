@@ -1,55 +1,87 @@
 'use server';
 /**
- * @fileOverview A flow for translating keywords to Arabic.
- * It translates a list of English keywords to Arabic, providing
- * estimated search volume and trend data for the KSA market.
+ * @fileOverview Arabic Keywords Translation using OpenAI SDK with Horizon Beta
+ * 
+ * Direct integration with OpenRouter's Horizon Beta model for KSA market localization.
+ * Translates English keywords to Arabic with market data for Saudi Arabia.
  */
 
-import {ai} from '@/ai/genkit';
+import { generateWithSchema } from '@/ai/genkit';
 import {
   TranslateKeywordsArabicInputSchema,
   TranslateKeywordsArabicOutputSchema,
+  type TranslateKeywordsArabicInput,
+  type TranslateKeywordsArabicOutput,
 } from '@/ai/types';
-import type {TranslateKeywordsArabicOutput, TranslateKeywordsArabicInput} from '@/ai/types';
 
-
+/**
+ * Translates English keywords to Arabic using Horizon Beta with KSA market intelligence.
+ * Provides localized keywords with realistic search volume and trend data.
+ */
 export async function translateKeywordsArabic(
   input: TranslateKeywordsArabicInput
 ): Promise<TranslateKeywordsArabicOutput> {
-  return await translateKeywordsArabicFlow(input);
+  
+  const systemPrompt = `You are a master SEO specialist and Arabic linguist with deep expertise in the Saudi Arabia (KSA) market. You have 15+ years of experience in Middle Eastern digital marketing, Arabic search behavior, and KSA consumer trends.`;
+
+  const userPrompt = `Translate English keywords to Arabic for the Saudi Arabia market with comprehensive market intelligence.
+
+**BUSINESS CONTEXT:** ${input.businessType}
+
+**KEYWORDS TO TRANSLATE:** ${input.keywords.join(', ')}
+
+**REQUIREMENTS FOR KSA MARKET LOCALIZATION:**
+
+1. **ACCURATE ARABIC TRANSLATION**:
+   - Use the most commercially relevant Arabic terms for KSA market
+   - Consider local dialects and business terminology preferences
+   - Ensure translations match actual search behavior patterns
+   - Use proper Arabic script and diacritical marks where appropriate
+
+2. **REALISTIC MARKET DATA**:
+   - Provide genuine search volume estimates based on KSA market size
+   - Consider population demographics and internet penetration
+   - Factor in economic conditions and purchasing power
+   - Include seasonal and cultural considerations
+
+3. **TREND ANALYSIS**:
+   - Calculate realistic trend changes reflecting market dynamics
+   - Consider recent developments in Saudi Vision 2030
+   - Factor in government initiatives and economic diversification
+   - Include regional competition and market evolution
+
+**CONTEXT CONSIDERATIONS:**
+- Saudi Arabia's digital transformation initiatives
+- Arabic language search preferences and patterns
+- Cultural sensitivities and business etiquette
+- Economic sectors prioritized by Vision 2030
+- Regional competition from UAE, Qatar, and other GCC countries
+- Local consumer behavior and shopping patterns
+
+**REQUIRED JSON STRUCTURE:**
+{
+  "translatedKeywords": [
+    {
+      "english": "original English keyword",
+      "arabic": "Arabic translation in proper script",
+      "volume": 1500,
+      "change": 12.5
+    }
+  ]
 }
 
-const prompt = ai.definePrompt({
-    name: 'translateKeywordsArabicPrompt',
-    input: {schema: TranslateKeywordsArabicInputSchema},
-    output: {schema: TranslateKeywordsArabicOutputSchema},
-    prompt: `
-        You are a master SEO specialist and linguist focused on the Saudi Arabia (KSA) market.
-        Your task is to translate a list of English keywords into Arabic and provide estimated market data for them.
+**CRITICAL:** Return ONLY valid JSON with precise Arabic translations and realistic KSA market data. Each keyword must have exact search volume and trend data for Saudi Arabia market.`;
 
-        **Business Context:** {{{businessType}}}
-        **Keywords to Translate:** {{{keywords}}}
+  try {
+    const result = await generateWithSchema<TranslateKeywordsArabicOutput>(
+      userPrompt,
+      TranslateKeywordsArabicOutputSchema,
+      systemPrompt
+    );
 
-        **Instructions:**
-        1.  Translate each English keyword from the list into the most commercially relevant and commonly searched Arabic equivalent for the KSA market.
-        2.  For each translated Arabic keyword, provide a realistic (but simulated) estimated search **volume**.
-        3.  For each translated Arabic keyword, provide a realistic (but simulated) trend **change** percentage.
-        4.  Return the data strictly in the format specified by the output schema.
-    `,
-});
-
-
-const translateKeywordsArabicFlow = ai.defineFlow(
-  {
-    name: 'translateKeywordsArabicFlow',
-    inputSchema: TranslateKeywordsArabicInputSchema,
-    outputSchema: TranslateKeywordsArabicOutputSchema,
-  },
-  async (input) => {
-    const {output} = await prompt(input);
-    if (!output) {
-        throw new Error('AI did not return valid Arabic translation data.');
-    }
-    return output;
+    return result;
+  } catch (error) {
+    console.error('Error translating keywords to Arabic:', error);
+    throw new Error(`Failed to translate keywords to Arabic: ${error}`);
   }
-);
+}
